@@ -1,0 +1,167 @@
+html, body
+{
+    background-color: black;
+    /*background-image: url("http://oxnull.net/images/full.jpg");
+    /*width: 600px;*/
+    /*margin: 10px 10px;*/
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    /*color: #6b94cd;*/
+    margin: 0;
+    padding:0;
+    height:100%;
+    color: #afafbf;
+    min-height:822px;
+    min-width:1024px;
+    text-align:center;
+    background-repeat: no-repeat;
+}
+
+input{
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+}
+
+#oxheadshort{
+    text-align: center;
+    font-size: large;
+    color: white;
+    /*width: 220px;*/
+}
+#logos{
+    float:left;
+    text-align:center;
+    width:100%;
+    margin-top: 5px;
+}
+#bodyimg{
+    background-image: url("http://oxnull.net/images/full.jpg");
+    background-repeat: no-repeat;
+    clear:both;
+    height:822px;
+    margin-left:auto;
+    margin-right:auto;
+    overflow:auto;
+    text-align:left;
+    width:1024px;
+/*    clear:both;
+    margin-top:-411px;
+    position:absolute;
+    top:50%;
+    min-height:822px;
+    min-width:1024px;
+
+    margin-left:auto;
+    margin-right:auto;
+    overflow:auto;
+    text-align:left;
+    width:1024px;*/
+}
+#vertical{
+	float:left;
+	height:50%;
+	margin-top:-411px;
+	width:100%;
+}
+
+#oxheadlong{
+    text-align: center;
+    font-size: large;
+    color: white;
+    width: 400px;
+}
+
+#alldiv{
+    padding: 120px 68px 0px 68px;
+    border-right: 1px solid #ff7e00;
+    border-left: 1px solid #ff7e00;
+    height: 700px;
+}
+
+#videodiv{
+
+}
+#content
+{
+    /*opacity: 0.5;
+    filter: alpha(opacity = 50);
+    background-color: #464b53;
+    background-repeat: repeat-y repeat-x;
+    padding: 20px 40px 30px 40px;
+    width:400px;
+    float: left;*/
+    background-image: url('http://oxnull.net/images/1.png');
+    border: 1px solid #a25600;
+    height: 525px;
+    overflow-y:auto;
+	overflow-x: hidden;
+}
+#main_div{
+    margin: 20px 90px;
+
+}
+
+#oxleft{
+    float: left;
+}
+#menushk{
+    background-image: url('http://oxnull.net/images/1.png');
+    border: 2px solid #3c5373;
+    width: 110px;
+    padding: 10px 0px 10px 10px;
+    font-size: small;
+    font-family: Tahoma;
+    font-weight: bold;
+
+}
+
+#oxlogo{
+    /*background-image: url('http://oxnull.net/images/1.png');
+    border: 2px solid #3c5373;
+    width: 120px;
+    margin: 10px 0px 0px 0px;*/
+}
+
+#header{
+    background-image: url('http://oxnull.net/images/menu.png');
+    background-repeat: no-repeat;
+    /*border: 2px solid #3c5373;
+    width: 530px;*/
+
+    padding: 15px 0px 0px 30px;
+    margin: 0px 0px 0px 0px;
+    font-size: 12px;
+    color: #ff8400;
+    height: 35px;
+    font-weight: bold;
+    text-align: center;
+    font-family: Tahoma;
+    text-align: center;
+}
+
+.menup{
+    padding-right: 20px;
+}
+
+a{
+    color: #ff8400;
+    text-decoration: none;
+}
+
+a:hover{
+    /*color: #6b94cd;*/
+    color:white;
+}
+
+#notification 
+{
+    border: 5px solid #9c9;
+    background-color: #cfc;
+    padding: 5px;
+    margin: 10px 20px;
+    color: black;
+}
+
+img{
+    border: none;
+}
