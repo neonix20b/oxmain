@@ -1,0 +1,12 @@
+<%if not tasks.nil? and tasks.size > 0%>
+  <br/><br/>
+  <% firstid = Task.find(:first,:order => 'id ASC').id %>
+  <b>Список дел в очереди</b><br/>
+  <table>
+    <tr><td>Очередь</td><td>Описание</td></tr>
+    <%tasks.each do |t|%>
+      <tr id="task_<%= t.id %>"><td><%= (1 + firstid - t.id).to_s %></td><td><%= t.status %></td>
+      <td><%=  rlink('[x]', {:controller => 'main',:action => 'taskdel', :id => t.id.to_s}, ('task_'+t.id.to_s))%></td></tr>
+    <%end%>
+  </table>
+<%end%>

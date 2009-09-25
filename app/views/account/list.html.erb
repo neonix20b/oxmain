@@ -1,0 +1,6 @@
+<table>
+  <%@users.each do |u|%>
+    <tr><td><%= u.id.to_s %>(<%= u.status %>)</td><td><a href="http://<%= site_url(u) %>" target="_blank">http://<%= site_url(u) %></a></td>
+    <% if logged_in? %><td><%= u.email %></td><%end%></tr>
+  <%end%>
+</table>

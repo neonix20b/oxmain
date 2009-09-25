@@ -1,0 +1,4 @@
+<span id="invite_list">
+  <%= render :partial => "inv_list", :locals => { :invites => @invites} %>
+</span>
+<%= rlink "Создать инвайт", {:controller=> 'main', :action => "invite", :task => 'new'}, "invite_list"%>

@@ -1,0 +1,8 @@
+<%if id!='0' and id!='3'%>
+  [<%= plus_minus('minus',id,servicesize,div) %>]
+  <%= servicesize %>
+  [<%= plus_minus('plus',id,servicesize,div) %>]
+  <% if params[:math]!='accept' and params[:action] == 'math_service' %>
+    [<%= plus_minus('accept',id,servicesize,div) %>]
+  <%end%>
+<%end%>

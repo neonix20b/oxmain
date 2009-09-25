@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service>
+  <balance><%= @user.money.to_s %></balance>
+  <list>
+    <%- @discription.each do |d| -%>
+      <item>
+        <name><%= d[0]%></name>
+        <id><%=d[1].to_s%></id>
+        <description><%=d[2].to_s%></description>
+        <coast><%=d[3].to_s%></coast>
+        <stat><%=d[4].to_s%></stat>
+      </item>
+    <%-end-%>
+  </list>
+</service>

@@ -1,0 +1,20 @@
+<%= shorthead("ox-Вход") %>
+<% form_tag do -%>
+  <table>
+    <tr>
+      <td><label for="login">Login:</label></td>
+      <td><%= text_field_tag 'login','', :size=>'20' %></td>
+    </tr>
+    <tr>
+      <td><label for="password">Пароль:</label></td>
+      <td><%= password_field_tag 'password','', :size=>'20' %></td>
+    </tr>
+
+    <!--<p><label for="remember_me">Запомни меня!</label>
+  <%= check_box_tag 'remember_me' %></p>-->
+
+    <tr><td></td>
+    <td align="right"><%= submit_tag 'Войти' %></td></tr>
+  </table>
+<% end -%>
+<%= rlink "У меня еще нет сайта, но я уже хочу!", {:action => 'signup'} %><br/>

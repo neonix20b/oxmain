@@ -1,0 +1,9 @@
+<%=  render :partial => "use_plus", :locals => { :id => params[:id], :servicesize => @service_size, :div => params[:div]} %>
+<%= update_page_tag do |page|
+  page.replace_html(params[:id], service_switch('add',params[:id],params[:id])) if @service_size==0
+  page.replace_html(params[:id], service_switch('del',params[:id],params[:id])) if @service_size>0
+  page.replace_html("c_"+params[:id].to_s, (session[:price][params[:id].to_s]*@service_size.to_s.to_i).to_s)
+  if params[:math]=='accept'
+    page.replace_html('balance', current_user.money.to_s)
+  end
+end%>

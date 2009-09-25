@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users type="array">
+  <%-@users.each do |u|-%>
+  <user>
+    <url><%= site_url(u) %></url>
+    <tags>
+      <%- u.tag_list.each do |tag| -%>
+      <tag><%=tag%></tag>
+    <%-end-%>
+    </tags>
+  </user>
+  <%-end-%>
+</users>

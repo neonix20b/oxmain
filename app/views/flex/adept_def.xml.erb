@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users type="array">
+  <%-@users.each do |u|-%>
+    <% next if u.right!='user' and current_user.right == 'adept' %>
+    <user>
+      <id><%= u.id %></id>
+      <url><%= site_url(u) %></url>
+      <login><%= u.login %></login>
+      <email><%= u.email %></email>
+      <tags><%= u.tag_list %></tags>
+    </user>
+  <%-end-%>
+</users>

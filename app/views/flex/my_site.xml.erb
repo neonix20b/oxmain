@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oxnull>
+  <status><%=@user.status.to_s%></status>
+  <qoutas>
+    <item>
+      <name>HDD</name>
+      <current><%=(@disk_current_size/1048576).to_s%>MB</current>
+      <max><%=(@disk_max_size/1048576).to_s%>MB</max>
+    </item>
+    <item>
+      <name>MYSQL</name>
+      <current><%=(@mysql_current_size/1048576).to_s%>MB</current>
+      <max><%=(@mysql_max_size/1048576).to_s%>MB</max>
+    </item>
+  </qoutas>
+  <info>
+    <lastupdate><%=@last_upd%></lastupdate>
+    <master><%=@master%></master>
+    <right><%= @user.right %></right>
+    <tags><%= @user.tag_list %></tags>
+  </info>
+  <invites>
+    <%-@invites.each do |i|
+      if not i.invited_user.nil?
+        ui = User.find(i.invited_user)
+        lnk = ui.login + '.oxnull.net'
+        lnk = ui.domain if ui.domain and ui.domain.size > 3
+      else
+        lnk = "oxnull.net/#hello="+i.invite_string
+      end-%>
+      <item>
+        <invstring><%=i.invite_string%></invstring>
+        <url><%=lnk%></url>
+      </item>
+    <%-end-%>
+  </invites>
+</oxnull>
