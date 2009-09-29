@@ -42,7 +42,8 @@ class AccountController < ApplicationController
 
   def login
     if request.post?
-      self.current_user = User.authenticate(Base64.decode64(params[:ln]),Base64.decode64(params[:pd]))
+      self.current_user = User.authenticate(Base64.decode64(params[:ln]),Base64.decode64(params[:pd])) if params[:format]=='xml'
+	  self.current_user = User.authenticate(params[:login],params[:password]) if params[:format]!='xml'
       if logged_in?
         if params[:remember_me] == "true"
           self.current_user.remember_me
@@ -64,13 +65,18 @@ class AccountController < ApplicationController
         render :text => 'error' if params[:format]=='xml'
       end
     else
-      #render(:layout => 'mainlayer') if request.xhr?
-      redirect_to("http://oxnull.net/")
+      render(:layout => 'mainlayer') if request.xhr?
+      #redirect_to("http://oxnull.net/")
     end
   end
 
   def signup
-    return redirect_to("http://oxnull.net/#hello=#{params[:id]}") if not request.post?
+	if request.xhr?
+		return render :template => 'account/signup.rhtml'
+	elsif not request.post?
+		return redirect_to("http://oxnull.net/#hello=#{params[:id]}") 
+	end
+	
     if params[:invite]
       inv = Invite.find(:first,:conditions =>{:invite_string =>params[:invite]})
     end
@@ -124,12 +130,12 @@ class AccountController < ApplicationController
   end
 
   def logout
-    return unless request.post?
+    #return unless request.post?
     self.current_user.forget_me if logged_in?
     cookies.delete :auth_token
     reset_session
-    #flash[:notice] = "Выход прошел успешно."
-    #redirect_back_or_default(:controller => '/main', :action => 'index')
-    render :text => 'ok'
+    flash[:notice] = "Выход прошел успешно." if params[:format]!='xml'
+    redirect_back_or_default(:controller => '/main', :action => 'index') if params[:format]!='xml'
+    render :text => 'ok' if params[:format]=='xml'
   end
 end
