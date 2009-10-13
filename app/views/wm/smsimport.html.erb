@@ -1,0 +1,18 @@
+<table>
+ <tr align="center">
+	<td align="left"><b>Страна</b></td>
+	<td align="left"><b>Оператор</b></td>
+	<td align="left"><b>Короткий номер</b></td>
+	<td align="center"><b>Цена SMS с НДС</b></td>
+	<td align="center"><b>Количество OX'ов</b></td>
+ </tr>
+<%@smsbils.each do |smsbil|%>
+ <tr>
+	<td><%= smsbil.country %></td>
+	<td><%= smsbil.op_name %></td>
+	<td><%= smsbil.phone %></td>
+	<td align="center"><%= smsbil.price %></td>
+	<td align="center"><%= smsbil.income.to_f*1.6 %>ox</td>
+ </tr>
+<%end%>
+</table>
