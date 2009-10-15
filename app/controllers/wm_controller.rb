@@ -28,6 +28,7 @@ class WmController < ApplicationController
 					sms.price = $6+$7
 					sms.income.gsub!(/[,]/,'.')
 					sms.price.gsub!(/[,]/,'.')
+					sms.income=sms.income.to_f*1.6
 					sms.save!
 				end
 			end
@@ -36,7 +37,6 @@ class WmController < ApplicationController
 		@string = "файл удален"
 	end
 	@smsbils = Smsbil.find(:all, :order => "country, op_name")
-	#render :text => @smsbil.to_xml
   end
   
   def smspay
@@ -191,7 +191,6 @@ class WmController < ApplicationController
       current_user.money = server.call("get_balance", current_user.id)
     end
     session[ss] = @service_size.to_s
-    #current_user.money = server.call("get_balance", current_user.id)
     render :layout => false
   end
 

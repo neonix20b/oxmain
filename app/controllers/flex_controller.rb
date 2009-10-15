@@ -4,8 +4,26 @@ class FlexController < ApplicationController
   include AuthenticatedSystem
   before_filter :login_from_cookie
   protect_from_forgery :except => [:adept_def, :service_change, :dotask, :password_change, :my_site, :service_list, :tag_control]
-  #enc   = Base64.encode64('Send reinforcements')
-  #plain = Base64.decode64(enc)
+  
+  def sms_phone
+	country = "Россия"
+	if params[:country] and params[:op_id]
+		country = params[:country]
+		#выдать список номеров с ценами
+		@phones = Smsbil.find(:all, 
+			:conditions=>{:country=>params[:country],:op_id=>params[:op_id]}, 
+			:select => 'DISTINCT phone,price,income', :order=> "phone,price")
+	elsif params[:country]
+		#показать список операторов
+		@operators = Smsbil.find(:all, 
+			:conditions=>{:country=>params[:country]}, 
+			:select => 'DISTINCT op_name, op_id', :order=> "op_name")
+	else
+		#поиск всех стран
+		@countries = Smsbil.find(:all, :select => 'DISTINCT country', :order=> "country")
+	end
+  end
+  
   def tag_control
     return unless request.post?
     #p.tag_list.add("Great", "Awful")
