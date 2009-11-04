@@ -93,6 +93,7 @@ class AccountController < ApplicationController
       @user.wtf = 'joomla' if params[:wtf]=='joomla'
       @user.wtf = 'phpbb' if params[:wtf]=='smf'
       @user.wtf = 'wordpress' if params[:wtf]=='wordpress'
+	  @user.wtf = 'none' if params[:wtf]=='none'
       return render :text => 'пнх' if @user.wtf.nil? or @user.wtf==''
       #      @user.email = Base64.encode64(@user.email)
       #      @user.password = Base64.encode64(@user.password)

@@ -56,6 +56,7 @@ class FlexController < ApplicationController
 	  user.update_attribute('wtf', 'joomla') if params[:wtf]=='joomla'
       user.update_attribute('wtf', 'phpbb') if params[:wtf]=='smf'
       user.update_attribute('wtf', 'wordpress') if params[:wtf]=='wordpress'
+	  user.update_attribute('wtf', 'none') if params[:wtf]=='none'
       app_rebuild(user);
       render :text=>'ok '+params[:wtf]
 
