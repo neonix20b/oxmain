@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<items>
+<%-if params[:country] and params[:op_id]-%>
+	<%-@phones.each do |ph|-%>
+	<item>
+		<phone><%= ph.phone %></phone>
+		<price><%= ph.price %></price>
+		<income><%= ph.income %></income>
+	</item>
+	<%-end-%>
+<%-elsif params[:country]-%>
+	<%-@operators.each do |op|-%>
+	<item>
+		<op_name><%= op.op_name %></op_name>
+		<op_id><%= op.op_id %></op_id>
+	</item>
+	<%-end-%>
+<%-else-%>
+	<%-@countries.each do |co|-%>
+	<item><%= co.country %></item>
+	<%-end-%>
+<%-end-%>
+</items>

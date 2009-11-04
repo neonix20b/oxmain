@@ -7,16 +7,16 @@ class FlexController < ApplicationController
   
   def sms_phone
 	country = "Россия"
-	if params[:country] and params[:op_id]
+	if params[:country] and params[:op_name]
 		country = params[:country]
 		#выдать список номеров с ценами
 		@phones = Smsbil.find(:all, 
-			:conditions=>{:country=>params[:country],:op_id=>params[:op_id]}, 
-			:select => 'DISTINCT phone,price,income', :order=> "phone,price")
+			:conditions=>['country LIKE ? and op_name LIKE ?',params[:country], params[:op_name]],
+			:select => 'country,op_name,phone,price,income', :order=> "country,op_name,phone,price")
 	elsif params[:country]
 		#показать список операторов
 		@operators = Smsbil.find(:all, 
-			:conditions=>{:country=>params[:country]}, 
+			:conditions=>['country LIKE ?',params[:country]+'%'], 
 			:select => 'DISTINCT op_name, op_id', :order=> "op_name")
 	else
 		#поиск всех стран
@@ -31,7 +31,8 @@ class FlexController < ApplicationController
     if(params[:id]=='set_tags')
       if current_user.right != 'user' or current_user.id.to_s == params[:user_id].to_s
         user = User.find(params[:user_id])
-        #!!!!!!!!!!!!!!!params[:tags] = '' if(params[:tags].to_s.length > 100 )
+        params[:tags] = '' if(params[:tags].to_s.split(/,/).size > 5 )
+		params[:tags] = '' if(params[:tags].to_s.index(",") == nil )
         user.tag_list = params[:tags]
         user.save!
         render :text => params[:tags].length
@@ -130,7 +131,7 @@ class FlexController < ApplicationController
 
   def adept_def
     return unless request.post? and current_user.right != 'user'
-    @users = User.find(:all,:conditions =>['id LIKE ? or login LIKE ? or domain LIKE ? or email LIKE ?',params[:search]+'%', params[:search]+'%', params[:search]+'%',params[:search]+'%'], :order=> "login")
+    @users = User.find(:all,:conditions =>['id LIKE ? or login LIKE ? or domain LIKE ? or email LIKE ?','%'+params[:search]+'%', '%'+params[:search]+'%', '%'+params[:search]+'%','%'+params[:search]+'%'], :order=> "login")
   end
 
   private
