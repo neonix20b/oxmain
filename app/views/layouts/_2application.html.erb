@@ -11,7 +11,6 @@
 <body>
 	<div class="main">
 		<div class="header">
-			<div class="logo"><%= image_tag("logo.png") %></div>
 			<div class="menu_big">
 				<div class="menu_left"></div>
 					<div class="menu_right">
@@ -41,6 +40,7 @@
 					<%end%>
 					</div>
 			</div>
+			<div style="width:100%; float: right;"></div>
 			<div id="rounded_box_message">
 					<b class="r10"></b>
 					<b class="r9"></b>
@@ -72,7 +72,7 @@
 					<b class="r9"></b>
 					<b class="r10"></b>
 			</div>	
-			
+			<div><%= image_tag("logo.png", :class => "logo") %></div>
 			<div class="autorisation1">
 			<% if not logged_in?%>
 			<h5>Авторизация:</h5>
@@ -143,14 +143,14 @@
 Доминик также работал в театре, в таких постановках, как: Энни и Фанни от Болтона до Рима и Resurrectionists. Его самый последний проект это роль Мери Брандибака в экранизации Толкиеновской трилогии Властелин Колец. Когда Доминик не снимается, он любит послушать музыку, пишет, занимается серфингом, на этот вид экстремального спорта он подсел во время съемок Властелина Колец и играет в футбол. Доминик преданный поклонник «Manchester United»[источник не указан 161 день].
 
 Он бегло говорит на немецком (сказались долгие годы жизни в Германии), хорошо подражает акцентам: американцев, лондонцев, шотландцев, австралийцев и йоркширцев[источник не указан 161 день].
-			<a>Читать польностью >> </a><br/>
+			<a>Читать польностью >></a><br/>
 			<a>Все новости</a>
 			</div>
 			<div class="pics">
 				<table align="center">
-					<tr><td align="center"><%= image_tag("logos/gmo.png") %></td></tr>
-					<!--<tr><td align="center"><%= image_tag("rails.gif") %></td></tr>
-					<tr><td align="center"><%= image_tag("tux_small.jpg") %></td></tr>-->
+					<tr><td align="center"><%= image_tag("gmo.jpg") %></td></tr>
+					<tr><td align="center"><%= image_tag("rails.gif") %></td></tr>
+					<tr><td align="center"><%= image_tag("tux_small.jpg") %></td></tr>
 					<tr><td align="center"> oxnull.net © 2009.</td></tr>
 					<tr><td align="center"> Все права защищены.</td></tr>
 				</table>

@@ -8,6 +8,30 @@ class ApplicationController < ActionController::Base
   protect_from_forgery #:secret => 'f7c15baf4ab5a0e89d552d9b49e0ff95'
 
   private
+  def service_prerender
+    server = XMLRPC::Client.new2("http://89.208.146.80:1979")
+    @service_pay = Array.new()
+    @service_free = Array.new()
+    @discription = server.call("service_bridge",'service_list',1,1,1)
+    @discription.each do |d|
+      #d[0]=title
+      #d[1]=id
+      #d[2]=description
+      #d[3]=cost
+      #@service_pay[-1] = d
+      d[4]=server.call("service_bridge",'service_stat', current_user.id.to_s, d[1].to_s,1)
+      if d[4]=='0'
+        d[5]='add'
+      else
+        d[5]='del'
+      end
+      session[d[1].to_s] = d[4]
+      session[:price] = Hash.new if session[:price].nil?
+      session[:price][d[1].to_s] = d[3].to_s.to_i
+    end
+    current_user.money = server.call("get_balance", current_user.id)
+  end
+  
   def app_rebuild(user)
     if user.status =='removed'
       user.update_attribute('status', '0')

@@ -2,11 +2,11 @@
 Текущий баланс <span id="balance"><%= current_user.money.to_s %></span>ox [<%= rlink "пополнить", {:controller=> 'wm', :action => "pay"}%>]
 <hr/>
 <table>
-  <tr><td><b>Название</b></td><td><b>Оксов(в месяц)</b></td><td align="center"><b>Количество</b></td><td><b>Состояние</b></td></tr>
+<!--  <tr><td><b>Название</b></td><td><b>Оксов(в месяц)</b></td><td align="center"><b>Количество</b></td><td><b>Состояние</b></td></tr>-->
   <% @discription.each do |d| %>
     <tr><td><%= d[0]%></td>
       <td align="center"><span id="c_<%=d[1].to_s%>"><%= (session[:price][d[1].to_s]*d[4].to_s.to_i).to_s %></span>ox</td>
-      <td>
+      <td width="70px">
         <span id="q_<%=d[1].to_s%>">
           <%=  render :partial => "use_plus", :locals => { :id => d[1].to_s, :servicesize => d[4].to_s, :div => "q_"+d[1].to_s} %>
         </span>

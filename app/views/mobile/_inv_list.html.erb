@@ -1,0 +1,16 @@
+<table>
+  <% @invites.each do |i| %>
+    <tr id="inv_<%=i.id.to_s%>"><td>
+        <% if i.invited_user %>
+          <% ui = User.find(i.invited_user) %>
+          <% lnk = ui.login + '.oxnull.net' %>
+          <% lnk = ui.domain if ui.domain and ui.domain.size > 3 %>
+          <a href="http://<%=lnk%>" target="_blank"><%= lnk %></a>
+        <%else%>
+          <%= i.invite_string %>
+        <%end%>
+    </td>
+    <td><%= rlink "[x]", {:controller=> 'main', :action => "invite", :id=>i.id.to_s, :task => 'del'},"inv_"+i.id.to_s%></td>
+    </tr>
+  <%end%>
+</table>

@@ -1,7 +1,17 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  def true_button(text)
+  "<button type='submit' style='padding: 0px;cursor: pointer;background-color:transparent;border-width: 0;'>
+	<span>
+		<span style='float: left;'>#{image_tag('btn_left.png')}</span>
+		<span class='btn_middle'>#{text}</span>
+		<span style='float: left;'>#{image_tag('btn_right.png')}</span>
+	</span>
+</button>"
+  end
+  
   def shorthead(name)
-    "<div id='oxheadshort'>#{name}</div><br/>" if params[:format].nil?
+    "<div id='oxheadshort'><h5>#{name}</h5></div><br/>" if params[:format].nil?
   end
 
   def longthead(name)
@@ -11,9 +21,11 @@ module ApplicationHelper
   def plus_minus(math,service_id,q_size,div)
     text = 'минус'
     text = 'плюс' if(math=='plus')
-    text = 'ok' if(math=='accept')
-    return 'минус' if q_size.to_s.to_i < 1 and math=='minus'#'минус'
-    return rlink(text, {:controller=> 'wm', :action => "math_service", :id => service_id,:math=>math, :div => div}, div)
+    text = '[ok]' if(math=='accept')
+	text='[-]' if text == 'минус'
+	text='[+]' if text == 'плюс'
+    return text if q_size.to_s.to_i < 1 and math=='minus'#'минус'
+    return rlink(text, {:controller=> 'wm', :action => "math_service", :id => service_id,:math=>math, :div => div, :layer=>params[:layer]}, div)
   end
 
   def spiner
@@ -21,14 +33,14 @@ module ApplicationHelper
       :align => "absmiddle",
       :border => 0,
       :id => "spinner",
-      :size => "16x16",
+      :size => "10x10",
       :style =>"display: none;" )
   end
 
   def service_switch(mydo,service_id,div)
     text='Работает'
     text='Выкл' if mydo=='add'
-    rlink(text,{:controller=> 'wm', :action => "add_service", :id => service_id, :div =>div, :mydo=>mydo},div)
+    rlink(text,{:controller=> 'wm', :action => "add_service", :id => service_id, :div =>div, :mydo=>mydo, :layer=>params[:layer]},div)
   end
 
   def rlink(text, url, div='main_div')

@@ -1,15 +1,3 @@
 <%= shorthead("Пополнение ox-счета...") %>
 1ox = 1wmr
-<form id=pay name=pay method="POST" action="https://merchant.webmoney.ru/lmi/payment.asp">
-  <p>
-    <input type="text" name="LMI_PAYMENT_AMOUNT" size="18" value="100.0">
-    <!--<input type="hidden" name="LMI_PAYMENT_DESC" value="тестовый платеж">-->
-    <input type="hidden" name="LMI_PAYMENT_DESC" value="oxnull.net">
-    <!--input type="hidden" name="LMI_PAYMENT_NO" value="1"-->
-    <input type="hidden" name="LMI_PAYMER_EMAIL" value="<%=  current_user.email %>">
-    <input type="hidden" name="LMI_PAYEE_PURSE" value="R151975098463">
-    <input type="hidden" name="LMI_SIM_MODE" value="0">
-    <input type="hidden" name="oxid" value="<%= current_user.id.to_s %>">wmr
-    <input type="submit" value="Пополнить!">
-  </p>
-</form>
+<%= render :partial => "wm/wm_pay_form"%>

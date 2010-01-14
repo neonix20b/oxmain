@@ -1,0 +1,91 @@
+<%construct=0%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>oxnull.net</title>
+    <% if construct!=1 %>
+      <%= stylesheet_link_tag 'style' %>
+    <%else%>
+      <%= stylesheet_link_tag 'style_constr' %>
+    <%end%>
+    <%= javascript_include_tag :all %>
+    <script src="http://video.oxnull.net/flowplayer.min.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <div id="vertical"></div>
+    <div id="bodyimg">
+      <div id="alldiv">
+        <% if construct!=1 %>
+          <div id="header">
+            <span class="menup"><%= link_to "Главная", {:controller=> 'main', :action => "hello"}%></span>
+            <% if logged_in? %>
+              <span class="menup"><%= rlink "Мой сайт", {:controller=> 'main', :action => "index"}%></span>
+              <!--<span class="menup"><%= rlink "Тех.зона", {:controller=> 'main', :action => "staff"}%></span>-->
+              <span class="menup"><%= rlink "FTP/MYSQL", {:controller=> 'main', :action => "about"}%></span>
+              <span class="menup"><%= rlink "Услуги", {:controller=> 'wm', :action => "index"}%></span>
+            <%else%>
+              <span class="menup"><%= rlink "Войти", {:controller=> 'account', :action => "login"}%></span>
+              <span class="menup"><%= rlink "Регистрация", {:controller=> 'account', :action => "signup"}%></span>
+            <%end%>
+            <span class="menup"><%= rlink "Видео", {:controller=> 'main', :action => "video"}%></span>
+            <span class="menup"><a href="http://offtop.oxnull.net/" target="_blank">Форум</a></span>
+            <!--<span class="menup"><a href="http://blog.oxnull.net/" target="_blank">Наш блог</a></span>-->
+            <span class="menup"><a href="http://wiki.oxnull.net" target="_blank">Где я?</a></span>
+            <% if logged_in? %>
+              <span class="menup"><%= link_to "Выйти(#{current_user.login})", {:controller=> 'account', :action => "logout"}%></span>
+            <%else%>
+              <!--<span class="menup"><%= rlink "Контакты", {:controller=> 'main', :action => "contacts"}%></span>-->
+            <%end%>
+          <div width="17px" height="17px"><%= spiner %></div></div>
+          <!--<div id="oxleft">
+                    <div id="menushk">
+
+                    </div>
+                    <div id="oxlogo">
+  <%= image_tag("oxlogo.png") %>
+                    </div>
+                  </div>-->
+          <div id="content">
+            <% unless flash[:notice].blank? %>
+              <div id="notification"><%= flash[:notice] %></div>
+              <%= update_page_tag do |page|
+                page.visual_effect :fade, 'notification', :duration => 15;
+              end%>
+            <% end %>
+            <div id="main_div">
+              <%= yield %>
+            </div>
+            <div id="videodiv"></div>
+          <%else%>
+            <div id="main_div">
+              Ведутся работы по захвату мира. Зайдите попозже. Или на <a href="http://offtop.oxnull.net" style="color:white;text-decoration:none;"> форум</a>.
+            </div>
+
+          <%end%>
+        </div>
+        <div id="logos">
+          <%= image_tag("logos/tux_small.jpg",:border => 0,:height => "32px")%>
+          <!-- begin WebMoney Transfer : accept label -->
+          <a href="http://www.webmoney.ru/" target="_blank"> <%= image_tag("logos/orange_rus.gif",:border => 0,:height => "32px")%> </a>
+          <!-- end WebMoney Transfer : accept label -->
+          <%= image_tag("logos/gmo.png",:border => 0,:height => "48px")%>
+          <%= image_tag("logos/rails.gif",:border => 0,:height => "32px")%>
+          <%= image_tag("logos/php.png",:border => 0,:height => "32px")%>
+          <%= image_tag("logos/python.png",:border => 0,:height => "32px")%>
+          <%= image_tag("logos/perl.jpg",:border => 0,:height => "32px")%>
+          <%= image_tag("logos/mysql.png",:border => 0,:height => "32px")%>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+      try {
+        var pageTracker = _gat._getTracker("UA-5504344-3");
+        pageTracker._trackPageview();
+      } catch(err) {}</script>
+  </body>
+</html>

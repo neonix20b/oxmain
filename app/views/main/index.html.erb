@@ -1,46 +1,52 @@
-<%= shorthead("Мой сайт(ox"+current_user.id.to_s+")") %>
-
-Последнее обращение: <%= @last_upd.to_s %><br/>
-Ваш сайт - <b><a href="http://<%= current_user.login %>.oxnull.net" target="_blank">http://<%= current_user.login %>.oxnull.net</a></b> [<%= link_to "пересоздать", {:controller=> 'main', :action => "rebuild"}, :confirm => "Внимание, все данные будут потеряны! Продолжить?" %>]<br/>
-<% if current_user.domain.nil? or current_user.domain.size < 3 %>
-  <% form_for :user, :url =>{:action =>'staff'} do |f| -%>
-    <p><label for="login">Присоединить домен [<a href="http://wiki.oxnull.net/index.php/DNS" target="_blank">помощь</a>]</label><br/>
-    <%= f.text_field :domain, :size=>'29' %><%= submit_tag 'Прикрепить домен!' %></p>
-  <% end -%>
-<%else%>
-  Прикрепленный домен: <a href="http://<%= current_user.domain %>" target="_blank"><%= current_user.domain %></a>
-  [<%= link_to "отсоединить", {:controller=> 'main', :action => "deatt"}, :confirm => "Вы уверены что хотите отсоединить домен #{current_user.domain}?" %>]
-<%end%>
-<hr/>
-<b>Ваши квоты:</b>
-<table align="center" style="border-color:white;text-align:center;border-style:dotted;">
-  <tr><td></td><td>Текущее</td><td>Максимальное</td></tr>
-  <tr><td>HDD</td><td><%=@disk_current_size/(1024*1024) %>MB</td><td><%=@disk_max_size/(1024*1024)%>MB</td></tr>
-  <tr><td>Mysql</td><td><%=@mysql_current_size/(1024*1024)%>MB</td><td><%=@mysql_max_size/(1024*1024)%>MB</td></tr>
-</table>
-<br/>
-<div id="tasks">
-  <%= render :partial => "tasks", :locals => { :tasks => @tasks} %>
-</div>
-
-<div id="invites">
-  <hr/>
-  
-  <b>Вас пригласил:</b> <a href="http://<%=@master%>" target="_blank"><%=@master%></a>
-  <br/><br/>
-  <b>Ваши адепты:</b>
-  <span id="invite_list">
-    <%= render :partial => "inv_list", :locals => { :invites => @invites} %>
-  </span>
-  <%= rlink "Создать приглашение", {:controller=> 'main', :action => "invite", :task => 'new'}, "invite_list"%>
-</div>
-<br/>
-<%= periodically_call_remote(:url => url_for(:action => 'tasklist'), :frequency => '15', :update => 'tasks') %>
-<hr/>
-<a href="http://wiki.oxnull.net/index.php/%D0%9F%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D0%B0" target="_blank">Правила ox-хостинга</a><br/>
-<a href="http://wiki.oxnull.net/index.php/%D0%91%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9_%D1%81%D1%82%D0%B0%D1%80%D1%82#.D0.92.D1.85.D0.BE.D0.B4" target="_blank">Как войти чтобы им управлять?</a><br/>
-<a href="http://wiki.oxnull.net/index.php/%D0%91%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9_%D1%81%D1%82%D0%B0%D1%80%D1%82#.D0.A1.D0.BC.D0.B5.D0.BD.D0.B0_.D0.BF.D0.B0.D1.80.D0.BE.D0.BB.D1.8F_.D0.B0.D0.B4.D0.BC.D0.B8.D0.BD.D0.B8.D1.81.D1.82.D1.80.D0.B0.D1.82.D0.BE.D1.80.D0.B0" target="_blank">Как сменить пароль администратора?</a><br/>
-<a href="http://wiki.oxnull.net/index.php/%D0%91%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9_%D1%81%D1%82%D0%B0%D1%80%D1%82#.D0.A1.D0.BC.D0.B5.D0.BD.D0.B0_.D0.B2.D0.BD.D0.B5.D1.88.D0.BD.D0.B5.D0.B3.D0.BE_.D0.B2.D0.B8.D0.B4.D0.B0" target="_blank">Как поставить другую тему оформления?</a><br/>
-<a href="http://wiki.oxnull.net/index.php/%D0%91%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9_%D1%81%D1%82%D0%B0%D1%80%D1%82#.D0.A1.D0.BC.D0.B5.D0.BD.D0.B0_.D0.B8.D0.BC.D0.B5.D0.BD.D0.B8_c_u1.oxnull.net" target="_blank">Как cменить имя c u1.oxnull.net?</a><br/>
-<%#= current_user.status %>
-
+					<div id="info">
+						<h5>Информация</h5>
+							<a href="http://wiki.oxnull.net/index.php/DNS" target="_blank"><%= image_tag("question.png") %></a>Прикрепленный домен: <b>
+							<a href="http://<%= current_user.domain %>" target="_blank"><%= current_user.domain %></a></b>
+							<%=true_button('Отсоединить')%><br/>
+						Квоты:
+						<table class="table_2">
+							<tr><th>Тип</th><th>Текущее</th><th>Максимальное</th></tr>
+							<tr><td>HDD</td><td><%=@disk_current_size/(1024*1024) %>MB</td><td><%=@disk_max_size/(1024*1024)%>MB</td></tr>
+							<tr><td>MySQL</td><td><%=@mysql_current_size/(1024*1024)%>MB</td><td><%=@mysql_max_size/(1024*1024)%>MB</td></tr>
+						</table>
+						<!--Вас пригласил: <b><a href="http://<%=@master%>" target="_blank"><%=@master%></a></b><br/><br/>
+						Мои адепты: -->
+						<div id="adepts" class="adepts">
+							<%#= render :partial => "inv_list", :locals => { :invites => @invites} %>
+						</div>
+						<%= rlink "Создать приглашение", {:controller=> 'main', :action => "invite", :task => 'new'}, "adepts"%>
+					</div>
+					<div id="service">
+						<h5>Услуги</h5>
+						Баланс: <span id="balance"><b><%= current_user.money.to_s %></b></span>
+						<h4>Управление слугами</h4>
+						<table>
+							<tr><th class="first">Название</th><th>Оксов(в месяц)</th><th>Количество</th><th>Состояние</th></tr>
+							<% @discription.each do |d| %>
+							    <tr><td class="first"><%= d[0]%></td>
+							      <td >
+								  <span id="c_<%=d[1].to_s%>"><%= (session[:price][d[1].to_s]*d[4].to_s.to_i).to_s %></span>ox</td>
+							      <td width="70px"  class="first">
+							        <span id="q_<%=d[1].to_s%>">
+							          <%=  render :partial => "wm/use_plus", :locals => { :id => d[1].to_s, :servicesize => d[4].to_s, :div => "q_"+d[1].to_s} %>
+							        </span>
+							      </td>
+							    <td ><span id='<%=d[1]%>'><%= service_switch(d[5],d[1],d[1])%></span></td></tr>
+						  <%end%>
+						</table>
+						<h4>Пополнение счета</h4>
+						<%= render :partial => "wm/wm_pay_form"%>
+						<b>Пополнить счет по СМС</b><br/>
+						Страна: <select class="text">
+								<option>Россия</option>
+								<option>Россия</option>
+								</select>
+						Оператор: <select class="text">
+								<option>МТС</option>
+								<option>МТС</option>
+								</select><%=true_button('ок')%>
+					</div>
+					<div id="adept_center">
+						<h5>Пароли</h5>
+						<%= render :partial => "main/passwords"%>					
+					</div>

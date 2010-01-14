@@ -1,0 +1,36 @@
+<%= shorthead("Обработка запроса") %>
+<br/>
+<% if current_user.status == '0' %>
+  Ваш сайт стоит <%= (1 + Task.find(:first,:order => 'id ASC').id - Task.find(:first, :conditions=>{:user_id=>current_user.id},:order => 'id ASC').id).to_s %>-м в очереди.
+<%end%>
+<% if current_user.status == '1' %>
+  Идет создание сайта. Ждите...
+<%end%>
+<% if current_user.status == '5' %>
+  Произошла неизвестная ошибка. Мы это тоже заметили и работаем над решением проблемы.
+<%end%>
+<% if current_user.status == 'removed' %>
+  Ваш сайт был удален. Но можете его
+  <%= link_to "Пересоздать", {:controller=> 'main', :action => "rebuild"}, :confirm => "Сайт будет воссоздан! Продолжить?" %>
+<%end%>
+<% if current_user.status == 'attach_domain' %>
+  Ожидание присоединения домена <%= current_user.domain %>. <%= link_to "Отменить", {:controller=> 'main', :action => "cancel"}, :confirm => "Вы уверены что хотите отменить операцию?" %>
+<%end%>
+<% if current_user.status == '2' %>
+  Готово! 
+  <% javascript_tag do -%>
+    setTimeout("document.location = 'http://oxnull.net/main/'", 1000);
+  <%end%>
+  <%= link_to "Перейти к панели", {:controller=> 'main', :action => "index"}%>
+  
+<%else%><%= image_tag("spinner.gif",
+  :align => "absmiddle",
+  :border => 0,
+  :id => "spinner",
+  :size => "16x16") %>
+ <%end%>
+<br/>
+
+<% if params[:id]!='second' %>
+  <%= periodically_call_remote(:url => url_for(:action => 'loading', :id=>'second'), :frequency => '5', :update => 'main_div') %>
+<%end%>

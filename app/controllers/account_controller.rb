@@ -50,7 +50,10 @@ class AccountController < ApplicationController
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
         end
         if(params[:format]!='xml')
-          redirect_back_or_default(:controller => '/main', :action => 'index')
+		  ctrl = '/main'
+		  ctrl = '/mobile' if params[:layer][:layer]=='mobile'
+          redirect_back_or_default(:controller => ctrl, :action => 'index') 
+		  
           flash[:notice] = "Вход выполнен"
         else
           current_user.ftppass = Base64.encode64(current_user.ftppass)
@@ -65,6 +68,7 @@ class AccountController < ApplicationController
         render :text => 'error' if params[:format]=='xml'
       end
     else
+	  render(:layout => 'mobile') if params[:layer]=='mobile' and not request.xhr?
       render(:layout => 'mainlayer') if request.xhr?
       #redirect_to("http://oxnull.net/")
     end
@@ -119,6 +123,8 @@ class AccountController < ApplicationController
       elsif not inv.invited_user.nil?
         render :text => "Этим приглашением уже воспользовались. Регистрация отменена."
       else
+	  
+	  #render :text => 'Регистрация временно отключена! Подробности на форуме http://offtop.oxnull.net'
         render :text => 'ok'
       end
     end
@@ -133,10 +139,12 @@ class AccountController < ApplicationController
   def logout
     #return unless request.post?
     self.current_user.forget_me if logged_in?
+	ctrl = '/main'
+	ctrl = '/mobile' if params[:layer]=='mobile'
     cookies.delete :auth_token
     reset_session
     flash[:notice] = "Выход прошел успешно." if params[:format]!='xml'
-    redirect_back_or_default(:controller => '/main', :action => 'index') if params[:format]!='xml'
+    redirect_back_or_default(:controller => ctrl, :action => 'index') if params[:format]!='xml'
     render :text => 'ok' if params[:format]=='xml'
   end
 end

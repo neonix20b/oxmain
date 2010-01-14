@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <items>
-<%-if params[:country] and params[:op_id]-%>
+<%-if params[:country] and params[:op_name]-%>
 	<%-@phones.each do |ph|-%>
 	<item>
 		<phone><%= ph.phone %></phone>
@@ -10,10 +10,7 @@
 	<%-end-%>
 <%-elsif params[:country]-%>
 	<%-@operators.each do |op|-%>
-	<item>
-		<op_name><%= op.op_name %></op_name>
-		<op_id><%= op.op_id %></op_id>
-	</item>
+	<item><%= op.op_name %></item>
 	<%-end-%>
 <%-else-%>
 	<%-@countries.each do |co|-%>
