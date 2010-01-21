@@ -18,9 +18,6 @@
       <% update_page_tag do |page|
         page.visual_effect :highlight, 'content';
       end%>
-      <% if params[:action]!='video' %>
-        $('videodiv').innerHTML='';
-      <%end%>
     <%end%>
   </body>
 </html>

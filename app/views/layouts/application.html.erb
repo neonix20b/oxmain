@@ -1,161 +1,158 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-	<title>ox - Мир</title>
-	<meta http-equiv="content-type" content="text/html; charset=UTF8">
-	<%= stylesheet_link_tag 'new_style' %>
-	<%= javascript_include_tag :all %>
-	<script src="http://video.oxnull.net/flowplayer.min.js" type="text/javascript"></script>
-</head>
+  <head>
+    <title>ox - Мир</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <%= stylesheet_link_tag 'new_style' %>
+    <%= javascript_include_tag :all %>
+    <script src="http://video.oxnull.net/flowplayer.min.js" type="text/javascript"></script>
+  </head>
 
-<body>
-	<div class="main">
-		<div class="header">
-			<div class="logo"><%= image_tag("logo.png") %></div>
-			<div class="menu_big">
-				<div class="menu_left"></div>
-					<div class="menu_right">
-					<div class="aa"><%= link_to "Главная", {:controller=> 'main', :action => "hello"}%></div>
-					<div><%= image_tag("menu_separator.png") %></div>
-					<% if logged_in? %>
-						<div class="aa"><%= rlink "Мой сайт", {:controller=> 'main', :action => "index"}%></div>
-						<div><%= image_tag("menu_separator.png") %></div>
-						<!--<div class="aa"><%= rlink "FTP/MYSQL", {:controller=> 'main', :action => "about"}%></div>
-						<div><%= image_tag("menu_separator.png") %></div>
-						<div class="aa"><%= rlink "Услуги", {:controller=> 'wm', :action => "index"}%></div>
-						<div><%= image_tag("menu_separator.png") %></div>-->
-					<%else%>
-						<!--<div class="aa"><%= rlink "Войти", {:controller=> 'account', :action => "login"}%></div>
-						<div><%= image_tag("menu_separator.png") %></div>-->
-						<div class="aa"><%= rlink "Регистрация", {:controller=> 'account', :action => "signup"}%></div>
-						<div><%= image_tag("menu_separator.png") %></div>
-					<%end%>
-					<div class="aa"><%= rlink "Видео", {:controller=> 'main', :action => "video"}%></div>
-					<div><%= image_tag("menu_separator.png") %></div>
-					<div class="aa"><a href="http://offtop.oxnull.net/" target="_blank">Форум</a></div>
-					<div><%= image_tag("menu_separator.png") %></div>
-					<div class="aa"><a href="http://wiki.oxnull.net" target="_blank">Где я?</a></div>
-					<% if logged_in? %>
-						<!--<div><%= image_tag("menu_separator.png") %></div>
-						<div class="aa"><%= link_to "Выйти(#{current_user.login})", {:controller=> 'account', :action => "logout"}%></div>-->
-					<%end%>
-					</div>
-			</div>
-			<div id="rounded_box_message">
-					<b class="r10"></b>
-					<b class="r9"></b>
-					<b class="r8"></b>
-					<b class="r7"></b>
-					<b class="r6"></b>
-					<b class="r5"></b>
-					<b class="r4"></b>
-					<b class="r3"></b>
-					<b class="r2"></b>
-					<b class="r1"></b>
-					<div class="message"> 
-						<table>
-							<tr><th class="table_1">Мы предлагаем:</th><th>У нас есть:</th></tr>
-							<tr><td class="table_1">1 базу данных MySQL(50MB)</td><td>PHP 5</td></tr>
-							<tr><td class="table_1">Прикрепление своих доменов</td><td>MySQL</td></tr>
-							<tr><td class="table_1">Предустановленные движки сайтов</td><td>Perl</td></tr>
-							<tr><td class="table_1">1 базу данных MySQL(50MB)</td><td>Ruby</td></tr>
-						</table>
-					</div>
-					<b class="r1"></b>
-					<b class="r2"></b>
-					<b class="r3"></b>
-					<b class="r4"></b>
-					<b class="r5"></b>
-					<b class="r6"></b>
-					<b class="r7"></b>
-					<b class="r8"></b>
-					<b class="r9"></b>
-					<b class="r10"></b>
-			</div>	
-			
-			<div class="autorisation1">
-			<% if not logged_in?%>
-			<h5>Авторизация:</h5>
-				<div class="autorisation2">
-				<%- form_tag(url_for(:controller=>'account',:action => "login" )) do -%>
-					Login:<%= text_field_tag 'login','', :size=>'20', :class=>'text' %>
-					<%= hidden_field 'layer','layer', :value=>params[:layer] %>
-				    Пароль:
-					<%= password_field_tag 'password','', :size=>'20', :class=>'text' %>
-					<div><%= check_box_tag 'remember_me' %>Запомнить
-					<%=true_button('Войти')%>
-					<a>Забыли пароль?</a></div>
-				<%- end -%>
-				</div>
-			<%else%>
-				<h5>Привет!</h5>
-				<div class="autorisation2">
-				<%= current_user.login %>
-				[<%= link_to "Выйти", {:controller=> 'account', :action => "logout"}%>]
-				</div>
-			<%end%>
-			</div>
-			
-		</div>
-		<div class="content_back">
-			
-			<div id="content_back_2" class="content_back_2"></div>
-			<div id="box_content">
-			<b class="r10"></b>
-			<b class="r9"></b>
-			<b class="r8"></b>
-			<b class="r7"></b>
-			<b class="r6"></b>
-			<b class="r5"></b>
-			<b class="r4"></b>
-			<b class="r3"></b>
-			<b class="r2"></b>
-			<b class="r1"></b>
-			<div class="content">
-			    <% unless flash[:notice].blank? %>
-					<div id="notification"><%= flash[:notice] %></div>
-					<%= update_page_tag do |page|
-						page.visual_effect :fade, 'notification', :duration => 15;
-					end%>
-				<% end %>
-				<div class="new_1" id="main_div">
-					<%= yield %>
-				</div>				
-			</div>
-			<b class="r1"></b>
-			<b class="r2"></b>
-			<b class="r3"></b>
-			<b class="r4"></b>
-			<b class="r5"></b>
-			<b class="r6"></b>
-			<b class="r7"></b>
-			<b class="r8"></b>
-			<b class="r9"></b>
-			<b class="r10"></b>	
-			</div>
-		
-		</div>
-		<div class="footer">
-			<div class="news">
-				<h5>Заголовок новости</h5>
+  <body>
+    <div class="main">
+      <div class="header">
+        <div class="logo"><%= image_tag("logo.png") %></div>
+        <div class="menu_big">
+          <div class="menu_left"></div>
+          <div class="menu_right">
+            <div class="aa"><%= link_to "Главная", {:controller=> 'main', :action => "hello"}%></div>
+            <div><%= image_tag("menu_separator.png") %></div>
+            <% if logged_in? %>
+              <div class="aa"><%= rlink "Мой сайт", {:controller=> 'main', :action => "index"}%></div>
+              <div><%= image_tag("menu_separator.png") %></div>
+              <!--<div class="aa"><%= rlink "FTP/MYSQL", {:controller=> 'main', :action => "about"}%></div>
+                                                  <div><%= image_tag("menu_separator.png") %></div>
+                                                  <div class="aa"><%= rlink "Услуги", {:controller=> 'wm', :action => "index"}%></div>
+                                                  <div><%= image_tag("menu_separator.png") %></div>-->
+            <%else%>
+              <!--<div class="aa"><%= rlink "Войти", {:controller=> 'account', :action => "login"}%></div>
+                                                  <div><%= image_tag("menu_separator.png") %></div>-->
+              <div class="aa"><%= rlink "Регистрация", {:controller=> 'account', :action => "signup"}%></div>
+              <div><%= image_tag("menu_separator.png") %></div>
+            <%end%>
+            <div class="aa"><%= rlink "Видео", {:controller=> 'main', :action => "video"}%></div>
+            <div><%= image_tag("menu_separator.png") %></div>
+            <div class="aa"><a href="http://offtop.oxnull.net/" target="_blank">Форум</a></div>
+            <div><%= image_tag("menu_separator.png") %></div>
+            <div class="aa"><a href="http://wiki.oxnull.net" target="_blank">Где я?</a></div>
+            <% if logged_in? %>
+                        <!--<div><%= image_tag("menu_separator.png") %></div>
+                                                    <div class="aa"><%= link_to "Выйти(#{current_user.login})", {:controller=> 'account', :action => "logout"}%></div>-->
+            <%end%>
+          </div>
+        </div>
+        <div id="rounded_box_message">
+          <b class="r10"></b>
+          <b class="r9"></b>
+          <b class="r8"></b>
+          <b class="r7"></b>
+          <b class="r6"></b>
+          <b class="r5"></b>
+          <b class="r4"></b>
+          <b class="r3"></b>
+          <b class="r2"></b>
+          <b class="r1"></b>
+          <div id="tasks" class="message">
+            <%= render :partial => "main/tasks", :locals => { :tasks => @tasks} %>
+          </div>
+          <b class="r1"></b>
+          <b class="r2"></b>
+          <b class="r3"></b>
+          <b class="r4"></b>
+          <b class="r5"></b>
+          <b class="r6"></b>
+          <b class="r7"></b>
+          <b class="r8"></b>
+          <b class="r9"></b>
+          <b class="r10"></b>
+        </div>
+
+        <div class="autorisation1">
+          <% if not logged_in?%>
+            <h5>Авторизация:</h5>
+            <div class="autorisation2">
+              <%- form_tag(url_for(:controller=>'account',:action => "login" )) do -%>
+                Login:<%= text_field_tag 'login','', :size=>'20', :class=>'text' %>
+                <%= hidden_field 'layer','layer', :value=>params[:layer] %>
+                Пароль:
+                <%= password_field_tag 'password','', :size=>'20', :class=>'text' %>
+                <div><%= check_box_tag 'remember_me' %>Запомнить
+                  <%=true_button('Войти')%>
+                  <a>Забыли пароль?</a></div>
+              <%- end -%>
+            </div>
+          <%else%>
+            <h5>Привет!</h5>
+            <div class="autorisation2">
+              <%= current_user.login %>
+              [<%= link_to "Выйти", {:controller=> 'account', :action => "logout"}%>]
+            </div>
+          <%end%>
+        </div>
+
+      </div>
+      <div class="content_back">
+
+        <div id="content_back_2" class="content_back_2"></div>
+        <div id="box_content">
+          <b class="r10"></b>
+          <b class="r9"></b>
+          <b class="r8"></b>
+          <b class="r7"></b>
+          <b class="r6"></b>
+          <b class="r5"></b>
+          <b class="r4"></b>
+          <b class="r3"></b>
+          <b class="r2"></b>
+          <b class="r1"></b>
+          <div class="content">
+            <% unless flash[:notice].blank? %>
+              <div id="notification"><%= flash[:notice] %></div>
+              <%= update_page_tag do |page|
+                page.visual_effect :fade, 'notification', :duration => 15;
+              end%>
+            <% end %>
+            <div class="new_1" id="main_div">
+              <%= yield %>
+            </div>
+          </div>
+          <b class="r1"></b>
+          <b class="r2"></b>
+          <b class="r3"></b>
+          <b class="r4"></b>
+          <b class="r5"></b>
+          <b class="r6"></b>
+          <b class="r7"></b>
+          <b class="r8"></b>
+          <b class="r9"></b>
+          <b class="r10"></b>
+        </div>
+
+      </div>
+      <div class="footer">
+        <div class="news">
+          <h5>Заголовок новости</h5>
 				засветился в таких телевизионных проектах как: This is personal: the hunt for the Yorkshire ripper, Враждебные воды и Господин Ренард, где он снимался с Джоном Тавом, более известным как Инспектор Морс.
 
-Доминик также работал в театре, в таких постановках, как: Энни и Фанни от Болтона до Рима и Resurrectionists. Его самый последний проект это роль Мери Брандибака в экранизации Толкиеновской трилогии Властелин Колец. Когда Доминик не снимается, он любит послушать музыку, пишет, занимается серфингом, на этот вид экстремального спорта он подсел во время съемок Властелина Колец и играет в футбол. Доминик преданный поклонник «Manchester United»[источник не указан 161 день].
+          Доминик также работал в театре, в таких постановках, как: Энни и Фанни от Болтона до Рима и Resurrectionists. Его самый последний проект это роль Мери Брандибака в экранизации Толкиеновской трилогии Властелин Колец. Когда Доминик не снимается, он любит послушать музыку, пишет, занимается серфингом, на этот вид экстремального спорта он подсел во время съемок Властелина Колец и играет в футбол. Доминик преданный поклонник «Manchester United»[источник не указан 161 день].
 
-Он бегло говорит на немецком (сказались долгие годы жизни в Германии), хорошо подражает акцентам: американцев, лондонцев, шотландцев, австралийцев и йоркширцев[источник не указан 161 день].
-			<a>Читать польностью >> </a><br/>
-			<a>Все новости</a>
-			</div>
-			<div class="pics">
-				<table align="center">
-					<tr><td align="center"><%= image_tag("logos/gmo.png") %></td></tr>
-					<!--<tr><td align="center"><%= image_tag("rails.gif") %></td></tr>
-					<tr><td align="center"><%= image_tag("tux_small.jpg") %></td></tr>-->
-					<tr><td align="center"> oxnull.net © 2009.</td></tr>
-					<tr><td align="center"> Все права защищены.</td></tr>
-				</table>
-			</div>
-		</div>
-	</div>
-	<div width="17px" height="17px"><%= spiner %></div>
-</body>
+          Он бегло говорит на немецком (сказались долгие годы жизни в Германии), хорошо подражает акцентам: американцев, лондонцев, шотландцев, австралийцев и йоркширцев[источник не указан 161 день].
+          <a>Читать польностью >> </a><br/>
+          <a>Все новости</a>
+          <script
+            src="http://twitterjs.googlecode.com/svn/trunk/src/twitter.min.js"
+            type="text/javascript">
+          </script>
+        </div>
+        <div class="pics">
+          <table align="center">
+            <tr><td align="center"><%= image_tag("logos/gmo.png") %></td></tr>
+            <tr><td align="center"> oxnull.net © 2010.</td></tr>
+            <tr><td align="center"> Все права защищены.</td></tr>
+            <tr><td align="center"><div width="16px" height="16px"><%= spiner %></div></td></tr>
+          </table>
+        </div>
+      </div>
+    </div> 
+    <%= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'tasklist'), :frequency => '15', :update => 'tasks') %>
+  </body>

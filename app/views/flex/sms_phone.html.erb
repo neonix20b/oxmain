@@ -1,0 +1,28 @@
+<%-if params[:country] and params[:op_name]-%>
+  <table>
+    <tr><td><b>Цена SMS</b></td><td><b>Телефон</b></td><td><b>Кол-во OX</b></td></tr>
+    <%-@phones.each do |ph|-%>
+      <tr>
+        <td><%= ph.price %></td>
+        <td><%= rlink ph.phone, {:controller=>'wm',:action=>'take_sms',:id=>ph.id.to_s},'sms_price' %></td>
+        <td><%= ph.income %></td>
+      </tr>
+    <%-end-%>
+  </table>
+<%-elsif params[:country]-%>
+  <%= select_tag 'op_name_select',options_for_select(['Оператор']+@operators.map{ |i| i.op_name }),:style =>"width:220px",
+    :onchange => remote_function(:update => "sms_price", :url => {:controller=>'flex', :action => 'sms_phone', :format=>'html' },
+    :with=>"'country='+encodeURIComponent('#{params[:country]}')+'&&op_name=' + encodeURIComponent(value)")%>
+  <%= update_page_tag do |page|
+    page.replace_html('sms_price', '')
+  end%>
+<%-else-%>
+  <%= select_tag 'wtf',options_for_select(['Страна']+@countries.map{ |i| i.country }),:style =>"width:220px",
+    :onchange => remote_function(:update => "opsoses", :url => {:controller=>'flex', :action => 'sms_phone', :format=>'html' },
+    :with=>"'country=' + encodeURIComponent(value)")%>
+  <div id="opsoses"></div>
+  <div id="sms_price"></div>
+    <%= update_page_tag do |page|
+    page.replace_html('sms_link', "<b>#{rlink 'Скрыть панель SMS &lt;&lt;', {:controller=>'main', :action=>'show_password',:format=>'html'},'adept_center'}</b>")
+  end%>
+<%-end-%>

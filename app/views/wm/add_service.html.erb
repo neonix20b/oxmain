@@ -3,4 +3,5 @@
   page.replace_html('balance', current_user.money.to_s)
   page.replace_html("q_"+params[:id].to_s, render(:partial => "use_plus", :locals => { :id => params[:id], :servicesize => @service_size, :div => "q_"+params[:id].to_s}))
   page.replace_html("c_"+params[:id].to_s, (session[:price][params[:id].to_s]*@service_size.to_s.to_i).to_s)
+  page.replace_html('quotas_t', :partial => "main/quotas")
 end%>

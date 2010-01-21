@@ -32,7 +32,10 @@ class ApplicationController < ActionController::Base
     current_user.money = server.call("get_balance", current_user.id)
   end
   
-  def app_rebuild(user)
+  def app_rebuild(user=current_user)
+    wtf='none'
+    wtf=user.wtf if user.wtf=='joomla' or user.wtf=='phpbb' or user.wtf=='wordpress'
+    user.update_attribute('wtf', wtf) if wtf!=user.wtf
     if user.status =='removed'
       user.update_attribute('status', '0')
     else
@@ -41,7 +44,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def app_deatt(user)
+  def app_deatt(user=current_user)
     tsk = Task.find(:first, :conditions =>{:user_id =>user.id, :status =>'attach_domain'})
     if tsk.nil?
       addtask(user.id,"deattach_domain")
@@ -51,9 +54,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def app_attach(domain,user)
-    addtask(user.id,"attach_domain",domain)if domain=~/\A[A-Z0-9-]+\.[A-Z0-9-]{0,3}\.?[A-Z]{2,4}\Z/i
-    user.update_attribute('domain', domain) if domain=~/\A[A-Z0-9-]+\.[A-Z0-9-]{0,3}\.?[A-Z]{2,4}\Z/i
+  def app_attach(domain,user=current_user)
+    if domain=~/\A[A-Z0-9-]+\.[A-Z0-9-]{0,3}\.?[A-Z]{2,4}\Z/i
+      addtask(user.id,"attach_domain",domain)
+      user.update_attribute('domain', domain)
+    end
     user.update_attribute('status', '2')
   end
 
@@ -65,7 +70,7 @@ class ApplicationController < ActionController::Base
     task.save!
   end
 
-  def get_my_site(user)
+  def get_my_site(user=current_user)
     begin
       @invites = Invite.find(:all,:conditions =>{:user_id => user.id})
       inv = Invite.find(:first,:conditions =>{:invited_user => user.id})
@@ -97,7 +102,7 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def findtasks(user)
+  def findtasks(user=current_user)
     @tasks = Task.find(:all,:conditions => {:user_id =>user.id})
     legend = {'create'=>'Создание сайта','rebuild'=>'Пересоздание сайта','attach_domain'=>'Присоединение домена','deattach_domain'=>'Отсоединение домена'}
     if user.login == 'neonix'

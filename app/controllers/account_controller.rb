@@ -13,11 +13,11 @@ class AccountController < ApplicationController
   end
 
   def list
-	if logged_in? and current_user.right != 'user'
-		@users = User.find(:all)
-	else
-		render :text => 'ку'
-	end
+    if logged_in? and current_user.right != 'user'
+      @users = User.find(:all)
+    else
+      render :text => 'ку'
+    end
   end
 
   def whoiam
@@ -43,15 +43,15 @@ class AccountController < ApplicationController
   def login
     if request.post?
       self.current_user = User.authenticate(Base64.decode64(params[:ln]),Base64.decode64(params[:pd])) if params[:format]=='xml'
-	  self.current_user = User.authenticate(params[:login],params[:password]) if params[:format]!='xml'
+      self.current_user = User.authenticate(params[:login],params[:password]) if params[:format]!='xml'
       if logged_in?
         if params[:remember_me] == "true"
           self.current_user.remember_me
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
         end
         if(params[:format]!='xml')
-		  ctrl = '/main'
-		  ctrl = '/mobile' if params[:layer][:layer]=='mobile'
+          ctrl = '/main'
+          ctrl = '/mobile' if params[:layer][:layer]=='mobile'
           redirect_back_or_default(:controller => ctrl, :action => 'index') 
 		  
           flash[:notice] = "Вход выполнен"
@@ -68,19 +68,18 @@ class AccountController < ApplicationController
         render :text => 'error' if params[:format]=='xml'
       end
     else
-	  render(:layout => 'mobile') if params[:layer]=='mobile' and not request.xhr?
+      render(:layout => 'mobile') if params[:layer]=='mobile' and not request.xhr?
       render(:layout => 'mainlayer') if request.xhr?
       #redirect_to("http://oxnull.net/")
     end
   end
 
   def signup
-	if request.xhr?
-		return render :template => 'account/signup.rhtml'
-	elsif not request.post?
-		return redirect_to("http://oxnull.net/#hello=#{params[:id]}") 
-	end
-	
+    if request.xhr?
+      return render :template => 'account/signup.rhtml'
+    elsif not request.post?
+      return redirect_to("http://oxnull.net/#hello=#{params[:id]}")
+    end
     if params[:invite]
       inv = Invite.find(:first,:conditions =>{:invite_string =>params[:invite]})
     end
@@ -97,7 +96,7 @@ class AccountController < ApplicationController
       @user.wtf = 'joomla' if params[:wtf]=='joomla'
       @user.wtf = 'phpbb' if params[:wtf]=='smf'
       @user.wtf = 'wordpress' if params[:wtf]=='wordpress'
-	  @user.wtf = 'none' if params[:wtf]=='none'
+      @user.wtf = 'none' if params[:wtf]=='none'
       return render :text => 'пнх' if @user.wtf.nil? or @user.wtf==''
       #      @user.email = Base64.encode64(@user.email)
       #      @user.password = Base64.encode64(@user.password)
@@ -124,7 +123,7 @@ class AccountController < ApplicationController
         render :text => "Этим приглашением уже воспользовались. Регистрация отменена."
       else
 	  
-	  #render :text => 'Регистрация временно отключена! Подробности на форуме http://offtop.oxnull.net'
+        #render :text => 'Регистрация временно отключена! Подробности на форуме http://offtop.oxnull.net'
         render :text => 'ok'
       end
     end
@@ -139,8 +138,8 @@ class AccountController < ApplicationController
   def logout
     #return unless request.post?
     self.current_user.forget_me if logged_in?
-	ctrl = '/main'
-	ctrl = '/mobile' if params[:layer]=='mobile'
+    ctrl = '/main'
+    ctrl = '/mobile' if params[:layer]=='mobile'
     cookies.delete :auth_token
     reset_session
     flash[:notice] = "Выход прошел успешно." if params[:format]!='xml'

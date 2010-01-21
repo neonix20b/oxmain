@@ -17,17 +17,25 @@ class MainController < ApplicationController
   def contacts
     render(:layout => 'mainlayer') if request.xhr?
   end
-  
+
   def deatt
+    return unless request.post?
     app_deatt()
     redirect_to :action=> 'loading'
   end
   
   def rebuild
+    return unless request.post?
+    current_user.update_attribute('wtf', params[:wtf])
     app_rebuild()
-    redirect_to :action=> 'index'
+    flash[:notice] = "Пересоздание аккаунта скоро будет завершено"
+    redirect_to :action=> 'loading'
   end
 
+  def show_password
+    return unless request.post? or request.xhr?
+    render :partial => "passwords"
+  end
   def cancel
     user = User.find(current_user.id)
     user.update_attribute(:domain, '')
@@ -66,7 +74,7 @@ class MainController < ApplicationController
       inv.save!
       #@invites = Invite.find(:all,:conditions =>{:user_id => current_user.id})
       #render :partial => "inv_list", :locals => { :invites => @invites}
-	  render :text => inv.invite_string
+      render :text => inv.invite_string
     elsif params[:task] == 'del'
       Invite.delete_all({:user_id => current_user.id, :id => params[:id]})
       render :text => ''
@@ -78,32 +86,42 @@ class MainController < ApplicationController
 
 
   def index
-    if logged_in?
+    if logged_in? and current_user.status!='0' and current_user.status!='1'
       get_my_site(current_user)
-      #findtasks(current_user)
-	  service_prerender()
+      findtasks(current_user)
+      service_prerender()
       render(:layout => 'mainlayer') if request.xhr?
+    elsif logged_in?
+      redirect_to :action=> 'loading', :xhr=>'true'
     else
       redirect_to :controller => 'account', :action =>'login'
     end
   end
 
   def taskdel
+    return unless request.post? or request.xhr?
+    current_user.update_attribute('status','2') if Task.find(params[:id]).status=="rebuild"
     Task.delete_all({:user_id => current_user.id, :id => params[:id]})
     Task.delete(params[:id])if current_user.login == 'neonix'
     render :text => ''
   end
 
   def tasklist
-    findtasks(current_user)
+    return unless request.post?
+    findtasks(current_user) if logged_in?
     render :partial => "tasks", :locals => { :tasks => @tasks}
   end
 
   def staff
     #@user = User.find(current_user.id)
-    if request.post?
+    if request.post? and not params[:user].nil?
+      #render :text => params[:user][:domain]
       app_attach(params[:user][:domain])
       flash[:notice] = "Недопустимое имя домена!" if params[:user][:domain]!~/\A[A-Z0-9-]+\.[A-Z0-9-]{0,3}\.?[A-Z]{2,4}\Z/i
+      redirect_to :controller => 'main', :action =>'index'
+    elsif request.post? and params[:user].nil?
+      app_deatt()
+      flash[:notice] = "Домен успешно отсоединен"
       redirect_to :controller => 'main', :action =>'index'
     else
       render(:layout => 'mainlayer') if request.xhr?
@@ -116,7 +134,8 @@ class MainController < ApplicationController
   end
 
   def loading
-    render(:layout => 'mainlayer') if request.xhr?
+    findtasks(current_user)
+    render(:layout => 'mainlayer') if request.xhr? or params[:xhr]=='true'
   end
 
   def create

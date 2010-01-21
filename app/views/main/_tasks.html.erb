@@ -1,12 +1,21 @@
 <%if not tasks.nil? and tasks.size > 0%>
-  <br/><br/>
   <% firstid = Task.find(:first,:order => 'id ASC').id %>
-  <b>Список дел в очереди</b><br/>
   <table>
-    <tr><td>Очередь</td><td>Описание</td></tr>
+    <tr><th class="table_1"></th><th>Список дел в очереди</th></tr>
     <%tasks.each do |t|%>
-      <tr id="task_<%= t.id %>"><td><%= (1 + firstid - t.id).to_s %></td><td><%= t.status %></td>
-      <td><%=  rlink('[x]', {:controller => 'main',:action => 'taskdel', :id => t.id.to_s}, ('task_'+t.id.to_s))%></td></tr>
+      <tr id="task_<%= t.id %>"><td class="table_1"><%= (1 + firstid - t.id).to_s %></td><td><%= t.status %></td>
+        <%if t.status!='create'%>
+          <td><%=  rlink('[x]', {:controller => 'main',:action => 'taskdel', :id => t.id.to_s}, ('task_'+t.id.to_s))%></td>
+        <%end%>
+      </tr>
     <%end%>
+  </table>
+<%else%>
+  <table>
+    <tr><th class="table_1">Мы предлагаем:</th><th>У нас есть:</th></tr>
+    <tr><td class="table_1">1 базу данных MySQL(50MB)</td><td>PHP 5</td></tr>
+    <tr><td class="table_1">Прикрепление своих доменов</td><td>MySQL</td></tr>
+    <tr><td class="table_1">Предустановленные движки сайтов</td><td>Perl</td></tr>
+    <tr><td class="table_1">Место под файлы(150MB)</td><td>Ruby</td></tr>
   </table>
 <%end%>

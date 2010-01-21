@@ -1,0 +1,11 @@
+<% form_tag url_for(:controller => 'main', :action =>'staff')  do -%>
+  <%=help_button('DNS')%>
+  <% if not current_user.domain.nil? and current_user.domain.size > 3%>
+    Прикрепленный домен:
+    <b><a href="http://<%= current_user.domain %>" target="_blank"><%= current_user.domain %></a></b>
+    <%=true_button('[x]')%>
+  <%else%>
+    Прикрепить домен: <%= text_field_tag 'user[domain]','', :size=>'20',:class => 'text' %>
+    <%=true_button('ok')%>
+  <%end%>
+<% end -%>

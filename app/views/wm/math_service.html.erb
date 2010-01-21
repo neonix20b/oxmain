@@ -5,5 +5,6 @@
   page.replace_html("c_"+params[:id].to_s, (session[:price][params[:id].to_s]*@service_size.to_s.to_i).to_s)
   if params[:math]=='accept'
     page.replace_html('balance', current_user.money.to_s)
+    page.replace_html('quotas_t', :partial => "main/quotas")
   end
 end%>

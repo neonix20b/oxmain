@@ -1,7 +1,11 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  def help_button(link)
+    "<a href='http://wiki.oxnull.net/index.php/#{link}' target='_blank'>#{image_tag("question.png")}</a>"
+  end
+
   def true_button(text)
-  "<button type='submit' style='padding: 0px;cursor: pointer;background-color:transparent;border-width: 0;'>
+    "<button type='submit' style='padding: 0px;cursor: pointer;background-color:transparent;border-width: 0;'>
 	<span>
 		<span style='float: left;'>#{image_tag('btn_left.png')}</span>
 		<span class='btn_middle'>#{text}</span>
@@ -22,8 +26,8 @@ module ApplicationHelper
     text = 'минус'
     text = 'плюс' if(math=='plus')
     text = '[ok]' if(math=='accept')
-	text='[-]' if text == 'минус'
-	text='[+]' if text == 'плюс'
+    text='[-]' if text == 'минус'
+    text='[+]' if text == 'плюс'
     return text if q_size.to_s.to_i < 1 and math=='minus'#'минус'
     return rlink(text, {:controller=> 'wm', :action => "math_service", :id => service_id,:math=>math, :div => div, :layer=>params[:layer]}, div)
   end
@@ -33,7 +37,7 @@ module ApplicationHelper
       :align => "absmiddle",
       :border => 0,
       :id => "spinner",
-      :size => "10x10",
+      :size => "16x16",
       :style =>"display: none;" )
   end
 

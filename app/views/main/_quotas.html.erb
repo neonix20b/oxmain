@@ -1,0 +1,5 @@
+<table class="table_2">
+  <tr><th>Тип</th><th>Текущее</th><th>Максимальное</th></tr>
+  <tr><td>HDD</td><td><%=@disk_current_size/(1024*1024) %>MB</td><td><%=@disk_max_size/(1024*1024)%>MB</td></tr>
+  <tr><td>MySQL</td><td><%=@mysql_current_size/(1024*1024)%>MB</td><td><%=@mysql_max_size/(1024*1024)%>MB</td></tr>
+</table>

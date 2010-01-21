@@ -6,22 +6,23 @@ class FlexController < ApplicationController
   protect_from_forgery :except => [:adept_def, :service_change, :dotask, :password_change, :my_site, :service_list, :tag_control]
   
   def sms_phone
-	country = "Россия"
-	if params[:country] and params[:op_name]
-		country = params[:country]
-		#выдать список номеров с ценами
-		@phones = Smsbil.find(:all, 
-			:conditions=>['country LIKE ? and op_name LIKE ?',params[:country], params[:op_name]],
-			:select => 'country,op_name,phone,price,income', :order=> "country,op_name,phone,price")
-	elsif params[:country]
-		#показать список операторов
-		@operators = Smsbil.find(:all, 
-			:conditions=>['country LIKE ?',params[:country]+'%'], 
-			:select => 'DISTINCT op_name, op_id', :order=> "op_name")
-	else
-		#поиск всех стран
-		@countries = Smsbil.find(:all, :select => 'DISTINCT country', :order=> "country")
-	end
+    country = "Россия"
+    if params[:country] and params[:op_name]
+      country = params[:country]
+      #выдать список номеров с ценами
+      @phones = Smsbil.find(:all,
+        :conditions=>['country LIKE ? and op_name LIKE ?',params[:country], params[:op_name]],
+        :select => 'country,op_name,phone,price,income,id', :order=> "price")
+    elsif params[:country]
+      #показать список операторов
+      @operators = Smsbil.find(:all,
+        :conditions=>['country LIKE ?',params[:country]+'%'],
+        :select => 'DISTINCT op_name, op_id', :order=> "op_name")
+    else
+      #поиск всех стран
+      @countries = Smsbil.find(:all, :select => 'DISTINCT country', :order=> "country")
+    end
+    render(:layout => 'mainlayer') if request.xhr?
   end
   
   def tag_control
@@ -32,7 +33,7 @@ class FlexController < ApplicationController
       if current_user.right != 'user' or current_user.id.to_s == params[:user_id].to_s
         user = User.find(params[:user_id])
         params[:tags] = '' if(params[:tags].to_s.split(/,/).size > 5 )
-		params[:tags] = '' if(params[:tags].to_s.index(",") == nil )
+        params[:tags] = '' if(params[:tags].to_s.index(",") == nil )
         user.tag_list = params[:tags]
         user.save!
         render :text => params[:tags].length
@@ -53,13 +54,10 @@ class FlexController < ApplicationController
     user=my_right()
     params[:id] = params[:task]
     if(params[:id]=='rebuild')
-	  user.update_attribute('wtf', 'joomla') if params[:wtf]=='joomla'
-      user.update_attribute('wtf', 'phpbb') if params[:wtf]=='smf'
-      user.update_attribute('wtf', 'wordpress') if params[:wtf]=='wordpress'
-	  user.update_attribute('wtf', 'none') if params[:wtf]=='none'
-      app_rebuild(user);
+      params[:wtf]='phpbb' if params[:wtf]=='smf'
+      user.update_attribute('wtf', params[:wtf])
+      app_rebuild(user)
       render :text=>'ok '+params[:wtf]
-
     elsif (params[:id]=='deattach')
       app_deatt(user)
       render :text=>'ok'
