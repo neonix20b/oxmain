@@ -1,5 +1,37 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  def can_edit?(post)
+    return false if not logged_in?
+    return true if post.user_id == current_user.id
+    return true if current_user.right=='admin'
+    return false
+  end
+
+  def can_edit_blog?
+    return false if not logged_in?
+    return true if current_user.right=='admin'
+    return false
+  end
+
+  def can_comment?(comment=nil)
+    return false if not logged_in?
+    return true if comment==nil
+    return true if comment.user_id==current_user.id
+    return false
+  end
+
+  def ox_rank(obj)
+    return "- [ox_rank] +"
+  end
+
+  def author(post)
+    if post.user.nil?
+      return "Анонимус"
+    else
+      return post.user.login
+    end
+  end
+
   def help_button(link)
     "<a href='http://wiki.oxnull.net/index.php/#{link}' target='_blank'>#{image_tag("question.png")}</a>"
   end
@@ -55,6 +87,7 @@ module ApplicationHelper
       :method => 'get',
       :url => url
   end
+
   def easybutton(txt,form,url,div='main_div')
     link_to_remote txt,
       :update => div,

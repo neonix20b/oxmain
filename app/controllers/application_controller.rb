@@ -2,7 +2,25 @@ require 'digest/md5'
 require 'syslog'
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
+  def can_edit?(post)
+    return false if not logged_in?
+    return true if post.user_id == current_user.id
+    return true if current_user.right=='admin'
+    return false
+  end
 
+  def can_edit_blog?
+    return false if not logged_in?
+    return true if current_user.right=='admin'
+    return false
+  end
+
+  def can_comment?(comment=nil)
+    return false if not logged_in?
+    return true if comment==nil
+    return true if comment.user_id==current_user.id
+    return false
+  end
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery #:secret => 'f7c15baf4ab5a0e89d552d9b49e0ff95'

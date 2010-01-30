@@ -1,11 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
-    <title>ox - Мир</title>
+    <title><%= h(yield(:title) || "ox - Мир") %> - oxnull.net</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <%= stylesheet_link_tag 'new_style' %>
-    <%= javascript_include_tag :all %>
+    <%= javascript_include_tag :all, :cache => true %>
     <script src="http://video.oxnull.net/flowplayer.min.js" type="text/javascript"></script>
+    <%= init_tinymce_hammer_if_required %>
+    <%= yield(:head) %>
   </head>
 
   <body>
@@ -36,8 +38,8 @@
             <div><%= image_tag("menu_separator.png") %></div>
             <div class="aa"><a href="http://wiki.oxnull.net" target="_blank">Где я?</a></div>
             <% if logged_in? %>
-                        <!--<div><%= image_tag("menu_separator.png") %></div>
-                                                    <div class="aa"><%= link_to "Выйти(#{current_user.login})", {:controller=> 'account', :action => "logout"}%></div>-->
+                              <!--<div><%= image_tag("menu_separator.png") %></div>
+                                                          <div class="aa"><%= link_to "Выйти(#{current_user.login})", {:controller=> 'account', :action => "logout"}%></div>-->
             <%end%>
           </div>
         </div>
@@ -131,17 +133,38 @@
       </div>
       <div class="footer">
         <div class="news">
-          <h5>Заголовок новости</h5>
-				засветился в таких телевизионных проектах как: This is personal: the hunt for the Yorkshire ripper, Враждебные воды и Господин Ренард, где он снимался с Джоном Тавом, более известным как Инспектор Морс.
-
-          Доминик также работал в театре, в таких постановках, как: Энни и Фанни от Болтона до Рима и Resurrectionists. Его самый последний проект это роль Мери Брандибака в экранизации Толкиеновской трилогии Властелин Колец. Когда Доминик не снимается, он любит послушать музыку, пишет, занимается серфингом, на этот вид экстремального спорта он подсел во время съемок Властелина Колец и играет в футбол. Доминик преданный поклонник «Manchester United»[источник не указан 161 день].
-
-          Он бегло говорит на немецком (сказались долгие годы жизни в Германии), хорошо подражает акцентам: американцев, лондонцев, шотландцев, австралийцев и йоркширцев[источник не указан 161 день].
-          <a>Читать польностью >> </a><br/>
-          <a>Все новости</a>
-          <script
-            src="http://twitterjs.googlecode.com/svn/trunk/src/twitter.min.js"
-            type="text/javascript">
+          <script src="http://widgets.twimg.com/j/2/widget.js"></script>
+          <script>
+            new TWTR.Widget({
+              version: 2,
+              type: 'search',
+              search: 'oxnull',
+              interval: 10000,
+              title: 'Наши в Twitter\'e',
+              subject: '',
+              width: 'auto',
+              height: 150,
+              theme: {
+                shell: {
+                  background: 'transparent',
+                  color: '#ffffff'
+                },
+                tweets: {
+                  background: 'transparent',
+                  color: '#FFFFFF',
+                  links: '#B5E7FD'
+                }
+              },
+              features: {
+                scrollbar: false,
+                loop: true,
+                live: true,
+                hashtags: true,
+                timestamp: true,
+                avatars: true,
+                behavior: 'default'
+              }
+            }).render().start();
           </script>
         </div>
         <div class="pics">

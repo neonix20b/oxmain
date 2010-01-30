@@ -14,9 +14,10 @@ cellspacing: 0px;
 {
 height: 240px;
 background-image: url(/images/header_back.png);
-background-color: #333333;
+background-color: #333333 transparent;
 border: #1a1a1a solid 1px;
 border-bottom: none;
+z-index: auto;
 }
 .footer
 {
@@ -28,10 +29,10 @@ padding: 10px 15px;
 }
 body
 {
+background:url("/images/backdrop.png") repeat-x fixed 0 0 #7AB6F3;
 font-family: Tahoma;
 font-size: 10pt;
 color: #ffffff;
-background-color: #ffffff;
 }
 a
 {
@@ -125,6 +126,7 @@ text-align: left;
 width:1024px;
 margin-left:auto;
 margin-right:auto;
+z-index: auto;
 }
 #rounded_box_message
 {
@@ -200,7 +202,7 @@ margin-top: 18px;
 {
 width: 100%;
 height: 100%;
-background-color: #7AB6F4;
+background-color: #7AB6F4 transparent;
 background-image: url(/images/content_back.png);
 background-position: top left;
 position: relative;

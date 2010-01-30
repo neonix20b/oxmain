@@ -9,7 +9,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091013150152) do
+ActiveRecord::Schema.define(:version => 20100127112828) do
+
+  create_table "blogs", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "invites", :force => true do |t|
     t.integer  "user_id"
@@ -17,6 +24,21 @@ ActiveRecord::Schema.define(:version => 20091013150152) do
     t.string   "invite_string"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "posts", :force => true do |t|
+    t.string   "title"
+    t.text     "text"
+    t.float    "ox_rank",    :default => 0.0
+    t.integer  "count",      :default => 0
+    t.integer  "blog_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "q", :primary_key => "number", :force => true do |t|
+    t.integer "id"
   end
 
   create_table "smsbils", :force => true do |t|
@@ -68,6 +90,7 @@ ActiveRecord::Schema.define(:version => 20091013150152) do
     t.string   "domain"
     t.float    "money",                                   :default => 0.0
     t.string   "right",                                   :default => "user"
+    t.float    "ox_rank",                                 :default => 0.0
   end
 
 end

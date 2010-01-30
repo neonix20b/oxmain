@@ -1,0 +1,19 @@
+<%@post.comments.each do |comment|%>
+  <p><%= comment.user.login %> [<%= comment.updated_at %>] <%= ox_rank(comment) %><br/><%= comment.text %></p>
+<%end%>
+
+<%if can_comment?%>
+  <p>
+    <% semantic_form_for :comment, @comment, :url => { :controller => 'main', :action => "comment_work", :do => 'add' } do |f| %>
+      <% f.inputs do %>
+        <%= f.hidden_field :user_id, :value => current_user.id %>
+        <%= hidden_field 'blog','id', :value => @blog.id %>
+        <%= f.hidden_field :post_id, :value => @post.id %>
+        <%= f.tinymce :text, :label => "Текст", :style=>"width:60%; height:200px;" %>
+      <%end%>
+      <% f.buttons do %>
+        <%= f.commit_button %>
+      <% end %>
+    <% end %>
+  </p>
+<%end%>

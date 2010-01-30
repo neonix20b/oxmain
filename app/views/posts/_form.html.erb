@@ -1,0 +1,11 @@
+<% semantic_form_for([@blog, @post]) do |f| %>
+  <% f.inputs do %>
+    <%#= f.input :blog, :include_blank => false, :label => "Блог" %>
+    <%= f.hidden_field :user_id, :value => current_user.id %>
+    <%= f.input :title,:label => "Название" %>
+    <%= f.tinymce :text, :label => "Текст", :style=>"width:100%; height:600px;" %>
+  <%end%>
+  <% f.buttons do %>
+    <%= f.commit_button %>
+  <% end %>
+<% end %>

@@ -3,7 +3,7 @@ require 'syslog'
 require 'digest/md5'
 class MainController < ApplicationController
   include AuthenticatedSystem
-  before_filter :login_from_cookie
+  before_filter :login_from_cookie, :except =>[:go, :tasklist]
 
   def hello
     if params[:format]=='xml'
@@ -14,6 +14,35 @@ class MainController < ApplicationController
     end
   end
 
+  def comment_work
+    return "нельзя" if not can_comment? or not request.post?
+    post_id = params[:comment][:post_id]
+    blog_id = params[:blog][:id]
+    user_id = params[:comment][:user_id]
+    if params[:do]=='add'
+      comment = Comment.new(params[:comment])
+      comment.user_id=user_id
+      if comment.save
+        flash[:notice] = "Комментарий успешно добавлен."
+      else
+        flash[:notice] = "Ошибка при добавлении комментария."
+      end
+    elsif params[:do]=='del'
+      comment = Comment.find(params[:id])
+      if can_comment?(comment)
+        comment.destroy
+        flash[:notice] = "Комментарий успешно удален."
+      end
+    end
+    redirect_to blog_post_url(blog_id,post_id)
+  end
+
+  def ox_rank
+    return "нельзя" if not logged_in?
+    
+    render :text => '0'
+  end
+
   def contacts
     render(:layout => 'mainlayer') if request.xhr?
   end
@@ -21,7 +50,16 @@ class MainController < ApplicationController
   def deatt
     return unless request.post?
     app_deatt()
-    redirect_to :action=> 'loading'
+  end
+  
+  def go
+    if params[:id]=='hostmonster'
+      redirect_to 'http://www.hostmonster.com/track/cavernxxx'
+    elsif params[:id]=='sape'
+      redirect_to 'http://www.sape.ru/r.mDoCXqTiLZ.php'
+    elsif params[:id]=='sweb'
+      redirect_to 'http://sweb.ru/p14277'
+    end
   end
   
   def rebuild

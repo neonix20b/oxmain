@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   acts_as_taggable
   has_many :tasks
   has_many :invites
+  has_many :posts
+  has_many :comments
   # Virtual attribute for the unencrypted password
   attr_accessor :password
 

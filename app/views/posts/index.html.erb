@@ -1,0 +1,16 @@
+<% title @blog.name %>
+<h5><%= link_to "Все блоги", blogs_path %> - <%= @blog.name %></h5>
+<table>
+  <% for post in @posts %>
+    <tr>
+      <td><h2><%=link_to h(post.title),blog_post_path(@blog, post) %></h2></td>
+      <td><%= author(post) %>: Краткое описание</td>
+      <% if can_edit?(post) %>
+        <td><%= link_to "[e]", edit_blog_post_path(@blog, post) %></td>
+        <td><%= link_to "[x]", blog_post_path(@blog, post), :confirm => 'Точно удалить статью?', :method => :delete %></td>
+      <%end%>
+    </tr>
+  <% end %>
+</table>
+
+<p><%= link_to "Создать статью", new_blog_post_path(@blog) %></p>
