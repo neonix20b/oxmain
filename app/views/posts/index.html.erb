@@ -1,16 +1,47 @@
-<% title @blog.name %>
-<h5><%= link_to "Все блоги", blogs_path %> - <%= @blog.name %></h5>
-<table>
-  <% for post in @posts %>
-    <tr>
-      <td><h2><%=link_to h(post.title),blog_post_path(@blog, post) %></h2></td>
-      <td><%= author(post) %>: Краткое описание</td>
-      <% if can_edit?(post) %>
-        <td><%= link_to "[e]", edit_blog_post_path(@blog, post) %></td>
-        <td><%= link_to "[x]", blog_post_path(@blog, post), :confirm => 'Точно удалить статью?', :method => :delete %></td>
-      <%end%>
-    </tr>
-  <% end %>
-</table>
+<% if params[:favorite]=='true' %>
+  <% title "Избранные блоги" %>
+  <h5><%= link_to "Все блоги", blogs_path %> → Избранные блоги</h5>
+<%elsif params[:favorite]=='all' %>
+  <% title "Все статьи" %>
+  <h5><%= link_to "Все блоги", blogs_path %> → Все статьи</h5>
+<%elsif params[:favorite]=='rand' %>
+  <% title "Случайные статьи" %>
+  <h5><%= link_to "Все блоги", blogs_path %> → Случайные статьи</h5>
+<%elsif params.has_key?('favorite') %>
+  <% title "Тег: "+params[:favorite] %>
+  <h5><%= link_to "Все блоги", blogs_path %> → Тег: <%=params[:favorite]%></h5>
+<%else%>
+  <% title @blog.name %>
+  <h5><%= link_to "Все блоги", blogs_path %> → <%= @blog.name %></h5>
+<%end%>
+<%= link_to "Все статьи", blog_posts_path(0, :favorite => "all") %> |
+<%= link_to "Избранные", blog_posts_path(0, :favorite => "true") %> |
+<%= link_to "Случайные", blog_posts_path(0, :favorite => "rand") %>
 
-<p><%= link_to "Создать статью", new_blog_post_path(@blog) %></p>
+<% for post in @posts %>
+  <h2>
+    <% if params.has_key?('favorite') %>
+      <%= add_favorite(post.blog_id) %>
+      <%= link_to post.blog.name, blog_posts_path(post.blog_id) %> →
+    <%end%>
+    <%=link_to h(post.title),blog_post_path(post.blog_id, post) %>
+  </h2>
+  Краткое описание<br/>
+  <%= author(post) %>
+  <%= post.updated_at %>
+  <%= ox_rank(post) %>
+  <% if can_edit?(post) %>
+    <%= link_to "[e]", edit_blog_post_path(post.blog_id, post) %>
+    <%= link_to "[x]", blog_post_path(post.blog_id, post), :confirm => 'Точно удалить статью?', :method => :delete %>
+  <%end%>
+  <br/>
+  Теги: <%= tag_links(post) %>
+<% end %>
+
+<%if @posts.nil?%>
+  Тут статей еще нет
+<%end%>
+
+<% if not params.has_key?('favorite') and can_edit? %>
+  <p><%= link_to "Создать статью", new_blog_post_path(@blog) %></p>
+<%end%>

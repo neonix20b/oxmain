@@ -1,5 +1,9 @@
 <% title "Все блоги" %>
 <h5>Все блоги</h5>
+
+<%= link_to "Все статьи", blog_posts_path(0, :favorite => "all") %> |
+<%= link_to "Избранные", blog_posts_path(0, :favorite => "true") %> |
+<%= link_to "Случайные", blog_posts_path(0, :favorite => "rand") %>
 <table>
   <% for blog in @blogs %>
     <tr>

@@ -2,8 +2,9 @@ require 'digest/md5'
 require 'syslog'
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
-  def can_edit?(post)
+  def can_edit?(post=nil)
     return false if not logged_in?
+    return true if post.nil?
     return true if post.user_id == current_user.id
     return true if current_user.right=='admin'
     return false

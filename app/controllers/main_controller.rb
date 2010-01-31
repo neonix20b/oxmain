@@ -14,8 +14,18 @@ class MainController < ApplicationController
     end
   end
 
+  def favorite
+    return render :text=>"нельзя" if not logged_in? or not request.post?
+    tmp = Array.new()
+    tmp = current_user.favorite.split(',') if not current_user.favorite.nil?
+    tmp.insert(-1, params[:blog_id].to_s)
+    current_user.favorite=tmp.uniq.join(',')
+    current_user.save!
+    render :text=>"[в избранном]"
+  end
+
   def comment_work
-    return "нельзя" if not can_comment? or not request.post?
+    return render :text=>"нельзя" if not can_comment? or not request.post?
     post_id = params[:comment][:post_id]
     blog_id = params[:blog][:id]
     user_id = params[:comment][:user_id]
@@ -38,7 +48,7 @@ class MainController < ApplicationController
   end
 
   def ox_rank
-    return "нельзя" if not logged_in?
+    return render :text=>"нельзя" if not logged_in?
     
     render :text => '0'
   end

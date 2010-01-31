@@ -1,7 +1,9 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
-  def can_edit?(post)
+  include TagsHelper
+  def can_edit?(post=nil)
     return false if not logged_in?
+    return true if post.nil?
     return true if post.user_id == current_user.id
     return true if current_user.right=='admin'
     return false
@@ -79,12 +81,12 @@ module ApplicationHelper
     rlink(text,{:controller=> 'wm', :action => "add_service", :id => service_id, :div =>div, :mydo=>mydo, :layer=>params[:layer]},div)
   end
 
-  def rlink(text, url, div='main_div')
+  def rlink(text, url, div='main_div',method='get')
     link_to_remote text,
       :update => div,
       :before => "Element.show('spinner')",
       :success => "Element.hide('spinner')",
-      :method => 'get',
+      :method => method,
       :url => url
   end
 

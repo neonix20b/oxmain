@@ -38,8 +38,8 @@
             <div><%= image_tag("menu_separator.png") %></div>
             <div class="aa"><a href="http://wiki.oxnull.net" target="_blank">Где я?</a></div>
             <% if logged_in? %>
-                              <!--<div><%= image_tag("menu_separator.png") %></div>
-                                                          <div class="aa"><%= link_to "Выйти(#{current_user.login})", {:controller=> 'account', :action => "logout"}%></div>-->
+                                <!--<div><%= image_tag("menu_separator.png") %></div>
+                                                            <div class="aa"><%= link_to "Выйти(#{current_user.login})", {:controller=> 'account', :action => "logout"}%></div>-->
             <%end%>
           </div>
         </div>
@@ -176,6 +176,8 @@
           </table>
         </div>
       </div>
-    </div> 
-    <%= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'tasklist'), :frequency => '15', :update => 'tasks') %>
+    </div>
+    <%if logged_in?%>
+      <%= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'tasklist'), :frequency => '15', :update => 'tasks') %>
+    <%end%>
   </body>

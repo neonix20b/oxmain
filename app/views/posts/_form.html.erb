@@ -4,6 +4,7 @@
     <%= f.hidden_field :user_id, :value => current_user.id %>
     <%= f.input :title,:label => "Название" %>
     <%= f.tinymce :text, :label => "Текст", :style=>"width:100%; height:600px;" %>
+    <%= f.input :tag_list,:label => "Теги" %>
   <%end%>
   <% f.buttons do %>
     <%= f.commit_button %>

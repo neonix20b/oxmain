@@ -6,7 +6,19 @@ class PostsController < ApplicationController
   before_filter :load_blog
   
   def index
-    @posts = @blog.posts
+    if params[:favorite]=='true'
+      tmp = [1]
+      tmp = current_user.favorite.split(',') if logged_in? and not current_user.favorite.nil?
+      @posts = Post.find(:all, :conditions =>{:blog_id=>tmp}, :order => 'id DESC')
+    elsif params[:favorite]=='all'
+      @posts = Post.find(:all, :order => 'id DESC')
+    elsif params[:favorite]=='rand'
+      @posts = Post.find(:all, :order=>"rand()")
+    elsif params.has_key?('favorite')
+      @posts = Post.find_tagged_with(params[:favorite])
+    else
+      @posts = @blog.posts(:order => 'id DESC')
+    end
   end
   
   def show
@@ -15,12 +27,15 @@ class PostsController < ApplicationController
   end
   
   def new
+    return render :text=> "нельзя" if not can_edit?
     @post = @blog.posts.new
   end
   
   def create
+    return render :text=> "нельзя" if not can_edit?
     @post = @blog.posts.new(params[:post])
     @post.user_id=params[:post][:user_id]
+    @post.tag_list = params[:post][:tag_list]
     if @post.save
       flash[:notice] = "Статья успешно создана."
       redirect_to blog_post_url(@blog,@post)
@@ -38,7 +53,11 @@ class PostsController < ApplicationController
     @post = Post.find(params[:id])
     return render :text=> "нельзя" if not can_edit?(@post)
     if @post.update_attributes(params[:post])
-      flash[:notice] = "Статья успешно обновлена."
+      flash[:notice] = "Статья успешно обновлена."+params[:post][:tag_list]
+      if @post.tag_list != params[:post][:tag_list]
+        @post.tag_list = params[:post][:tag_list]
+        @post.save!
+      end
       redirect_to blog_post_url(@blog,@post)
     else
       render :action => 'edit'
@@ -56,7 +75,7 @@ class PostsController < ApplicationController
   private
   def load_blog
     blog_id = params[:blog_id]
-    @blog = Blog.find(blog_id) if blog_id != nil && blog_id != 0
+    @blog = Blog.find(blog_id) if blog_id != nil and blog_id != 0 and blog_id != '0'
   end
 
 end
