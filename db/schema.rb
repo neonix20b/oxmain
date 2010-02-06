@@ -9,11 +9,21 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100127112828) do
+ActiveRecord::Schema.define(:version => 20100206115145) do
 
   create_table "blogs", :force => true do |t|
     t.string   "name"
     t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "comments", :force => true do |t|
+    t.text     "text"
+    t.float    "ox_rank",    :default => 0.0
+    t.integer  "count",      :default => 0
+    t.integer  "user_id"
+    t.integer  "post_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -48,6 +58,16 @@ ActiveRecord::Schema.define(:version => 20100127112828) do
     t.string   "op_name"
     t.string   "income"
     t.string   "price"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "supports", :force => true do |t|
+    t.float    "money",      :default => 10.0
+    t.text     "task"
+    t.text     "info"
+    t.string   "name",       :default => "Название заявки отображающее суть проблемы"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -91,6 +111,8 @@ ActiveRecord::Schema.define(:version => 20100127112828) do
     t.float    "money",                                   :default => 0.0
     t.string   "right",                                   :default => "user"
     t.float    "ox_rank",                                 :default => 0.0
+    t.string   "show_name"
+    t.string   "favorite"
   end
 
 end

@@ -2,8 +2,8 @@ module PostsHelper
   def add_favorite(blog_id)
     return "" if not logged_in?
     blog_id=blog_id.to_s
-    return "<span>[в избранном]</span>" if current_user.favorite.split(',').include?(blog_id)
-    return "<span id='blog_#{blog_id}'>#{rlink("[в избранное]",{:controller=>'main',:action=>'favorite', :blog_id=>blog_id},'blog_'+blog_id, 'post')}</span>"
+    return "<span id='blog_#{blog_id}'>#{rlink('[-]',{:controller=>'main',:action=>'favorite', :blog_id=>blog_id},'blog_'+blog_id, 'post')}</span>" if not current_user.favorite.nil? and current_user.favorite.split(',').include?(blog_id)
+    return "<span id='blog_#{blog_id}'>#{rlink('[+]',{:controller=>'main',:action=>'favorite', :blog_id=>blog_id},'blog_'+blog_id, 'post')}</span>"
   end
 
   def tag_links(obj)

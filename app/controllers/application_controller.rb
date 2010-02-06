@@ -1,32 +1,35 @@
 require 'digest/md5'
 require 'syslog'
+require 'redcloth'
+require 'xmlrpc/client'
+
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
-  def can_edit?(post=nil)
-    return false if not logged_in?
-    return true if post.nil?
-    return true if post.user_id == current_user.id
-    return true if current_user.right=='admin'
-    return false
-  end
-
-  def can_edit_blog?
-    return false if not logged_in?
-    return true if current_user.right=='admin'
-    return false
-  end
-
-  def can_comment?(comment=nil)
-    return false if not logged_in?
-    return true if comment==nil
-    return true if comment.user_id==current_user.id
-    return false
-  end
+  require 'helpers/application_helper'
+  include ApplicationHelper
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery #:secret => 'f7c15baf4ab5a0e89d552d9b49e0ff95'
 
   private
+  def transfer_money(from_user, to_user, money=1)
+    server = XMLRPC::Client.new2("http://89.208.146.80:1979")
+    from_user.money = server.call("get_balance", from_user.id)
+    from_user.save!
+    #to_user.money = server.call("get_balance", to_user.id)
+    if from_user.money > 5+money
+      server.call("add_balance",from_user.id,-1*money)
+      from_user.money -= money
+      from_user.save!
+      server.call("add_balance",to_user.id,money)
+      to_user.money += money
+      to_user.save!
+      return true
+    else
+      return false
+    end
+  end
+  
   def service_prerender
     server = XMLRPC::Client.new2("http://89.208.146.80:1979")
     @service_pay = Array.new()

@@ -1,10 +1,19 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   include TagsHelper
-  def can_edit?(post=nil)
+
+  def tte(text)
+    return RedCloth.new(text).to_html
+  end
+  
+  def profile_link(user=current_user)
+    return h(user.login)
+  end
+
+  def can_edit?(obj=nil)
     return false if not logged_in?
-    return true if post.nil?
-    return true if post.user_id == current_user.id
+    return true if obj.nil?
+    return true if obj.user_id == current_user.id
     return true if current_user.right=='admin'
     return false
   end
@@ -15,22 +24,21 @@ module ApplicationHelper
     return false
   end
 
-  def can_comment?(comment=nil)
-    return false if not logged_in?
-    return true if comment==nil
-    return true if comment.user_id==current_user.id
-    return false
-  end
-
-  def ox_rank(obj)
-    return "- [ox_rank] +"
+  def ox_rank_field(obj)
+    ox_rank = obj.ox_rank
+    count = ox_rank
+    count = obj.count if obj.respond_to?('count')
+    span_id="ox_rank_#{obj.class.name}_#{obj.id.to_s}"
+    minus = rlink('[-]',{:controller=>'main', :action=>'ox_rank', :do=>'minus', :obj=>obj.class.name, :id => obj.id},span_id,'post')
+    plus = rlink('[+]',{:controller=>'main', :action=>'ox_rank', :do=>'plus', :obj=>obj.class.name, :id => obj.id},span_id,'post')
+    return "<span id='#{span_id}'>#{minus} <strong>#{count.to_i.to_s}</strong> #{plus}</span>"
   end
 
   def author(post)
     if post.user.nil?
       return "Анонимус"
     else
-      return post.user.login
+      return profile_link(post.user)
     end
   end
 
@@ -68,7 +76,7 @@ module ApplicationHelper
 
   def spiner
     image_tag("spinner.gif",
-      :align => "absmiddle",
+      :align => "middle",
       :border => 0,
       :id => "spinner",
       :size => "16x16",

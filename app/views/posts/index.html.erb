@@ -29,8 +29,9 @@
   Краткое описание<br/>
   <%= author(post) %>
   <%= post.updated_at %>
-  <%= ox_rank(post) %>
+  <%= ox_rank_field(post) %>
   <% if can_edit?(post) %>
+  | Управление:
     <%= link_to "[e]", edit_blog_post_path(post.blog_id, post) %>
     <%= link_to "[x]", blog_post_path(post.blog_id, post), :confirm => 'Точно удалить статью?', :method => :delete %>
   <%end%>
@@ -38,8 +39,9 @@
   Теги: <%= tag_links(post) %>
 <% end %>
 
-<%if @posts.nil?%>
-  Тут статей еще нет
+<%if @posts.nil? or @posts.size == 0%>
+  <br/>
+  <h2>Тут статей еще нет</h2
 <%end%>
 
 <% if not params.has_key?('favorite') and can_edit? %>

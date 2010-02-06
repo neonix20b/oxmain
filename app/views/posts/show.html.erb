@@ -1,23 +1,19 @@
 <% title @post.title %>
 <h5><%= link_to "Все блоги", blogs_path %> → <%= link_to @blog.name, blog_posts_path(@blog) %> → <%= @post.title %></h5>
 
-<p>
-  <%= @post.text %>
-</p>
+<%=tte @post.text %>
+
 <hr style="width:95%;"/>
-<p>
-  Автор: <%= author(@post) %> [<%= @post.updated_at %>] <%= ox_rank(@post) %>
+  Автор: <%= author(@post) %> [<%= @post.updated_at %>] <%= ox_rank_field(@post) %>
   <% if can_edit?(@post) %>
     <%= link_to "Редактировать", edit_blog_post_path(@blog, @post) %> |
     <%= link_to "Удалить", blog_post_path(@blog, @post), :confirm => 'Точно удалить?', :method => :delete %>
   <%end%>
   <br/>
   Теги: <%= tag_links(@post) %>
-</p>
 <br/>
-<p>
+<br/>
 <h5>Комментарии(<%= @post.comments.size %>)</h5>
-</p>
 <div>
-  <%= render :partial => 'comments' %>
+  <%= render :partial => 'comments', :locals => {:comments => @post.comments} %>
 </div>

@@ -1,12 +1,12 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <title><%= h(yield(:title) || "ox - Мир") %> - oxnull.net</title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <%= stylesheet_link_tag 'new_style' %>
+    <%= stylesheet_link_tag 'textile-editor' %>
     <%= javascript_include_tag :all, :cache => true %>
     <script src="http://video.oxnull.net/flowplayer.min.js" type="text/javascript"></script>
-    <%= init_tinymce_hammer_if_required %>
     <%= yield(:head) %>
   </head>
 
@@ -37,10 +37,6 @@
             <div class="aa"><a href="http://offtop.oxnull.net/" target="_blank">Форум</a></div>
             <div><%= image_tag("menu_separator.png") %></div>
             <div class="aa"><a href="http://wiki.oxnull.net" target="_blank">Где я?</a></div>
-            <% if logged_in? %>
-                                <!--<div><%= image_tag("menu_separator.png") %></div>
-                                                            <div class="aa"><%= link_to "Выйти(#{current_user.login})", {:controller=> 'account', :action => "logout"}%></div>-->
-            <%end%>
           </div>
         </div>
         <div id="rounded_box_message">
@@ -70,23 +66,28 @@
         </div>
 
         <div class="autorisation1">
-          <% if not logged_in?%>
+          <% if not logged_in? and params[:action]!='login'%>
             <h5>Авторизация:</h5>
             <div class="autorisation2">
               <%- form_tag(url_for(:controller=>'account',:action => "login" )) do -%>
-                Login:<%= text_field_tag 'login','', :size=>'20', :class=>'text' %>
-                <%= hidden_field 'layer','layer', :value=>params[:layer] %>
-                Пароль:
-                <%= password_field_tag 'password','', :size=>'20', :class=>'text' %>
-                <div><%= check_box_tag 'remember_me' %>Запомнить
-                  <%=true_button('Войти')%>
-                  <a>Забыли пароль?</a></div>
+                  Логин:<%= text_field_tag 'login','', :size=>'20', :class=>'text' %>
+                  <%= hidden_field 'layer','layer', :value=>params[:layer] %>
+                  Пароль:
+                  <%= password_field_tag 'password','', :size=>'20', :class=>'text' %>
+                  <div><%= check_box_tag 'remember_me' %>Запомнить
+                    <%=true_button('Войти')%>
+                    <a>Забыли пароль?</a></div>
               <%- end -%>
+            </div>
+          <%elsif not logged_in?%>
+            <h5>Привет!</h5>
+            <div class="autorisation2">
+              Было бы неплохо авторизоваться в форме ниже...
             </div>
           <%else%>
             <h5>Привет!</h5>
             <div class="autorisation2">
-              <%= current_user.login %>
+              <%= profile_link(current_user) %>
               [<%= link_to "Выйти", {:controller=> 'account', :action => "logout"}%>]
             </div>
           <%end%>
@@ -133,8 +134,8 @@
       </div>
       <div class="footer">
         <div class="news">
-          <script src="http://widgets.twimg.com/j/2/widget.js"></script>
-          <script>
+          <script type="text/javascript" src="http://widgets.twimg.com/j/2/widget.js"></script>
+          <script type="text/javascript">
             new TWTR.Widget({
               version: 2,
               type: 'search',
@@ -168,16 +169,15 @@
           </script>
         </div>
         <div class="pics">
-          <table align="center">
+          <table>
             <tr><td align="center"><%= image_tag("logos/gmo.png") %></td></tr>
             <tr><td align="center"> oxnull.net © 2010.</td></tr>
             <tr><td align="center"> Все права защищены.</td></tr>
-            <tr><td align="center"><div width="16px" height="16px"><%= spiner %></div></td></tr>
+            <tr><td align="center"><div><%= spiner %></div></td></tr>
           </table>
         </div>
       </div>
-    </div>
-    <%if logged_in?%>
-      <%= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'tasklist'), :frequency => '15', :update => 'tasks') %>
-    <%end%>
+    </div> 
+    <%= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'tasklist'), :frequency => '15', :update => 'tasks') %>
   </body>
+</html>

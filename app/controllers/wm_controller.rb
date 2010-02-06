@@ -1,7 +1,3 @@
-require 'xmlrpc/client'
-require 'syslog'
-require 'digest/md5'
-
 class WmController < ApplicationController
   include AuthenticatedSystem
   before_filter :login_from_cookie, :except => [:ahuetdaitedve, :success, :fail, :smspay, :smsimport]

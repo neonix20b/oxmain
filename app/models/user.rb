@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   has_many :tasks
   has_many :invites
   has_many :posts
+  has_many :supports
   has_many :comments
   # Virtual attribute for the unencrypted password
   attr_accessor :password

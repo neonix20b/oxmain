@@ -1,12 +1,13 @@
 <% semantic_form_for([@blog, @post]) do |f| %>
-  <% f.inputs do %>
-    <%#= f.input :blog, :include_blank => false, :label => "Блог" %>
+  <% f.inputs :style => "border:0px;" do %>
     <%= f.hidden_field :user_id, :value => current_user.id %>
     <%= f.input :title,:label => "Название" %>
-    <%= f.tinymce :text, :label => "Текст", :style=>"width:100%; height:600px;" %>
+    <%= textile_editor 'post', 'text', :style=>"width:100%; height:600px;" -%>
     <%= f.input :tag_list,:label => "Теги" %>
   <%end%>
-  <% f.buttons do %>
+  <% f.buttons :style => "border:0px;" do %>
     <%= f.commit_button %>
   <% end %>
 <% end %>
+
+<%= textile_editor_initialize -%>

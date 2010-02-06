@@ -1,6 +1,3 @@
-require 'xmlrpc/client'
-require 'syslog'
-require 'digest/md5'
 class MainController < ApplicationController
   include AuthenticatedSystem
   before_filter :login_from_cookie, :except =>[:go, :tasklist]
@@ -16,18 +13,43 @@ class MainController < ApplicationController
 
   def favorite
     return render :text=>"нельзя" if not logged_in? or not request.post?
+    ret = '[+]'
     tmp = Array.new()
     tmp = current_user.favorite.split(',') if not current_user.favorite.nil?
-    tmp.insert(-1, params[:blog_id].to_s)
+    if tmp.include?(params[:blog_id].to_s)
+      tmp.delete(params[:blog_id].to_s)
+      ret = '[+]'
+    else
+      tmp.insert(-1, params[:blog_id].to_s)
+      ret = '[-]'
+    end
     current_user.favorite=tmp.uniq.join(',')
     current_user.save!
-    render :text=>"[в избранном]"
+    render :text=>ret
+  end
+
+  def support_work
+    return render :text=>"нельзя" if not logged_in? or not request.post?
+    if params[:do]=='get'
+      return render :text=>"нельзя" if Support.find(:first, :conditions => {:worker_id => current_user.id})
+      support=Support.find(params[:id])
+      support.worker_id=current_user.id
+      support.save!
+      return render :text => 'Закреплено за Вами'
+    elsif params[:do]=='del'
+      support=Support.find(params[:id])
+      support.worker_id=nil
+      support.save!
+      return render :text => 'Заявка стала свободной'
+    end
   end
 
   def comment_work
-    return render :text=>"нельзя" if not can_comment? or not request.post?
-    post_id = params[:comment][:post_id]
-    blog_id = params[:blog][:id]
+    return render :text=>"нельзя" if not can_edit? or not request.post?
+    if params[:comment].has_key?("post_id")
+      post_id = params[:comment][:post_id]
+      blog_id = params[:blog][:id]
+    end
     user_id = params[:comment][:user_id]
     if params[:do]=='add'
       comment = Comment.new(params[:comment])
@@ -39,18 +61,43 @@ class MainController < ApplicationController
       end
     elsif params[:do]=='del'
       comment = Comment.find(params[:id])
-      if can_comment?(comment)
+      if can_edit?(comment)
         comment.destroy
         flash[:notice] = "Комментарий успешно удален."
       end
     end
-    redirect_to blog_post_url(blog_id,post_id)
+    if params[:comment].has_key?("post_id")
+      redirect_to blog_post_url(blog_id,post_id)
+    else
+      redirect_to support_url(params[:comment][:support_id])
+    end
   end
 
   def ox_rank
-    return render :text=>"нельзя" if not logged_in?
-    
-    render :text => '0'
+    return render :text=>"нельзя" if not logged_in? or not request.post?
+    @obj = params[:obj].camelize.constantize.find(params[:id])
+    if params[:do]=='minus'
+      add_rank = -1.0
+      add_count = -1
+    else
+      add_rank = 1.0
+      add_count = 1
+    end
+    if @obj.respond_to?('user_id')
+      return render :text=>"нельзя" if current_user.id == @obj.user_id
+      user = User.find(@obj.user_id)
+      @obj.count += add_count if @obj.respond_to?('count')
+      @obj.ox_rank += add_rank
+      user.ox_rank += add_rank
+      if (params[:do]=='plus' and transfer_money(current_user, user, 1)) or
+          (params[:do]=='minus' and transfer_money(current_user, User.find(3), 1))
+        @obj.save!
+        user.save!
+      else
+        return render :text=>"нельзя"
+      end
+    end
+    render :layout => false
   end
 
   def contacts

@@ -1,19 +1,25 @@
-<%@post.comments.each do |comment|%>
-  <p><%= comment.user.login %> [<%= comment.updated_at %>] <%= ox_rank(comment) %><br/><%= comment.text %></p>
+<%comments.each do |comment|%>
+  <%= profile_link(comment.user) %> [<%= comment.updated_at %>] <%= ox_rank_field(comment) %>
+  <%=tte comment.text %>
 <%end%>
 
-<%if can_comment?%>
-  <p>
-    <% semantic_form_for :comment, @comment, :url => { :controller => 'main', :action => "comment_work", :do => 'add' } do |f| %>
-      <% f.inputs do %>
-        <%= f.hidden_field :user_id, :value => current_user.id %>
+<%if can_edit?%>
+  <% semantic_form_for :comment, @comment, :url => { :controller => 'main', :action => "comment_work", :do => 'add' } do |f| %>
+    <% f.inputs :style => "border:0px;" do %>
+      <%= f.hidden_field :user_id, :value => current_user.id %>
+      <%if not @post.nil?%>
         <%= hidden_field 'blog','id', :value => @blog.id %>
         <%= f.hidden_field :post_id, :value => @post.id %>
-        <%= f.tinymce :text, :label => "Текст", :style=>"width:60%; height:200px;" %>
+      <%else%>
+        <%= f.hidden_field :support_id, :value => @support.id %>
       <%end%>
-      <% f.buttons do %>
-        <%= f.commit_button %>
-      <% end %>
+      <%= textile_editor 'comment', 'text', :style=>"width:60%; height:200px;" -%>
+      <%#= f.tinymce :text, :label => "Текст", :style=>"width:60%; height:200px;" %>
+    <%end%>
+    <% f.buttons :style => "border:0px;" do %>
+      <%= f.commit_button :wrapper_html => { :style => 'display:block;' }, :label => "Отправить"%>
     <% end %>
-  </p>
+  <% end %>
 <%end%>
+
+<%= textile_editor_initialize -%>

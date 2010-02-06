@@ -1,0 +1,15 @@
+<% semantic_form_for(@support) do |f| %>
+  <% f.inputs :style => "border:0px;" do %>
+    <%= f.hidden_field :user_id, :value => current_user.id %>
+    <%#= f.input :task,:label => "Описание проблемы" %>
+    <%= f.input :name,:label => false, :wrapper_html => { :style => 'display:block;' } %>
+    <%= textile_editor 'support', 'task', :style=>"width:60%; height:300px;" -%>
+    <%= f.input :info,:label => false, :wrapper_html => { :style => 'display:block;'}, :input_html => {:style=>"width:60%; height:150px;"} %>
+    <%= f.input :money,:label => "Количество ox'ов", :wrapper_html => { :style => 'display:block;'} %>
+  <%end%>
+  <% f.buttons :style => "border:0px;" do %>
+    <%= f.commit_button :wrapper_html => { :style => 'display:block;'} %>
+  <% end %>
+<% end %>
+
+<%= textile_editor_initialize -%>

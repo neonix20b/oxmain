@@ -4,6 +4,7 @@ class PostsController < ApplicationController
   # If you want "remember me" functionality, add this before_filter to Application Controller
   before_filter :login_from_cookie, :except => [:show, :index]
   before_filter :load_blog
+  before_filter :check_right, :except => [:show, :index]
   
   def index
     if params[:favorite]=='true'
@@ -27,12 +28,12 @@ class PostsController < ApplicationController
   end
   
   def new
-    return render :text=> "нельзя" if not can_edit?
+    #return render :text=> "нельзя" if not can_edit?
     @post = @blog.posts.new
   end
   
   def create
-    return render :text=> "нельзя" if not can_edit?
+    #return render :text=> "нельзя" if not can_edit?
     @post = @blog.posts.new(params[:post])
     @post.user_id=params[:post][:user_id]
     @post.tag_list = params[:post][:tag_list]
@@ -45,13 +46,13 @@ class PostsController < ApplicationController
   end
   
   def edit
-    @post = Post.find(params[:id])
-    return render :text=> "нельзя" if not can_edit?(@post)
+    #@post = Post.find(params[:id])
+    #return render :text=> "нельзя" if not can_edit?(@post)
   end
   
   def update
-    @post = Post.find(params[:id])
-    return render :text=> "нельзя" if not can_edit?(@post)
+    #@post = Post.find(params[:id])
+    #return render :text=> "нельзя" if not can_edit?(@post)
     if @post.update_attributes(params[:post])
       flash[:notice] = "Статья успешно обновлена."+params[:post][:tag_list]
       if @post.tag_list != params[:post][:tag_list]
@@ -65,8 +66,8 @@ class PostsController < ApplicationController
   end
   
   def destroy
-    @post = Post.find(params[:id])
-    return render :text=> "нельзя" if not can_edit?(@post)
+    #@post = Post.find(params[:id])
+    #return render :text=> "нельзя" if not can_edit?(@post)
     @post.destroy
     flash[:notice] = "Статья успешно удалена."
     redirect_to blog_posts_url(@blog)
@@ -78,4 +79,8 @@ class PostsController < ApplicationController
     @blog = Blog.find(blog_id) if blog_id != nil and blog_id != 0 and blog_id != '0'
   end
 
+  def check_right
+    @post = Post.find(params[:id]) if params[:id]
+    return render :text=> "нельзя" if not can_edit?(@post)
+  end
 end

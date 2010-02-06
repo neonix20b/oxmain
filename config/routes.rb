@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :supports
+
   map.resources :blogs
   map.resources :blogs, :has_many => :posts
   #map.resources :posts
