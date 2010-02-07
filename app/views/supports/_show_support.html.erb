@@ -1,0 +1,51 @@
+<table width="70%">
+  <tr>
+    <td><strong>Название:</strong></td>
+    <td><%= tte support.name %></td>
+  </tr>
+  <tr>
+    <td><strong>Описание:</strong></td>
+    <td><%=tte support.task %></td>
+  </tr>
+  <tr>
+    <td>
+      <strong>Доп. сведения:</strong><br/>
+      <% if can_edit?(support) and support.status=='open' and not support.worker_id.nil?%>
+        <span id="support_share_<%=support.id%>">
+          Данные скрыты. <%= rlink("[Показать]", {:controller => 'main', :action => 'support_work', :id => support.id, :do=>'share'},"support_share_#{support.id}", 'post') %>
+        </span>
+      <%end%>
+    </td>
+    <td>
+      <% if can_view_support?(support) %>
+        <%=tte support.info %>
+      <%elsif support.worker_id == current_user.id%>
+        Пользователь должен одобрить, если он отсутствует то,
+        через <%= (support.updated_at - 30.minutes.ago).to_i/60 %>
+        минут будет показано автоматически
+      <%else%>
+        Сведения будут доступны после закрепления задачи за вами
+      <%end%>
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Вознаграждение:</strong></td>
+    <td><%= support.money %> ox</td>
+  </tr>
+  <tr>
+    <td><strong>Пользователь:</strong></td>
+    <td><%= profile_link(support.user) %></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <% if can_edit?(support) %>
+        <%= link_to "Редактировать", edit_support_path(support) %> |
+        <%= link_to "Удалить", support, :confirm => 'Are you sure?', :method => :delete %> |
+      <%end%>
+      <span id="support_<%=support.id%>">
+        <%= support_sw(support) %>
+      </span>
+    </td>
+  </tr>
+</table>

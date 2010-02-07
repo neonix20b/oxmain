@@ -30,18 +30,39 @@ class MainController < ApplicationController
 
   def support_work
     return render :text=>"нельзя" if not logged_in? or not request.post?
+    support=Support.find(params[:id])
+    ret="Готово!"
     if params[:do]=='get'
-      return render :text=>"нельзя" if Support.find(:first, :conditions => {:worker_id => current_user.id})
-      support=Support.find(params[:id])
+      return render :text=>"Есть не закрытая" if Support.find(:first, :conditions => {:worker_id => current_user.id, :status => ['open','share']})
+      return render :text=>"нельзя" if not support.worker_id.nil?
       support.worker_id=current_user.id
-      support.save!
-      return render :text => 'Закреплено за Вами'
+      support.status='open'
+      ret='Закреплено за Вами'
     elsif params[:do]=='del'
-      support=Support.find(params[:id])
+      return render :text=>"нельзя" if support.worker_id!=current_user.id
       support.worker_id=nil
-      support.save!
-      return render :text => 'Заявка стала свободной'
+      support.status='open'
+      ret='Заявка теперь свободная'
+    elsif params[:do]=='share'
+      return render :text=>"нельзя" if support.user_id != current_user.id or support.status!='open'
+      support.status='share'
+    elsif params[:do]=='close'
+      ################ Не забыть раскоментировать строку ниже ################
+      return render :text=>"нельзя" if support.worker_id != current_user.id# or support.updated_at < 5.minutes.ago
+      support.status='close'
+    elsif params[:do]=='accept'
+      return render :text=>"нельзя" if support.user_id != current_user.id and current_user.right!='admin'
+      user = User.find(support.worker_id)
+      transfer_money(User.find(3), user, support.money.to_f)
+      support.destroy
+      user.ox_rank += 1
+      user.save!
+    elsif params[:do]=='nu_nah'
+      return render :text=>"нельзя" if support.user_id != current_user.id
+      support.status='nu_nah'
     end
+    support.save! if params[:do]!='accept'
+    return render :text=>ret
   end
 
   def comment_work

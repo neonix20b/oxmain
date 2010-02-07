@@ -3,7 +3,7 @@
   <%=tte comment.text %>
 <%end%>
 
-<%if can_edit?%>
+<%if can_edit? and (not defined?(support) or support.status!='close') %>
   <% semantic_form_for :comment, @comment, :url => { :controller => 'main', :action => "comment_work", :do => 'add' } do |f| %>
     <% f.inputs :style => "border:0px;" do %>
       <%= f.hidden_field :user_id, :value => current_user.id %>

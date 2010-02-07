@@ -239,6 +239,7 @@ margin: 0px;
 padding:1px 10px;
 background-image: url(/images/text_back.png);
 position: relative;
+min-height: 200px;
 }
 #box_content
 {

@@ -1,0 +1,25 @@
+<table>
+  <tr>
+    <th>Пользователь</th>
+    <th>Название заявки</th>
+    <th>ox'ы</th>
+  </tr>
+  <% for support in supports %>
+    <tr>
+      <td><%= profile_link(support.user) %></td>
+      <td><%=link_to h(support.name), support %></td>
+      <td align="center"><%= support.money %></td>
+      <td>
+        <span id="support_<%=support.id%>">
+          <%= support_sw(support) %>
+        </span>
+      </td>
+      <% if can_edit?(support) %>
+        <td>
+          <%= link_to "[e]", edit_support_path(support) %>
+          <%= link_to "[x]", support, :confirm => 'Точно удалить?', :method => :delete %>
+        </td>
+      <%end%>
+    </tr>
+  <% end %>
+</table>

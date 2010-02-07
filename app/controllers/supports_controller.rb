@@ -4,11 +4,13 @@ class SupportsController < ApplicationController
   before_filter :check_right, :except => [:show, :index]
 
   def index
-    @supports = Support.all
+    @supports = Support.all(:order => 'money DESC')
+    render :partial => "supports_list", :locals => {:supports => @supports} if request.xhr?
   end
   
   def show
     @support = Support.find(params[:id])
+    render :partial => "show_support", :locals => {:support => @support} if request.xhr?
   end
   
   def new

@@ -1,45 +1,16 @@
 <% title "Просмотр заявки" %>
 <h5><%= link_to "Все блоги", blogs_path %> → <%= link_to "Все Заявки", supports_path %> → Просмотр заявки</h5>
 
-<table width="70%">
-  <tr>
-    <td><strong>Название:</strong></td>
-    <td><%= tte @support.name %></td>
-  </tr>
-  <tr>
-    <td><strong>Описание:</strong></td>
-    <td><%=tte @support.task %></td>
-  </tr>
-  <% if can_edit?(@support) or @support.worker_id == current_user.id %>
-    <tr>
-      <td><strong>Доп. сведения:</strong></td>
-      <td><%=tte @support.info %></td>
-    </tr>
-  <%end%>
-  <tr>
-    <td><strong>Вознаграждение:</strong></td>
-    <td><%= @support.money %> ox</td>
-  </tr>
-  <tr>
-    <td><strong>Пользователь:</strong></td>
-    <td><%= profile_link(@support.user) %></td>
-  </tr>
-  <tr>
-    <td></td>
-    <td>
-      <% if can_edit?(@support) %>
-        <%= link_to "Редактировать", edit_support_path(@support) %> |
-        <%= link_to "Удалить", @support, :confirm => 'Are you sure?', :method => :delete %> |
-      <%end%>
-      <span id="support_<%=@support.id%>">
-        <%= support_sw(@support) %>
-      </span>
-    </td>
-  </tr>
-</table>
-<br/>
-<br/>
+<div id="show_support">
+  <%= render :partial => "show_support", :locals => { :support => @support} %>
+</div>
+<br/><br/>
+
 <h5>Комментарии(<%= @support.comments.size %>)</h5>
 <div>
-  <%= render :partial => 'posts/comments', :locals => {:comments => @support.comments} %>
+  <%= render :partial => 'posts/comments', :locals => {:comments => @support.comments, :support => @support} %>
 </div>
+
+<%if logged_in? and @support.worker_id == current_user.id and @support.status!='close'%>
+  <%= periodically_call_remote(:url => support_url(@support), :method=>'get', :frequency => '30', :update => 'show_support') %>
+<%end%>

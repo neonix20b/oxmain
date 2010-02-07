@@ -1,24 +1,13 @@
 <% title "Все заявки" %>
 <h5><%= link_to "Все блоги", blogs_path %> → Все Заявки</h5>
-<table>
-  <tr>
-    <th>Пользователь</th>
-    <th>Название заявки</th>
-    <th>ox'ы</th>
-  </tr>
-  <% for support in @supports %>
-    <tr>
-      <td><%= profile_link(support.user) %></td>
-      <td><%=link_to h(support.name), support %></td>
-      <td><%= support.money %></td>
-      <% if can_edit?(support) %>
-        <td><%= link_to "[e]", edit_support_path(support) %></td>
-        <td><%= link_to "[x]", support, :confirm => 'Точно удалить?', :method => :delete %></td>
-      <%end%>
-    </tr>
-  <% end %>
-</table>
+<div id="supports">
+  <%= render :partial => "supports_list", :locals => { :supports => @supports} %>
+</div>
 
 <% if can_edit? %>
   <p><%= link_to "Создать заявку", new_support_path %></p>
+<%end%>
+
+<%if logged_in?%>
+  <%= periodically_call_remote(:url => supports_url, :method=>'get', :frequency => '30', :update => 'supports') %>
 <%end%>

@@ -4,4 +4,5 @@ class Post < ActiveRecord::Base
   belongs_to :user
   has_many :comments
   acts_as_taggable
+  before_destroy { |record| Comment.destroy_all "post_id = #{record.id}"   }
 end
