@@ -12,7 +12,8 @@
   <h5><%= link_to "Все блоги", blogs_path %> → Тег: <%=params[:favorite]%></h5>
 <%else%>
   <% title @blog.name %>
-  <h5><%= link_to "Все блоги", blogs_path %> → <%= @blog.name %></h5>
+  <h5><%= link_to "Все блоги", blogs_path %> → <%= @blog.name %> → <%= add_favorite(@blog.id) %></h5>
+  
 <%end%>
 <%= link_to "Все статьи", blog_posts_path(0, :favorite => "all") %> |
 <%= link_to "Избранные", blog_posts_path(0, :favorite => "true") %> |
@@ -20,10 +21,9 @@
 
 <% for post in @posts %>
   <h2>
-    <% if params.has_key?('favorite') %>
-      <%= add_favorite(post.blog_id) %>
-      <%= link_to post.blog.name, blog_posts_path(post.blog_id) %> →
-    <%end%>
+  <%# if params.has_key?('favorite') %>
+    <%= link_to post.blog.name, blog_posts_path(post.blog_id) %> →
+  <%#end%>
     <%=link_to h(post.title),blog_post_path(post.blog_id, post) %>
   </h2>
   Краткое описание<br/>
@@ -31,7 +31,7 @@
   <%= post.updated_at %>
   <%= ox_rank_field(post) %>
   <% if can_edit?(post) %>
-  | Управление:
+    | Управление:
     <%= link_to "[e]", edit_blog_post_path(post.blog_id, post) %>
     <%= link_to "[x]", blog_post_path(post.blog_id, post), :confirm => 'Точно удалить статью?', :method => :delete %>
   <%end%>

@@ -1,8 +1,4 @@
-<% title "Edit Support" %>
-
+<% title "Редактирование заявки" %>
+<h5><%= link_to "Все блоги", blogs_path %> → <%= link_to "Все Заявки", supports_path %> → Редактирование заявки</h5>
 <%= render :partial => 'form' %>
 
-<p>
-  <%= link_to "Show", @support %> |
-  <%= link_to "View All", supports_path %>
-</p>

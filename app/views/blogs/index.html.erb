@@ -8,7 +8,7 @@
   <% for blog in @blogs %>
     <tr>
       <td><h2><%= link_to h(blog.name), blog %></h2></td>
-      <td><%=h blog.description %></td>
+      <td><%=h blog.description %><br/><%= add_favorite(blog.id) %></td>
       <%  if can_edit_blog? %>
         <td><%= link_to "[e]", edit_blog_path(blog) %></td>
         <td><%= link_to "[x]", blog, :confirm => 'Точно удалить блог?', :method => :delete %></td>

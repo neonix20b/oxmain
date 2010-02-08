@@ -79,6 +79,9 @@ class WmController < ApplicationController
         server = XMLRPC::Client.new2("http://89.208.146.83:1979")
         #server.call("register_payment",domain, money.to_s )
         resp += "#{params[:smsid]}[#{domain}]: Спасибо\n"
+
+        user.money = server.call("get_balance", current_user.id)
+        user.save!
       else
         Syslog.open('oxmaind')
         Syslog.crit("WEBMONEY SMS error #{params['cost-rur'].to_s}p to id=#{params[:msg]}. date=#{params[:date]} sign=#{params[:sign]} smsid=#{params[:smsid]}")
@@ -120,7 +123,8 @@ class WmController < ApplicationController
         Syslog.crit("BAD Hash!!! our = #{ourhash} but wm=#{params[:LMI_HASH]}")
         Syslog.close
       end
-      
+      user.money = server.call("get_balance", current_user.id)
+      user.save!
     else
       #render :text => 'ok'
       #redirect_to :action => 'success'
@@ -146,6 +150,7 @@ class WmController < ApplicationController
     end
     @service_size = session[params[:id].to_s]
     current_user.money = server.call("get_balance", current_user.id)
+    current_user.save!
     get_my_site(current_user)
     render :layout => false
   end
@@ -171,6 +176,7 @@ class WmController < ApplicationController
         server.call("service_bridge",'service_add', current_user.id.to_s, params[:id],@service_size)
       end
       current_user.money = server.call("get_balance", current_user.id)
+      current_user.save!
       get_my_site(current_user)
     end
     session[ss] = @service_size.to_s

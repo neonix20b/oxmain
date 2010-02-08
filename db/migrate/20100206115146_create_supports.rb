@@ -6,15 +6,17 @@ class CreateSupports < ActiveRecord::Migration
       t.string :name
       t.text :info
       t.text :task
-      t.text :what_do
+      t.integer :time, :default => 30
+	  t.float :ox_rank, :default => 10
       t.references :user
       t.integer :worker_id
+	  t.string :status, :default => 'open'
       t.timestamps
     end
   end
   
   def self.down
     drop_table :supports
-    remove_column :comments, :support
+    remove_column :comments, :support_id
   end
 end

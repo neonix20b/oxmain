@@ -5,10 +5,38 @@
     <%= f.input :name,:label => false, :wrapper_html => { :style => 'display:block;' } %>
     <%= textile_editor 'support', 'task', :style=>"width:60%; height:300px;" -%>
     <%= f.input :info,:label => false, :wrapper_html => { :style => 'display:block;'}, :input_html => {:style=>"width:60%; height:150px;"} %>
-    <%= f.input :money,:label => "Количество ox'ов", :wrapper_html => { :style => 'display:block;'} %>
+    <div style="width:60%;">
+      Время которое система будет ждать одобрения кандидатуры исполнителя с Вашей стороны.
+      По его истечению произойдет автоматическое подтверждение.
+    </div>
+    <%= f.input :time,:label => "Количество минут", :wrapper_html => { :style => 'display:block;'} %>
+
+
+    <%if false%>
+      <br/>
+      <div style="width:60%;">
+        Время которое система будет ждать одобрения кандидатуры исполнителя с Вашей стороны.
+        По его истечению произойдет автоматическое подтверждение.
+      </div>
+      <%= f.input :ox_rank,:label => "ox-ранг", :wrapper_html => { :style => 'display:block;'} %>
+    <%end%>
+
+
+    <br/>
+    <%if params[:action]=='new'%>
+      <div style="width:60%;">
+        Количество ox'ов которое получит исполнитель. Чем больше, тем выше будет
+        Ваша стоять заявка.
+      </div>
+      <%= f.input :money,:label => "Количество ox'ов", :wrapper_html => { :style => 'display:block;'} %>
+    <%else%>
+      <div style="width:60%;">
+        За это исполнитель получит <%= @support.money %>ox'ов
+      </div>
+    <%end%>
   <%end%>
   <% f.buttons :style => "border:0px;" do %>
-    <%= f.commit_button :wrapper_html => { :style => 'display:block;'} %>
+    <%= f.commit_button :label => "Создать", :wrapper_html => { :style => 'display:block;'} %>
   <% end %>
 <% end %>
 

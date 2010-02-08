@@ -7,10 +7,14 @@
 <br/><br/>
 
 <h5>Комментарии(<%= @support.comments.size %>)</h5>
-<div>
-  <%= render :partial => 'posts/comments', :locals => {:comments => @support.comments, :support => @support} %>
-</div>
+<%if can_view_support?(@support)%>
+  <strong>Комментарии видны только исполнителю и заказчику</strong>
+  <div>
+    <%= render :partial => 'posts/comments', :locals => {:comments => @support.comments, :support => @support} %>
+  </div>
+  <%#= periodically_call_remote(:url => support_url(@support), :method=>'get', :frequency => '30', :update => 'show_support') %>
 
-<%if logged_in? and @support.worker_id == current_user.id and @support.status!='close'%>
-  <%= periodically_call_remote(:url => support_url(@support), :method=>'get', :frequency => '30', :update => 'show_support') %>
+<%else%>
+  Комментарии будут доступны только после одобрения заказчиком или
+  через <%=(@support.updated_at - @support.time.minutes.ago).to_i/60 + 1%>мин.
 <%end%>

@@ -13,15 +13,15 @@ class MainController < ApplicationController
 
   def favorite
     return render :text=>"нельзя" if not logged_in? or not request.post?
-    ret = '[+]'
+    ret = 'Теперь вы за ним не следите'
     tmp = Array.new()
     tmp = current_user.favorite.split(',') if not current_user.favorite.nil?
     if tmp.include?(params[:blog_id].to_s)
       tmp.delete(params[:blog_id].to_s)
-      ret = '[+]'
+      ret = 'Теперь вы за ним не следите'
     else
       tmp.insert(-1, params[:blog_id].to_s)
-      ret = '[-]'
+      ret = 'Теперь Вы следите за этим блогом'
     end
     current_user.favorite=tmp.uniq.join(',')
     current_user.save!
@@ -39,7 +39,10 @@ class MainController < ApplicationController
       support.status='open'
       ret='Закреплено за Вами'
     elsif params[:do]=='del'
-      return render :text=>"нельзя" if support.worker_id!=current_user.id
+      return render :text=>"нельзя" if support.worker_id!=current_user.id and current_user.right!='admin'
+      user = User.find(support.worker_id)
+      user.ox_rank -= 1
+      user.save!
       support.worker_id=nil
       support.status='open'
       ret='Заявка теперь свободная'

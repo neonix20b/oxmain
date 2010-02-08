@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
 
   private
   def transfer_money(from_user, to_user, money=1)
+    money = money.abs
     server = XMLRPC::Client.new2("http://89.208.146.80:1979")
     from_user.money = server.call("get_balance", from_user.id)
     from_user.save!
@@ -52,6 +53,7 @@ class ApplicationController < ActionController::Base
       session[:price][d[1].to_s] = d[3].to_s.to_i
     end
     current_user.money = server.call("get_balance", current_user.id)
+    current_user.save!
   end
   
   def app_rebuild(user=current_user)

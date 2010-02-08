@@ -13,7 +13,7 @@ module ApplicationHelper
   def can_edit?(obj=nil)
     return false if not logged_in?
     return true if obj.nil?
-    return false if obj.respond_to?('status') and obj.status!='open' and obj.status!='share' and obj.worker_id.nil?
+    return false if obj.respond_to?('status') and (obj.status!='open' or not obj.worker_id.nil? or obj.user_id != current_user.id)
     return true if obj.user_id == current_user.id
     #return true if current_user.right=='admin'
     return false

@@ -39,6 +39,7 @@ class SupportsController < ApplicationController
   
   def update
     #@support = Support.find(params[:id])
+    params[:support].delete('money')
     if @support.update_attributes(params[:support])
       flash[:notice] = "Заявка успешно обновлена."
       redirect_to @support
