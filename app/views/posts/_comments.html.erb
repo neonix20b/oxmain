@@ -1,25 +1,31 @@
 <%comments.each do |comment|%>
-  <%= profile_link(comment.user) %> [<%= comment.updated_at %>] <%= ox_rank_field(comment) %>
-  <%=tte comment.text %>
+  <div class="comment_box" id="com_<%=comment.id.to_s%>">
+    <div style="font-weight: bold;color:white;padding-bottom:5px;"><%= profile_link(comment.user) %>&nbsp;&nbsp;<%= show_time(comment.updated_at) %>&nbsp;&nbsp;
+      <%= link_to "#", request.request_uri+"#com_"+comment.id.to_s %>
+      <span style="float:right;"><%= ox_rank_field(comment) %></span></div>
+    <div><%=tte(comment.text,[:filter_html, :lite_mode]) %></div>
+  </div>
 <%end%>
 
 <%if can_edit? and (not defined?(support) or support.status!='close') %>
-  <% semantic_form_for :comment, @comment, :url => { :controller => 'main', :action => "comment_work", :do => 'add' } do |f| %>
-    <% f.inputs :style => "border:0px;" do %>
-      <%= f.hidden_field :user_id, :value => current_user.id %>
-      <%if not @post.nil?%>
-        <%= hidden_field 'blog','id', :value => @blog.id %>
-        <%= f.hidden_field :post_id, :value => @post.id %>
-      <%else%>
-        <%= f.hidden_field :support_id, :value => @support.id %>
-      <%end%>
-      <%= textile_editor 'comment', 'text', :style=>"width:60%; height:200px;" -%>
+  <div>
+    <% semantic_form_for :comment, @comment, :url => { :controller => 'main', :action => "comment_work", :do => 'add' } do |f| %>
+      <% f.inputs :style => "border:0px;" do %>
+        <%= f.hidden_field :user_id, :value => current_user.id %>
+        <%if not @post.nil?%>
+          <%= hidden_field 'blog','id', :value => @blog.id %>
+          <%= f.hidden_field :post_id, :value => @post.id %>
+        <%else%>
+          <%= f.hidden_field :support_id, :value => @support.id %>
+        <%end%>
+        <%= textile_editor 'comment', 'text', :style=>"width:60%; height:200px;" -%>
       <%#= f.tinymce :text, :label => "Текст", :style=>"width:60%; height:200px;" %>
-    <%end%>
-    <% f.buttons :style => "border:0px;" do %>
-      <%= f.commit_button :wrapper_html => { :style => 'display:block;' }, :label => "Отправить"%>
+      <%end%>
+      <% f.buttons :style => "border:0px;" do %>
+        <%= f.commit_button :wrapper_html => { :style => 'display:block;' }, :label => "Отправить"%>
+      <% end %>
     <% end %>
-  <% end %>
+  </div>
 <%end%>
 
 <%= textile_editor_initialize -%>

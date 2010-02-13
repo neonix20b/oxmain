@@ -2,12 +2,26 @@
 module ApplicationHelper
   include TagsHelper
 
-  def tte(text)
-    return RedCloth.new(text).to_html
+  def tte(text, mode=[:filter_html])
+    return RedCloth.new(text, mode).to_html
+  end
+
+  def show_time(time)
+    return Russian::strftime(time.utc, "%d %B %Y, %H:%M UTC")
   end
   
-  def profile_link(user=current_user)
-    return h(user.login)
+  def profile_link(user=current_user,link=true)
+    ret = user.login
+    ret = user.show_name if not user.show_name.nil?
+    return h(ret) if link==false
+    return link_to(h(ret),{:controller=>'account',:action=>'profile',:id=>user.login})
+  end
+
+  def user_site_link(user=current_user,link=true)
+    ret = user.login + '.oxnull.net'
+    ret = user.domain if not user.domain.nil? and user.domain.size > 3
+    return h(ret) if link==false
+    return link_to(h(ret),"http://"+h(ret))
   end
 
   def can_edit?(obj=nil)
@@ -25,14 +39,27 @@ module ApplicationHelper
     return false
   end
 
-  def ox_rank_field(obj)
+  def ox_rank_field(obj,label=nil,wtf=nil, action='ox_rank_helper')
     ox_rank = obj.ox_rank
     count = ox_rank
-    count = obj.count if obj.respond_to?('count')
+    count = obj.count.to_i.to_s if obj.respond_to?('count')
+    color = 'white'
+    if count.to_i > 0
+      count = '+'+count
+      color = 'red'
+    end
     span_id="ox_rank_#{obj.class.name}_#{obj.id.to_s}"
-    minus = rlink('[-]',{:controller=>'main', :action=>'ox_rank', :do=>'minus', :obj=>obj.class.name, :id => obj.id},span_id,'post')
-    plus = rlink('[+]',{:controller=>'main', :action=>'ox_rank', :do=>'plus', :obj=>obj.class.name, :id => obj.id},span_id,'post')
-    return "<span id='#{span_id}'>#{minus} <strong>#{count.to_i.to_s}</strong> #{plus}</span>"
+    if label.nil? and logged_in? and obj.user_id!=current_user.id
+      minus_txt = '-'
+      plus_txt = '+'
+      minus = rlink(minus_txt,{:controller=>'main', :action=>action, :do=>'minus', :obj=>obj.class.name, :id => obj.id, :span_id=>span_id},'ox_rank_helper_div','post')
+      plus = rlink(plus_txt,{:controller=>'main', :action=>action, :do=>'plus', :obj=>obj.class.name, :id => obj.id, :span_id=>span_id},'ox_rank_helper_div','post')
+      return "<span id='#{span_id}'>#{minus} <strong style='color:#{color};'>#{count}</strong> #{plus}</span>"
+    elsif logged_in? and obj.user_id!=current_user.id
+      return rlink(label,{:controller=>'main', :action=>action, :do=>wtf, :obj=>obj.class.name, :id => obj.id, :span_id=>span_id},span_id,'post')
+    else
+      return "<strong style='color:#{color};'>[#{count}]</strong>"
+    end
   end
 
   def author(post)
@@ -48,13 +75,13 @@ module ApplicationHelper
   end
 
   def true_button(text)
+
+		#"<!--<span style='float: left;clear:right;white-space: nowrap;'>#{image_tag('btn_left.png')}</span>-->
+		#<!--<span class='btn_middle'>#{text}</span>-->
+    #<!--<span style='float: right;white-space: nowrap;'>#{image_tag('btn_right.png')}</span>-->"
     "<button type='submit' style='padding: 0px;cursor: pointer;background-color:transparent;border-width: 0;'>
-	<span>
-		<span style='float: left;'>#{image_tag('btn_left.png')}</span>
-		<span class='btn_middle'>#{text}</span>
-		<span style='float: left;'>#{image_tag('btn_right.png')}</span>
-	</span>
-</button>"
+      <span class='btn_middle'>#{text}</span>
+     </button>"
   end
   
   def shorthead(name)

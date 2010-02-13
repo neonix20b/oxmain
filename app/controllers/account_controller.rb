@@ -1,11 +1,10 @@
-require 'xmlrpc/client'
 require "base64"
 class AccountController < ApplicationController
   # Be sure to include AuthenticationSystem in Application Controller instead
   include AuthenticatedSystem
   protect_from_forgery :except => [:login, :signup, :logout, :whoiam, :index, :check_login]
   # If you want "remember me" functionality, add this before_filter to Application Controller
-  before_filter :login_from_cookie
+  before_filter :login_from_cookie, :except =>[:profile]
 
   # say something nice, you goof!  something sweet.
   def index
@@ -145,5 +144,18 @@ class AccountController < ApplicationController
     flash[:notice] = "Выход прошел успешно." if params[:format]!='xml'
     redirect_back_or_default(:controller => ctrl, :action => 'index') if params[:format]!='xml'
     render :text => 'ok' if params[:format]=='xml'
+  end
+
+  def profile
+    user_login = params[:id]
+    @user = User.find(:first, :conditions => {:login => user_login})
+    if @user.old_rank != @user.ox_rank and @user.updated_at < 120.minutes.ago
+      @user.old_rank = @user.ox_rank
+      @user.save!
+    end
+    tmp = []
+    @blogs = []
+    tmp = @user.favorite.split(',') if  not @user.favorite.nil?
+    @blogs = Blog.find(tmp, :order => 'name ASC') if not tmp.empty?
   end
 end

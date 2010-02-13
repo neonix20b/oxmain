@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <%= stylesheet_link_tag 'new_style' %>
+    <%= javascript_include_tag :all  %>
+  </head>
+  <body>
+          <% javascript_tag do %>
+            function at_cursor(){
+              posx=$('<%=params[:span_id]%>').offsetLeft + $('main_box').offsetLeft;
+              posy=$('<%=params[:span_id]%>').offsetTop + $('main_box').offsetTop+$('<%=params[:span_id]%>').offsetHeight +16;
+              $('ox_rank_helper_div').style.left = posx+'px';
+              $('ox_rank_helper_div').style.top = posy+260+'px';
+              $('ox_rank_helper_div').style.display = "block";
+              }
+              at_cursor();
+          <%end%>
+    <div id="content">
+      <div style="float:right;">
+        <a href="#" onclick="$('ox_rank_helper_div').style.display = 'none';$('ox_rank_helper_div').innerHTML='';">[x]</a>
+      </div>
+      <%= yield %>
+    </div>
+  </body>
+</html>

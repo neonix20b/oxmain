@@ -5,7 +5,7 @@ class BlogsController < ApplicationController
   before_filter :login_from_cookie, :except => [:show, :index]
   
   def index
-    @blogs = Blog.all
+    @blogs = Blog.all(:order => 'name ASC')
   end
   
   def show

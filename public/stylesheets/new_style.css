@@ -6,333 +6,376 @@
     margin: 10px 20px;
     color: black;
 }
+.popup{
+    position:absolute;
+    /*visibility:hidden;
+	background-color: #000;*/
+	background-image: url(/images/text_back.png);
+	padding: 10px;
+	z-index: auto;
+	border-radius: 10px; 
+	-moz-border-radius: 10px;
+	-o-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border: 1px #000;
+	display: none;
+}
 table{
-cellpadding: 0px;
-cellspacing: 0px;
+    cellpadding: 0px;
+    cellspacing: 0px;
 }
 .header
 {
-height: 240px;
-background-image: url(/images/header_back.png);
-background-color: #333333 transparent;
-border: #1a1a1a solid 1px;
-border-bottom: none;
-z-index: auto;
+    height: 240px;
+    background-image: url(/images/header_back.png);
+    background-color: #333333 transparent;
+    border: #1a1a1a solid 1px;
+    border-bottom: none;
+    z-index: auto;
 }
 .footer
 {
-height: 220px;
-background-image: url(/images/footer_back.png);
-border: #1a1a1a solid 1px;
-border-top: none;
-padding: 10px 15px;
+    height: 220px;
+    background-image: url(/images/footer_back.png);
+    border: #1a1a1a solid 1px;
+    border-top: none;
+    padding: 10px 15px;
 }
 body
 {
-background:url("/images/backdrop.png") repeat-x fixed 0 0 #7AB6F3;
-font-family: Tahoma;
-font-size: 10pt;
-color: #ffffff;
+    background:url("/images/backdrop.png") repeat-x fixed 0 0 #7AB6F3;
+    font-family: Tahoma;
+    font-size: 10pt;
+    color: #ddd;
 }
 a
 {
-color: #b5e7fd;
+    color: #b5e7fd;
+	text-decoration:none;
 }
 a img
 {
-vertical-align: middle;
-padding-bottom: 5px;
-margin-right: 4px;
-border: none;
+    vertical-align: middle;
+    padding-bottom: 5px;
+    margin-right: 4px;
+    border: none;
 }
 h5, th
 {
-font-size: 12pt;
-color: #b5e7fd;
-margin:0px;
-font-weight:bold;
+    font-size: 12pt;
+    margin:0px;
+    font-weight:bold;
+}
+th 
+{
+	color: #b5e7fd;
+}
+h5
+{
+	color: white;
 }
 h4
 {
-font-size: 10pt;
-font-weight:bold;
-margin: 5px 0px;
-padding: 3px 0px;
-border-top: dashed 1px #888888;
-border-bottom: dashed 1px #888888;
-width: 200px;
+    font-size: 10pt;
+    font-weight:bold;
+    margin: 5px 0px;
+    padding: 3px 0px;
+    border-top: dashed 1px #888888;
+    border-bottom: dashed 1px #888888;
+    width: 200px;
 }
 th
 {
-padding: 0px 20px;
-text-align: left;
+    padding: 0px 20px;
+    text-align: left;
 }
 td
 {
-padding: 0px 10px;
+    padding: 0px 10px;
 }
 select, .table_2, input.text
 {
-border-style:solid;
-border-width: 1px;
-border-color: #888888;
+    border-style:solid;
+    border-width: 1px;
+    border-color: #888888;
 }
 select
 {
-background-color: #444444;
-color:  white;
+    background-color: #444444;
+    color:  white;
 }
 
 
 .table_2
 {
-background-color: #444444;
-text-align: center;
-border-spacing: 0px;
-margin-left: 10px;
-margin-top: 6px;
+    background-color: #444444;
+    text-align: center;
+    border-spacing: 0px;
+    margin-left: 10px;
+    margin-top: 6px;
 }
 .table_2 th, .table_2 td
 {
-padding: 4px 10px;
-text-align: center;
-border-style:solid;
-border-width: 1px;
-border-color: #666666;
-font-weight: normal;
-color: #a6a6a6;
+    padding: 4px 10px;
+    text-align: center;
+    border-style:solid;
+    border-width: 1px;
+    border-color: #666666;
+    font-weight: normal;
+    color: #a6a6a6;
 }
 .table_2 td
 {
-color: white;
+    color: white;
 }
 .table_1
 {
-border-right: #666666 dashed 1px;
+    border-right: #666666 dashed 1px;
 }
 #service table th, #service table td 
 {
-padding: 1px;
-text-align: center;
-font-size: 8pt;
+    padding: 1px;
+    text-align: center;
+    font-size: 8pt;
 }
 #service table .first
 {
-text-align: left;
+    text-align: left;
 }
- 
+
 .main
 {
-width:1024px;
-margin-left:auto;
-margin-right:auto;
-z-index: auto;
+    width:1024px;
+    margin-left:auto;
+    margin-right:auto;
+    z-index: auto;
 }
 #rounded_box_message
 {
-float: right;
-margin-right: 20px;
-margin-top: 12px;
+    float: right;
+    margin-right: 20px;
+    margin-top: 12px;
+	width: 380px;
 }
 .autorisation1
 {
-float: left;
-margin-top: 16px;
-margin-left: 28px;
-width: 285px;
+    float: left;
+    margin-top: 16px;
+    margin-left: 28px;
+    width: 300px;
 }
 .autorisation2
 {
-margin-top: 2px;
-padding-top: 8px;
-padding-left: 4px;
-border-top: dashed 1px #535352;
+    margin-top: 2px;
+    padding-top: 8px;
+    padding-left: 4px;
+    border-top: dashed 1px #535352;
+}
+form
+{
+margin-top: 0px;
 }
 .logo
 {
-float: left;
+    float: left;
 }
 .logo  img
 {
-margin-left: 16px;
-margin-top:20px;
+    margin-left: 16px;
+    margin-top:20px;
 }
 input.text
 {
-margin-left: 4px;
-margin-right: 8px;
-width: 80px;
-background-color: #444444;
-color: white;
+    margin-left: 4px;
+    margin-right: 8px;
+    width: 80px;
+    background-color: #444444;
+    color: white;
 }
 .menu_big
 {
-float: right;
-height: 85px;
+    float: right;
+    height: 85px;
 }
 .menu_left
 {
-float: left;
-background-image: url(/images/menu_left.png);
-background-position: left top;
-background-repeat: no-repeat;
-vertical-align: middle;
-width: 10px;
-height: 100%;
+    float: left;
+    background-image: url(/images/menu_left.png);
+    background-position: left top;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    width: 10px;
+    height: 100%;
 }
 .menu_right
 {
-background-image: url(/images/menu_back.png);
-float: right;
-height: 100%;
-display: block;
-padding-left: 20px;
+    background-image: url(/images/menu_back.png);
+    float: left;
+    height: 100%;
+    display: block;
+    padding-left: 20px;
 }
 .menu_right div
 {
-float: left;
-padding-right: 20px;
-padding-top: 10px;
+    float: left;
+    padding-right: 20px;
+    padding-top: 10px;
 }
 .menu_right .aa
 {
-margin-top: 18px;
+    margin-top: 18px;
 }
 .content_back
 {
-width: 100%;
-height: 100%;
-background-color: #7AB6F4 transparent;
-background-image: url(/images/content_back.png);
-background-position: top left;
-position: relative;
-padding: 20px 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #7AB6F4 transparent;
+    background-image: url(/images/content_back.png);
+    background-position: top left;
+    position: relative;
+    padding: 20px 0px;
 
 
 }
 .content_back_1
 {
-background-image: url(/images/content_back_1.png);
-background-position: top left;
-background-repeat: no-repeat;
-height: 150px;
-width: 100%;
-position: absolute;
-top: 0px;
-
+    background-image: url(/images/content_back_1.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+    height: 150px;
+    width: 100%;
+    position: absolute;
+    top: 0px;
 }
 .content_back_2
 {
-background-image: url(/images/content_back_2.png);
-background-position: bottom right;
-background-repeat: no-repeat;
-height: 150px;
-width: 100%;
-position: absolute;
-bottom: 0px;
-
+    background-image: url(/images/content_back_2.png);
+    background-position: bottom left;
+    background-repeat: no-repeat;
+    height: 150px;
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+	left: 0;
 }
 .content
 {
-/*background-color: #38516a;*/
-margin: 0px;
-padding:1px 10px;
-background-image: url(/images/text_back.png);
-position: relative;
-min-height: 200px;
+    /*background-color: #38516a;*/
+    margin: 0px;
+    padding:20px 40px;
+    background-image: url(/images/text_back.png);
+    position: relative;
+    min-height: 200px;
+	/*filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/text_back.png',sizingMethod='scale');*/
+}
+.comment_box
+{
+	margin-top:15px;
+	width:80%;
+	background-image: url(/images/comment_back.png);
+	padding:10px;
+	border-radius: 10px; 
+	-moz-border-radius: 10px;
+	-o-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	/*border: 1px #bbb solid;*/
 }
 #box_content
 {
-position: relative;
-margin:0px 20px;
+    position: relative;
+    margin:0px 20px;
 }
 .new
 {
-float: left;
-width: 300px;
-margin-left: 30px;
-padding: 0px 0px;
+    float: left;
+    width: 300px;
+    margin-left: 30px;
+    padding: 0px 0px;
 } 
 .news
 {
-float: left;
-width: 850px;
+    float: left;
+    width: 850px;
 }
 .pics
 {
-font-size: 8pt;
-border-left: dashed 1px #888888;
-float: right;
+    font-size: 8pt;
+    border-left: dashed 1px #888888;
+    float: right;
 }
 #rounded_box_message .message, #rounded_box_message  b {
     background-color: #202020;
 }
 #box_content  b, .new b  {
-	position: relative;
+    position: relative;
     background-image: url(/images/text_back.png);
 }
 #info b, #service b, #adept_center b
 {
-position: static;
-background-image: none;
+    position: static;
+    background-image: none;
 }
 #info,#service, #adept_center
 {
-padding: 5px 10px;
-border-right: dashed 1px #888888;
-height: 256px;
+    padding: 5px 10px;
+    border-right: dashed 1px #888888;
+    height: 256px;
 }
 #info
 {
-float: left;
-width: 290px;
+    float: left;
+    width: 290px;
 }
 #service
 {
-float: left;
-width: 401px;
+    float: left;
+    width: 401px;
 }
 #adept_center
 {
-margin-left: 731px;
-border-right: none;
+    margin-left: 731px;
+    border-right: none;
 }
 #info h5, #service h5, #adept_center h5
 {
-width: 100%;
-text-align: center;
+    width: 100%;
+    text-align: center;
 }
 .adepts
 {
 
-overflow-x: none;
+    overflow-x: none;
 }
 .message {
     padding:0px 5px;
-	min-width: 315px;
+    min-width: 315px;
 }
 
 .break
 {
-float: none;
-height: 450px;
-width: 10px;
+    float: none;
+    height: 450px;
+    width: 10px;
 }
 
 .btn_middle
 {
-background-image: url(/images/btn_middle.png);
-height: 20px;
-float: left;
-color: #243e65;
-padding: 0px 4px;
-font-family: Tahoma;
-font-size: 10pt;
+    background-image: url(/images/btn_middle.png);
+    height: 20px;
+    float: left;
+    color: #243e65;
+    padding: 0px 4px;
+    font-family: Tahoma;
+    font-size: 10pt;
+	white-space: nowrap;
 }
 
 .r1, .r2, .r3, .r4, .r5, .r6, .r7, .r8, .r9, .r10 {
     display: block;
     height: 1px;
+	font-size:  0;
 }
 .r10 { margin: 0 10px; }
 .r9 { margin: 0 7px; }
@@ -347,10 +390,14 @@ font-size: 10pt;
 
 button
 {
-padding: 0px;
-margin: 0px;
-cursor: pointer;
-background-color:transparent;
-border-width: 0px;
-vertical-align: bottom;
+    padding: 0px;
+    margin: 0px;
+    cursor: pointer;
+    background-color:transparent;
+    border-width: 0px;
+    vertical-align: bottom;
+}
+a:hover {
+color: white;
+text-decoration:underline;
 }

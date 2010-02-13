@@ -12,8 +12,8 @@
   <h5><%= link_to "Все блоги", blogs_path %> → Тег: <%=params[:favorite]%></h5>
 <%else%>
   <% title @blog.name %>
-  <h5><%= link_to "Все блоги", blogs_path %> → <%= @blog.name %> → <%= add_favorite(@blog.id) %></h5>
-  
+  <h5><%= link_to "Все блоги", blogs_path %> → <%= @blog.name %> <%= '→' if logged_in? %> <%= add_favorite(@blog.id) %></h5>
+
 <%end%>
 <%= link_to "Все статьи", blog_posts_path(0, :favorite => "all") %> |
 <%= link_to "Избранные", blog_posts_path(0, :favorite => "true") %> |
@@ -26,9 +26,13 @@
   <%#end%>
     <%=link_to h(post.title),blog_post_path(post.blog_id, post) %>
   </h2>
-  Краткое описание<br/>
+  <%txt = post.text.split(" --- ")%><%=tte txt.first %>
+  <%if not txt.second.nil?%>
+    <%=link_to 'Читать полностью',blog_post_path(post.blog_id, post) %>
+  <%end%>
+  <br/><br/>
   <%= author(post) %>
-  <%= post.updated_at %>
+  <%= show_time(post.updated_at) %>
   <%= ox_rank_field(post) %>
   <% if can_edit?(post) %>
     | Управление:

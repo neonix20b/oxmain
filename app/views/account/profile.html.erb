@@ -1,0 +1,28 @@
+<% title profile_link(@user,false) %>
+
+<h1><%= profile_link(@user,false) %></h1>
+<table>
+  <tr><td align="right"><strong>Сайт:</strong></td><td><%= user_site_link(@user) %></td></tr>
+  <tr><td align="right"><strong>Зарегистрирован:</strong></td><td><%= show_time(@user.created_at) %></td></tr>
+  <tr><td align="right"><strong>Последнее обновление:</strong></td><td><%= show_time(@user.updated_at) %></td></tr>
+  <tr><td align="right"><strong>ox-ранг:</strong></td><td><%= @user.old_rank %></td></tr>
+  <tr><td align="right"><strong>Комментариев:</strong></td><td><%= @user.comments.size %></td></tr>
+  <tr><td align="right"><strong>Статьи:</strong></td>
+    <td>
+      <% @user.posts.each do |post| %>
+        <%=link_to h(post.title),blog_post_path(post.blog_id, post) %>
+      <%end%>
+    </td></tr>
+  <% if logged_in? and @user.id == current_user.id %>
+    <tr><td align="right"><strong>ox'ы:</strong></td><td><%= @user.money %>ox</td></tr>
+  <%end%>
+  <tr><td align="right"><strong>Избранные блоги:</strong></td><td>
+      <%if not @blogs.empty?%>
+        <% @blogs.each do |blog| %>
+          <%= link_to h(blog.name), blog %>
+        <%end%>
+      <%else%>
+        Этот пользователь не имеет избранных блогов
+      <%end%>
+    </td></tr>
+</table>

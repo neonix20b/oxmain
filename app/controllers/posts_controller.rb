@@ -39,6 +39,7 @@ class PostsController < ApplicationController
     @post.tag_list = params[:post][:tag_list]
     if @post.save
       flash[:notice] = "Статья успешно создана."
+      flash[:notice] = "Статья успешно создана, но в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
       redirect_to blog_post_url(@blog,@post)
     else
       render :action => 'new'
@@ -46,6 +47,7 @@ class PostsController < ApplicationController
   end
   
   def edit
+    flash[:notice] = "Статья слишком большая, в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
     #@post = Post.find(params[:id])
     #return render :text=> "нельзя" if not can_edit?(@post)
   end
@@ -54,13 +56,15 @@ class PostsController < ApplicationController
     #@post = Post.find(params[:id])
     #return render :text=> "нельзя" if not can_edit?(@post)
     if @post.update_attributes(params[:post])
-      flash[:notice] = "Статья успешно обновлена."+params[:post][:tag_list]
+      flash[:notice] = "Статья успешно обновлена."
       if @post.tag_list != params[:post][:tag_list]
         @post.tag_list = params[:post][:tag_list]
         @post.save!
       end
+      flash[:notice] = "Статья успешно обновлена, но в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
       redirect_to blog_post_url(@blog,@post)
     else
+      flash[:notice] = "Статья слишком большая, в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
       render :action => 'edit'
     end
   end

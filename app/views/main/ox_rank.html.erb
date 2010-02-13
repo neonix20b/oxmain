@@ -1,1 +1,5 @@
 <%= ox_rank_field(@obj) %>
+<% javascript_tag do %>
+  $('ox_rank_helper_div').style.display = 'none';
+  $('ox_rank_helper_div').innerHTML='';
+<%end%>

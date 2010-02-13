@@ -4,7 +4,7 @@
     <%-@phones.each do |ph|-%>
       <tr>
         <td><%= ph.price %></td>
-        <td><%= rlink ph.phone, {:controller=>'wm',:action=>'take_sms',:id=>ph.id.to_s},'sms_price' %></td>
+        <td align="center"><%= rlink ph.phone, {:controller=>'wm',:action=>'take_sms',:id=>ph.id.to_s},'sms_price' %></td>
         <td><%= ph.income %></td>
       </tr>
     <%-end-%>

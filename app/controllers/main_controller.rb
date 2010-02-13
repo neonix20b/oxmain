@@ -50,8 +50,7 @@ class MainController < ApplicationController
       return render :text=>"нельзя" if support.user_id != current_user.id or support.status!='open'
       support.status='share'
     elsif params[:do]=='close'
-      ################ Не забыть раскоментировать строку ниже ################
-      return render :text=>"нельзя" if support.worker_id != current_user.id# or support.updated_at < 5.minutes.ago
+      return render :text=>"нельзя" if support.worker_id != current_user.id or support.updated_at < 15.minutes.ago
       support.status='close'
     elsif params[:do]=='accept'
       return render :text=>"нельзя" if support.user_id != current_user.id and current_user.right!='admin'
@@ -110,11 +109,18 @@ class MainController < ApplicationController
     if @obj.respond_to?('user_id')
       return render :text=>"нельзя" if current_user.id == @obj.user_id
       user = User.find(@obj.user_id)
+      tmp=[]
+      tmp=user.last_vote.split(';') if not user.last_vote.nil?
+      return render :text=>"Уже за него голосовал!" if not session["vote_#{user.id.to_s}"].nil? and not session["vote_#{user.id.to_s}"].to_time < 30.minutes.ago.utc.to_s.to_time
+      session["vote_#{user.id.to_s}"] = Time.now.utc.to_s
+      return render :text=>"Уже за него голосовал!" if current_user.id.to_s == tmp[0] and not tmp[1].to_time < 30.minutes.ago.utc.to_s.to_time
+      user.last_vote="#{current_user.id.to_s};#{Time.now.utc.to_s}"
+      user.old_rank = user.ox_rank if user.old_rank != user.ox_rank and user.updated_at < 120.minutes.ago
       @obj.count += add_count if @obj.respond_to?('count')
       @obj.ox_rank += add_rank
       user.ox_rank += add_rank
-      if (params[:do]=='plus' and transfer_money(current_user, user, 1)) or
-          (params[:do]=='minus' and transfer_money(current_user, User.find(3), 1))
+      if (params[:do]=='plus' and transfer_money(current_user, user, 0.01)) or
+          (params[:do]=='minus' and transfer_money(current_user, User.find(3), 0.01))
         @obj.save!
         user.save!
       else
@@ -122,6 +128,12 @@ class MainController < ApplicationController
       end
     end
     render :layout => false
+    
+  end
+
+  def ox_rank_helper
+    @obj = params[:obj].camelize.constantize.find(params[:id])
+    render :layout => 'popup'
   end
 
   def contacts

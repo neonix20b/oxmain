@@ -1,0 +1,20 @@
+<% if not session["vote_#{@obj.user.id.to_s}"].nil? and not session["vote_#{@obj.user.id.to_s}"].to_time < 30.minutes.ago.utc.to_s.to_time %>
+  Уже за него голосовал!
+<%else%>
+  <% if not current_user.id == @obj.user_id %>
+    <%if params[:do]=='plus'%>
+      <%= ox_rank_field(@obj,'Отлично, я тоже так думал!','plus', 'ox_rank') %><br/>
+      <%= ox_rank_field(@obj,'Хех, забавненько','plus', 'ox_rank') %><br/>
+      <%= ox_rank_field(@obj,'Полностью согласен!','plus', 'ox_rank') %><br/>
+      <%= ox_rank_field(@obj,'Это классная мысль!','plus', 'ox_rank') %>
+    <%else%>
+      <%= ox_rank_field(@obj,'Этот человек совершенно не прав','minus', 'ox_rank') %><br/>
+      <%= ox_rank_field(@obj,'Он не понимает о чем говорит!','minus', 'ox_rank') %><br/>
+      <%= ox_rank_field(@obj,'Да это просто бред!','minus', 'ox_rank') %><br/>
+      <%= ox_rank_field(@obj,'Я не согласен с этой точкой зрения','minus', 'ox_rank') %>
+    <%end%>
+    <br/>За эту операцию у вас будет снято 0,01ox
+  <%else%>
+    За себя голосовать нельзя
+  <%end%>
+<%end%>
