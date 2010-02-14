@@ -6,12 +6,12 @@ class FlexController < ApplicationController
   protect_from_forgery :except => [:adept_def, :service_change, :dotask, :password_change, :my_site, :service_list, :tag_control]
   
   def sms_phone
-    country = "Россия"
+    #country = "Россия"
     if params[:country] and params[:op_name]
-      country = params[:country]
+      #country = params[:country]
       #выдать список номеров с ценами
       @phones = Smsbil.find(:all,
-        :conditions=>['country LIKE ? and op_name LIKE ?',params[:country], params[:op_name]],
+        :conditions=>{:country=>params[:country], :op_name =>params[:op_name]},
         :select => 'country,op_name,phone,price,income,id', :order=> "price")
     elsif params[:country]
       #показать список операторов

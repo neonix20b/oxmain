@@ -43,11 +43,10 @@ module ApplicationHelper
     ox_rank = obj.ox_rank
     count = ox_rank
     count = obj.count.to_i.to_s if obj.respond_to?('count')
-    color = 'white'
-    if count.to_i > 0
-      count = '+'+count
-      color = 'red'
-    end
+    color = ' rgb(204, 0, 0)' if count.to_i < 0
+    color = 'rgb(51, 153, 0)' if count.to_i > 0
+    color = 'white' if count.to_i == 0
+    count = '+'+count if count.to_i > 0
     span_id="ox_rank_#{obj.class.name}_#{obj.id.to_s}"
     if label.nil? and logged_in? and obj.user_id!=current_user.id
       minus_txt = '-'
@@ -58,7 +57,7 @@ module ApplicationHelper
     elsif logged_in? and obj.user_id!=current_user.id
       return rlink(label,{:controller=>'main', :action=>action, :do=>wtf, :obj=>obj.class.name, :id => obj.id, :span_id=>span_id},span_id,'post')
     else
-      return "<strong style='color:#{color};'>[#{count}]</strong>"
+      return "<strong style='color:#{color};'>#{count}</strong>"
     end
   end
 

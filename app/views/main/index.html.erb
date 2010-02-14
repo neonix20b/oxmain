@@ -9,7 +9,7 @@
     <%= render :partial => "main/quotas"%>
   </span>
 
-<!--Вас пригласил: <b><a href="http://<%=@master%>" target="_blank"><%=@master%></a></b><br/><br/>
+<!--Вас пригласил: <strong><a href="http://<%=@master%>" target="_blank"><%=@master%></a></strong><br/><br/>
 						Мои адепты: -->
   <div id="adepts" class="adepts">
 <%#= render :partial => "inv_list", :locals => { :invites => @invites} %>
@@ -18,7 +18,7 @@
 </div>
 <div id="service">
   <h5>Услуги</h5>
-						Баланс: <span id="balance"><b><%= current_user.money.to_s %></b></span>
+  Баланс: <span id="balance"><strong><%= current_user.money.to_s %></strong>ox</span>
   <h4>Управление слугами</h4>
   <table>
     <tr><th class="first">Название</th><th>Оксов(в месяц)</th><th>Количество</th><th>Состояние</th></tr>
@@ -41,6 +41,5 @@
   </div>
 </div>
 <div id="adept_center">
-  <h5>Пароли</h5>
   <%= render :partial => "main/passwords"%>
 </div>

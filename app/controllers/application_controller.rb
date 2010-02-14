@@ -10,8 +10,12 @@ class ApplicationController < ActionController::Base
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery #:secret => 'f7c15baf4ab5a0e89d552d9b49e0ff95'
-
+  def default_url_options(options=nil)
+    { :format => 'html' }
+  end
   private
+
+  
   def transfer_money(from_user, to_user, money=1)
     money = money.abs
     server = XMLRPC::Client.new2("http://89.208.146.80:1979")

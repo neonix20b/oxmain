@@ -17,12 +17,13 @@
     page.replace_html('sms_price', '')
   end%>
 <%-else-%>
+  <h5>Пополнение ox'ов</h5>
   <%= select_tag 'wtf',options_for_select(['Страна']+@countries.map{ |i| i.country }),:style =>"width:220px",
     :onchange => remote_function(:update => "opsoses", :url => {:controller=>'flex', :action => 'sms_phone', :format=>'html' },
     :with=>"'country=' + encodeURIComponent(value)")%>
   <div id="opsoses"></div>
   <div id="sms_price"></div>
-    <%= update_page_tag do |page|
+  <%= update_page_tag do |page|
     page.replace_html('sms_link', "<b>#{rlink 'Скрыть панель SMS &lt;&lt;', {:controller=>'main', :action=>'show_password',:format=>'html'},'adept_center'}</b>")
   end%>
 <%-end-%>

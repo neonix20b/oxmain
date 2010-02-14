@@ -20,27 +20,32 @@
 <%= link_to "Случайные", blog_posts_path(0, :favorite => "rand") %>
 
 <% for post in @posts %>
-  <h2>
+  <div class="blog_post">
+    <h2>
   <%# if params.has_key?('favorite') %>
-    <%= link_to post.blog.name, blog_posts_path(post.blog_id) %> →
+      <%= link_to post.blog.name, blog_posts_path(post.blog_id) %> →
   <%#end%>
-    <%=link_to h(post.title),blog_post_path(post.blog_id, post) %>
-  </h2>
-  <%txt = post.text.split(" --- ")%><%=tte txt.first %>
-  <%if not txt.second.nil?%>
-    <%=link_to 'Читать полностью',blog_post_path(post.blog_id, post) %>
-  <%end%>
-  <br/><br/>
-  <%= author(post) %>
-  <%= show_time(post.updated_at) %>
-  <%= ox_rank_field(post) %>
-  <% if can_edit?(post) %>
-    | Управление:
-    <%= link_to "[e]", edit_blog_post_path(post.blog_id, post) %>
-    <%= link_to "[x]", blog_post_path(post.blog_id, post), :confirm => 'Точно удалить статью?', :method => :delete %>
-  <%end%>
-  <br/>
-  Теги: <%= tag_links(post) %>
+      <%=link_to h(post.title),blog_post_path(post.blog_id, post) %>
+    </h2>
+    <%txt = post.text.split(" --- ")%><%=tte txt.first %>
+    <%if not txt.second.nil?%>
+      <%=link_to 'Читать полностью',blog_post_path(post.blog_id, post) %>
+    <%end%>
+    <br/><br/>
+    <div class="post_bottom">
+      <%= author(post) %>
+      <%= show_time(post.updated_at) %>
+      <%= ox_rank_field(post) %>
+      <% if can_edit?(post) %>
+        | Управление:
+        <%= link_to "[e]", edit_blog_post_path(post.blog_id, post) %>
+        <%= link_to "[x]", blog_post_path(post.blog_id, post), :confirm => 'Точно удалить статью?', :method => :delete %>
+      <%end%>
+      <br/>
+      Теги: <%= tag_links(post) %>
+    </div>
+    <div style="text-align:center; width:100%;"><hr width="70%"/></div>
+  </div>
 <% end %>
 
 <%if @posts.nil? or @posts.size == 0%>

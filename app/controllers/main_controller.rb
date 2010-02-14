@@ -50,7 +50,7 @@ class MainController < ApplicationController
       return render :text=>"нельзя" if support.user_id != current_user.id or support.status!='open'
       support.status='share'
     elsif params[:do]=='close'
-      return render :text=>"нельзя" if support.worker_id != current_user.id or support.updated_at < 15.minutes.ago
+      return render :text=>"нельзя" if support.worker_id != current_user.id or (support.status=='open' and support.updated_at < 15.minutes.ago)
       support.status='close'
     elsif params[:do]=='accept'
       return render :text=>"нельзя" if support.user_id != current_user.id and current_user.right!='admin'

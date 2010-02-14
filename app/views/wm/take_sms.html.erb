@@ -1,6 +1,6 @@
-Для пополнения ox'ов у <b><%=current_user.login%></b> на <%=@sms.income%>ox
+Для пополнения ox'ов у <strong><%=current_user.login%></strong> на <strong><%=@sms.income%></strong>ox
 через <%=@sms.op_name%> необходимо отправить SMS с текстом:
-<br/><hr/><center>#oxnull ox<%=current_user.id.to_s%></center><hr/>
-[все буквы латинские, решетка в начале обязательна] на номер <b><%=@sms.phone%></b>.
-Стоимость исходящего сообщения составит <b><%=@sms.price%></b>.
+<br/><hr/><center><strong>#oxnull ox<%=current_user.id.to_s%></strong></center><hr/>
+[все буквы латинские, решетка в начале обязательна] на номер <strong><%=@sms.phone%></strong>.
+Стоимость исходящего сообщения составит <strong><%=@sms.price%></strong>.
 <%=rlink 'Вернуться.',{:controller=>'flex',:action=>'sms_phone',:format=>'html', :country =>@sms.country, :op_name=>@sms.op_name},'sms_price'%>

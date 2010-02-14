@@ -1,3 +1,6 @@
+<% if supports.nil? or supports.empty? %>
+<strong>Все заявки выполнены. Приходите позже или создайте новую.</strong>
+<%else%>
 <table>
   <tr>
     <th>Пользователь</th>
@@ -23,3 +26,4 @@
     </tr>
   <% end %>
 </table>
+<%end%>
