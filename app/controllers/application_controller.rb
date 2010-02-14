@@ -2,6 +2,7 @@ require 'digest/md5' if RUBY_PLATFORM.downcase.include?("linux")
 require 'syslog' if RUBY_PLATFORM.downcase.include?("linux")
 require 'redcloth'
 require 'xmlrpc/client' if RUBY_PLATFORM.downcase.include?("linux")
+require 'net/http'
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time

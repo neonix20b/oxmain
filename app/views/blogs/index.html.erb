@@ -1,14 +1,13 @@
 <% title "Все блоги" %>
 <h5>Все блоги</h5>
 
-<%= link_to "Все статьи", blog_posts_path(0, :favorite => "all") %> |
-<%= link_to "Избранные", blog_posts_path(0, :favorite => "true") %> |
-<%= link_to "Случайные", blog_posts_path(0, :favorite => "rand") %>
+<%= menu_posts %>
+
 <table>
   <% for blog in @blogs %>
     <tr>
       <td><h2><%= link_to h(blog.name), blog %></h2></td>
-      <td><%=h blog.description %><br/><%= add_favorite(blog.id) %></td>
+      <td><%=h blog.description %><br/><%= add_favorite(blog) %></td>
       <%  if can_edit_blog? %>
         <td><%= link_to "[e]", edit_blog_path(blog) %></td>
         <td><%= link_to "[x]", blog, :confirm => 'Точно удалить блог?', :method => :delete %></td>

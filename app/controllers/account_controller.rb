@@ -49,9 +49,7 @@ class AccountController < ApplicationController
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
         end
         if(params[:format]!='xml')
-          ctrl = '/main'
-          ctrl = '/mobile' if params[:layer][:layer]=='mobile'
-          redirect_back_or_default(:controller => ctrl, :action => 'index') 
+          redirect_back_or_default(blog_posts_path(0, :favorite => "all"))
 		  
           flash[:notice] = "Вход выполнен"
         else
@@ -157,5 +155,32 @@ class AccountController < ApplicationController
     @blogs = []
     tmp = @user.favorite.split(',') if  not @user.favorite.nil?
     @blogs = Blog.find(tmp, :order => 'name ASC') if not tmp.empty?
+  end
+
+  def edit
+    if request.post?
+      @user = current_user
+      params[:user].delete('money')
+      params[:user].delete('login')
+      params[:user].delete('status')
+      params[:user].delete('right')
+      params[:user].delete('ox_rank')
+      params[:user].delete('last_vote')
+      url = URI.parse(params[:user][:avatar])
+      req = Net::HTTP::Get.new(url.path)
+      res = Net::HTTP.start(url.host, url.port) {|http| http.request(req) }
+      flash[:notice] = ''
+      if res.body.size > 15000
+        params[:user][:avatar]='http://oxnull.net/images/noavatar.png'
+        flash[:notice] = "ВНЕЗАПНО аватар оказался больше чем хотелось бы, поэтому удален. "
+      end
+      if @user.update_attributes(params[:user])
+        flash[:notice] += "Профиль успешно обновлен."
+        redirect_to :controller =>'account', :action=>'profile',:id=>current_user.login
+      end
+    else
+      @user = current_user
+      render(:layout => 'mainlayer') if request.xhr?
+    end
   end
 end

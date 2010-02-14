@@ -8,23 +8,26 @@ class PostsController < ApplicationController
   
   def index
     if params[:favorite]=='true'
-      tmp = [1]
+      tmp = [18]
       tmp = current_user.favorite.split(',') if logged_in? and not current_user.favorite.nil?
       @posts = Post.find(:all, :conditions =>{:blog_id=>tmp}, :order => 'id DESC')
     elsif params[:favorite]=='all'
       @posts = Post.find(:all, :order => 'id DESC')
     elsif params[:favorite]=='rand'
       @posts = Post.find(:all, :order=>"rand()")
+    elsif params[:favorite]=='last' and logged_in?
+      @posts=find_last_posts(current_user)
     elsif params.has_key?('favorite')
       @posts = Post.find_tagged_with(params[:favorite])
     else
-      @posts = @blog.posts(:order => 'id DESC')
+      @posts = Post.find(:all, :conditions=>{:blog_id => @blog.id},:order => 'id DESC')
     end
   end
   
   def show
     @post = Post.find(params[:id])
     @comment = Comment.new()
+    remove_from_last(current_user, params[:id]) if logged_in?
   end
   
   def new

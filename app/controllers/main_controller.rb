@@ -79,6 +79,11 @@ class MainController < ApplicationController
       comment.user_id=user_id
       if comment.save
         flash[:notice] = "Комментарий успешно добавлен."
+        post=comment.post
+        post.last_comment = Time.now.utc
+        post.save!
+        find_last_posts(current_user)
+        remove_from_last(current_user, post.id.to_s)
       else
         flash[:notice] = "Ошибка при добавлении комментария."
       end

@@ -1,4 +1,4 @@
-<% if not session["vote_#{@obj.user.id.to_s}"].nil?# and not session["vote_#{@obj.user.id.to_s}"].to_time < 30.minutes.ago.utc.to_s.to_time %>
+<% if not session["vote_#{@obj.user.id.to_s}"].nil? and not session["vote_#{@obj.user.id.to_s}"].to_time < 30.minutes.ago.utc.to_s.to_time %>
   Уже за него голосовал!
 <%else%>
   <% if not current_user.id == @obj.user_id %>

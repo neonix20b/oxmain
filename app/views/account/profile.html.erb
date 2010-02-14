@@ -1,6 +1,7 @@
 <% title profile_link(@user,false) %>
 
 <h1><%= profile_link(@user,false) %></h1>
+
 <table>
   <tr><td align="right"><strong>Сайт:</strong></td><td><%= user_site_link(@user) %></td></tr>
   <tr><td align="right"><strong>Зарегистрирован:</strong></td><td><%= show_time(@user.created_at) %></td></tr>
@@ -25,4 +26,7 @@
         Этот пользователь не имеет избранных блогов
       <%end%>
     </td></tr>
+  <% if logged_in? and @user.id == current_user.id %>
+    <tr><td align="right"><%=rlink 'Изменить профиль', {:controller=>'account',:action=>'edit'}%></td><td></td></tr>
+  <%end%>
 </table>

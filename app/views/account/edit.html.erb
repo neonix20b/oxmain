@@ -1,0 +1,12 @@
+<h1>Изменение профиля: <%= profile_link(@user,false) %></h1>
+
+<% semantic_form_for :user, @user do |f| %>
+  <% f.inputs :style => "border:0px;" do %>
+    <%= f.input :show_name,:label => "Отображаемое имя" %>
+    <%= f.input :avatar,:label => "URL до аватара" %>
+    <%= f.input :email,:label => "e-mail" %>
+  <%end%>
+  <% f.buttons :style => "border:0px;" do %>
+    <%= f.commit_button :label => "Сохранить"%>
+  <% end %>
+<% end %>

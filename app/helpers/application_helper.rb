@@ -6,6 +6,50 @@ module ApplicationHelper
     return RedCloth.new(text, mode).to_html
   end
 
+  def find_last_posts(user=current_user)
+    tmp=[]
+    tmp = user.last_posts.split(',') if not user.last_posts.nil?
+    if not Post.exists?(:id=>tmp)
+      tmp.each do |post_id|
+        tmp -= [post_id] if not Post.exists?(post_id)
+      end
+    end
+    #ищем все посты у которых дата больше чем последнего просмотра
+    posts = Post.find(:all, :conditions =>["blog_id IN (?) and updated_at > ?",user.favorite.split(','), user.last_view])
+    posts.each do |post|
+      tmp+=[post.id.to_s]
+    end
+    if not posts.nil?
+      tmp=tmp.compact.uniq
+      user.last_posts = tmp.join(',')
+      user.last_view = Time.now.utc
+      user.save!
+    end
+    return Post.find(tmp)
+  end
+
+  def menu_posts
+    ret = link_to("Все статьи", blog_posts_path(0, :favorite => "all"))+' | '
+    ret += link_to("Случайные статьи", blog_posts_path(0, :favorite => "rand"))
+    if logged_in?
+      ret += ' | '+link_to("Избранные блоги", blog_posts_path(0, :favorite => "true"))
+      ret += ' | '+link_to("Последние не прочитанные", blog_posts_path(0, :favorite => "last"))
+    end
+    return ret
+  end
+
+  def remove_from_last(user=current_user, post_id=nil)
+    tmp=[]
+    tmp = user.last_posts.split(',') if not user.last_posts.nil?
+    if tmp.include?(post_id.to_s)
+      tmp -= [post_id.to_s] if post_id
+      tmp=tmp.compact.uniq
+      user.last_posts = tmp.join(',')
+      user.last_view = Time.now.utc
+      user.save!
+    end
+  end
+
   def show_time(time)
     return Russian::strftime(time.utc, "%d %B %Y, %H:%M UTC")
   end
@@ -43,9 +87,9 @@ module ApplicationHelper
     ox_rank = obj.ox_rank
     count = ox_rank
     count = obj.count.to_i.to_s if obj.respond_to?('count')
-    color = ' rgb(204, 0, 0)' if count.to_i < 0
-    color = 'rgb(51, 153, 0)' if count.to_i > 0
-    color = 'white' if count.to_i == 0
+    color = '#646197' if count.to_i < 0
+    color = '#589680' if count.to_i > 0
+    color = '#6b8095' if count.to_i == 0
     count = '+'+count if count.to_i > 0
     span_id="ox_rank_#{obj.class.name}_#{obj.id.to_s}"
     if label.nil? and logged_in? and obj.user_id!=current_user.id

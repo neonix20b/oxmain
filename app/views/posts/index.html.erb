@@ -7,17 +7,18 @@
 <%elsif params[:favorite]=='rand' %>
   <% title "Случайные статьи" %>
   <h5><%= link_to "Все блоги", blogs_path %> → Случайные статьи</h5>
+<%elsif params[:favorite]=='last'%>
+  <% title "Последние не прочитанные" %>
+  <h5><%= link_to "Все блоги", blogs_path %> → Последние не прочитанные</h5>
 <%elsif params.has_key?('favorite') %>
   <% title "Тег: "+params[:favorite] %>
   <h5><%= link_to "Все блоги", blogs_path %> → Тег: <%=params[:favorite]%></h5>
 <%else%>
   <% title @blog.name %>
-  <h5><%= link_to "Все блоги", blogs_path %> → <%= @blog.name %> <%= '→' if logged_in? %> <%= add_favorite(@blog.id) %></h5>
+  <h5><%= link_to "Все блоги", blogs_path %> → <%= @blog.name %> <%#= '→' if logged_in? %> <%#= add_favorite(@blog) %></h5>
 
 <%end%>
-<%= link_to "Все статьи", blog_posts_path(0, :favorite => "all") %> |
-<%= link_to "Избранные", blog_posts_path(0, :favorite => "true") %> |
-<%= link_to "Случайные", blog_posts_path(0, :favorite => "rand") %>
+<%= menu_posts %>
 
 <% for post in @posts %>
   <div class="blog_post">
@@ -33,8 +34,9 @@
     <%end%>
     <br/><br/>
     <div class="post_bottom">
-      <%= author(post) %>
-      <%= show_time(post.updated_at) %>
+      Автор: <%= author(post) %> |
+      Последнее обновление: <%= show_time(post.updated_at) %> |
+      Комментариев: <%= post.comments.size %> |
       <%= ox_rank_field(post) %>
       <% if can_edit?(post) %>
         | Управление:
@@ -50,9 +52,18 @@
 
 <%if @posts.nil? or @posts.size == 0%>
   <br/>
-  <h2>Тут статей еще нет</h2
+  <h2>Тут статей еще нет</h2>
+  <%if params[:favorite]=='last'%>
+    Внимание! Отслеживаются статьи только из избранных блогов. Для добавления
+    в избранное воспользуйтесь <%= link_to "этой страницей", blogs_path %>.
+    Или начните следить за блогом кликнув на "Следить за блогом" в верхней
+    части понравившейся статьи. Впрочем можно просто почитать
+    <%= link_to("случайные статьи", blog_posts_path(0, :favorite => "rand"))%>.
+  <%else%>
+    <br/><br/><br/>
+  <%end%>
 <%end%>
 
 <% if not params.has_key?('favorite') and can_edit? %>
-  <p><%= link_to "Создать статью", new_blog_post_path(@blog) %></p>
+  <p><%= link_to "Создать статью в блоге \"#{@blog.name}\"", new_blog_post_path(@blog) %></p>
 <%end%>

@@ -14,7 +14,7 @@
       <div style="float:right;"><%= ox_rank_field(comment) %></div>
     </div>
     <span>
-      <span class="comment_avatar"><%= image_tag("noavatar.gif", :width=>'50px', :class=>'png') %></span>
+      <span class="comment_avatar"><%= image_tag(h(comment.user.avatar), :width=>'50px', :class=>'png') %></span>
       <div class="comment_tte"><%=tte comment.text %></div>
     </span>
   </div>
