@@ -10,7 +10,7 @@ module PostsHelper
     return "нет" if obj.tag_list.empty?
     ret = ''
     obj.tag_list.each do |tag|
-      ret = ret + link_to(tag, blog_posts_path(0, :favorite => tag)) + ', '
+      ret = ret + link_to(tag, blog_posts_path(tag)) + ', '
     end
     ret.chomp!(", ")
     return ret

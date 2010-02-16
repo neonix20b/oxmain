@@ -1,26 +1,8 @@
 <%comments.each do |comment|%>
-  <!--<div class="comment_box" id="com_<%#=comment.id.to_s%>">
-  <div style="font-weight: bold;color:white;"><%#= profile_link(comment.user) %>&nbsp;&nbsp;<%#= show_time(comment.updated_at) %>&nbsp;&nbsp;
-  <%#= link_to "#", request.request_uri+"#com_"+comment.id.to_s %>
-  <span style="float:right;"><%#= ox_rank_field(comment) %></span></div>
-  <div><%#=tte comment.text %></div>
-  </div>-->
-  <div class="comment_box" id="com_<%=comment.id.to_s%>">
-    <div class="comment_head">
-      <div style="float:left;">
-        <%= profile_link(comment.user) %>&nbsp;&nbsp;<%= show_time(comment.updated_at) %>&nbsp;&nbsp;
-        <%= link_to "#", request.request_uri+"#com_"+comment.id.to_s %>
-      </div>
-      <div style="float:right;"><%= ox_rank_field(comment) %></div>
-    </div>
-    <span>
-      <span class="comment_avatar"><%= image_tag(h(comment.user.avatar), :width=>'50px', :class=>'png') %></span>
-      <div class="comment_tte"><%=tte comment.text %></div>
-    </span>
-  </div>
-
+  <%= one_comment(comment, comment.user)%>
 <%end%>
 
+<div id="comment_try"></div>
 <%if can_edit? and (not defined?(support) or support.status!='close') %>
   <div>
     <% semantic_form_for :comment, @comment, :url => { :controller => 'main', :action => "comment_work", :do => 'add' } do |f| %>
@@ -33,14 +15,22 @@
           <%= f.hidden_field :support_id, :value => @support.id %>
         <%end%>
         <%= textile_editor 'comment', 'text', :style=>"width:60%; height:200px;" -%>
-      <%#= f.tinymce :text, :label => "Текст", :style=>"width:60%; height:200px;" %>
       <%end%>
       <% f.buttons :style => "border:0px;" do %>
         <%= link_to "Подробнее о разметке текста", "http://ru.wikipedia.org/wiki/Textile_(%D1%8F%D0%B7%D1%8B%D0%BA_%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%82%D0%BA%D0%B8)" %>
-        <%= f.commit_button :wrapper_html => { :style => 'display:block;' }, :label => "Отправить"%>
+        <%= f.commit_button :wrapper_html => { :style => 'display:block;' }, :label => "Сохранить"%>
       <% end %>
     <% end %>
   </div>
+
+<%= observe_field(:comment_text,
+  :frequency => 3,
+  :update => :comment_try,
+  :before => "Element.show('spinner')",
+  :success => "Element.hide('spinner')",
+  :url => { :controller=>'main', :action => 'comment_try' },
+  :with => "'text=' + encodeURIComponent(value)") %>
+
 <%end%>
 
 <%= textile_editor_initialize -%>

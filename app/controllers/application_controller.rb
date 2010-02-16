@@ -16,7 +16,10 @@ class ApplicationController < ActionController::Base
   end
   private
 
-  
+  def set_gmtoffset
+    session[:gmtoffset] = current_user.gmtoffset if logged_in?
+  end
+
   def transfer_money(from_user, to_user, money=1)
     money = money.abs
     server = XMLRPC::Client.new2("http://89.208.146.80:1979")

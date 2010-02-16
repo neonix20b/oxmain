@@ -1,10 +1,10 @@
-<% if params[:favorite]=='true' %>
+<% if params[:favorite]=='favorite' %>
   <% title "Избранные блоги" %>
   <h5><%= link_to "Все блоги", blogs_path %> → Избранные блоги</h5>
 <%elsif params[:favorite]=='all' %>
   <% title "Все статьи" %>
   <h5><%= link_to "Все блоги", blogs_path %> → Все статьи</h5>
-<%elsif params[:favorite]=='rand' %>
+<%elsif params[:favorite]=='random' %>
   <% title "Случайные статьи" %>
   <h5><%= link_to "Все блоги", blogs_path %> → Случайные статьи</h5>
 <%elsif params[:favorite]=='last'%>
@@ -58,7 +58,7 @@
     в избранное воспользуйтесь <%= link_to "этой страницей", blogs_path %>.
     Или начните следить за блогом кликнув на "Следить за блогом" в верхней
     части понравившейся статьи. Впрочем можно просто почитать
-    <%= link_to("случайные статьи", blog_posts_path(0, :favorite => "rand"))%>.
+    <%= link_to("случайные статьи", blog_posts_path("random"))%>.
   <%else%>
     <br/><br/><br/>
   <%end%>

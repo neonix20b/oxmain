@@ -15,7 +15,9 @@ module ApplicationHelper
       end
     end
     #ищем все посты у которых дата больше чем последнего просмотра
-    posts = Post.find(:all, :conditions =>["blog_id IN (?) and updated_at > ?",user.favorite.split(','), user.last_view])
+    blog_ids = []
+    blog_ids = user.favorite.split(',') if not user.favorite.nil?
+    posts = Post.find(:all, :conditions =>["blog_id IN (?) and updated_at > ?",blog_ids, user.last_view])
     posts.each do |post|
       tmp+=[post.id.to_s]
     end
@@ -29,11 +31,11 @@ module ApplicationHelper
   end
 
   def menu_posts
-    ret = link_to("Все статьи", blog_posts_path(0, :favorite => "all"))+' | '
-    ret += link_to("Случайные статьи", blog_posts_path(0, :favorite => "rand"))
+    ret = link_to("Все статьи", blog_posts_path('all'))+' | '
+    ret += link_to("Случайные статьи", blog_posts_path('random'))
     if logged_in?
-      ret += ' | '+link_to("Избранные блоги", blog_posts_path(0, :favorite => "true"))
-      ret += ' | '+link_to("Последние не прочитанные", blog_posts_path(0, :favorite => "last"))
+      ret += ' | '+link_to("Избранные блоги", blog_posts_path('favorite'))
+      ret += ' | '+link_to("Последние не прочитанные", blog_posts_path('last'))
     end
     return ret
   end
@@ -50,7 +52,24 @@ module ApplicationHelper
     end
   end
 
+  def one_comment(comment,user)
+    "<div class='comment_box' id='com_#{comment.id.to_s}'>
+    <div class='comment_head'>
+      <div style='float:left;'>
+        #{profile_link(user)}&nbsp;&nbsp;#{show_time(comment.updated_at)}&nbsp;&nbsp;
+        #{link_to "#", request.request_uri+'#com_'+comment.id.to_s}
+      </div>
+      <div style='float:right;'>#{ox_rank_field(comment)}</div>
+    </div>
+    <span>
+      <span class='comment_avatar'>#{image_tag(h(user.avatar), :width=>'50px', :class=>'png')}</span>
+      <div class='comment_tte'>#{tte comment.text}</div>
+    </span>
+  </div>"
+  end
+
   def show_time(time)
+    return Russian::strftime(time.utc.in_time_zone(session[:gmtoffset].to_i.minutes), "%d %B %Y, %H:%M") if session.nil? or not session.has_key?("gmtoffset")
     return Russian::strftime(time.utc, "%d %B %Y, %H:%M UTC")
   end
   

@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   validates_length_of       :login, :message => "Слишком короткий",    :within => 3..30
   validates_length_of       :email, :message => "Слишком короткий",    :within => 3..30
   validates_uniqueness_of   :login, :case_sensitive => false
+  validates_uniqueness_of   :show_name, :case_sensitive => false
   before_save :encrypt_password
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.

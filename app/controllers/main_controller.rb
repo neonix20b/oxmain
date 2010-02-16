@@ -1,6 +1,7 @@
 class MainController < ApplicationController
   include AuthenticatedSystem
   before_filter :login_from_cookie, :except =>[:go, :tasklist]
+  before_filter :set_gmtoffset, :except =>[:gmtoffset]
 
   def hello
     if params[:format]=='xml'
@@ -9,6 +10,15 @@ class MainController < ApplicationController
     else
       render(:layout => 'mainlayer') if request.xhr?
     end
+  end
+
+  def gmtoffset
+    session[:gmtoffset]= -1 * params[:id].to_i
+    if logged_in? and current_user.gmtoffset != session[:gmtoffset].to_i
+      current_user.gmtoffset = session[:gmtoffset].to_i
+      current_user.save!
+    end
+    render :text=>Russian::strftime(Time.now.utc.in_time_zone(session[:gmtoffset].to_i.minutes), "%d %B %Y, %H:%M")
   end
 
   def favorite
@@ -101,14 +111,28 @@ class MainController < ApplicationController
     end
   end
 
+  def comment_try
+    return render :text=>"нельзя" if not request.post?
+    @comment = Comment.new
+    @comment.updated_at = Time.now
+    @comment.id = 46
+    @comment.text = params[:text]
+    @comment.ox_rank = 0
+    @comment.count = -2 + rand(10)
+    render(:layout => 'mainlayer')
+  end
+
   def ox_rank
     return render :text=>"нельзя" if not logged_in? or not request.post?
     @obj = params[:obj].camelize.constantize.find(params[:id])
+    max =  User.find(:first,:order=>'ox_rank DESC').ox_rank
     if params[:do]=='minus'
-      add_rank = -1.0
+      add_rank = -0.1
+      add_rank -= current_user.ox_rank/max
       add_count = -1
     else
-      add_rank = 1.0
+      add_rank = 0.1
+      add_rank += current_user.ox_rank/max
       add_count = 1
     end
     if @obj.respond_to?('user_id')

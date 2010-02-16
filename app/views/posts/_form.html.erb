@@ -1,13 +1,13 @@
 <% semantic_form_for([@blog, @post]) do |f| %>
-  <% f.inputs :style => "border:0px;" do %>
+  <% f.inputs do %>
     <%= f.hidden_field :user_id, :value => current_user.id %>
     <%= f.input :title,:label => "Название" %>
     <%= textile_editor 'post', 'text', :style=>"width:100%; height:600px;" -%>
     <%= f.input :tag_list,:label => "Теги" %>
   <%end%>
-  <% f.buttons :style => "border:0px;" do %>
+  <% f.buttons do %>
     <%= link_to "Подробнее о разметке текста", "http://ru.wikipedia.org/wiki/Textile_(%D1%8F%D0%B7%D1%8B%D0%BA_%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%82%D0%BA%D0%B8)" %>
-    <%= f.commit_button %>
+    <%= f.commit_button :label => "Создать статью" %>
   <% end %>
 <% end %>
 

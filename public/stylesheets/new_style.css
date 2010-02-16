@@ -1,3 +1,12 @@
+blockquote
+{
+	border-style:solid;
+    border-width: 1px;
+    border-color: #234261;
+	padding-left: 10px;
+	background-color: #6B8095;
+	color: #234261;
+}
 #notification 
 {
     border: 5px solid #9c9;
@@ -47,12 +56,12 @@ body
     background:url("/images/backdrop.png") repeat-x fixed 0 0 #7AB6F3;
     font-family: Tahoma;
     font-size: 10pt;
-    color: #ddd;
+    color: #7c94ac;
 }
 a
 {
-    color: #b5e7fd;
-	text-decoration:none;
+    color: #62809d;
+	text-decoration:underline;
 }
 a img
 {
@@ -69,11 +78,11 @@ h5, th
 }
 th 
 {
-	color: #b5e7fd;
+	color: #8c8c8c;
 }
 h5
 {
-	color: white;
+	color: #71879d;
 }
 h4
 {
@@ -164,6 +173,7 @@ select
     margin-top: 16px;
     margin-left: 28px;
     width: 300px;
+	color: #9b9b9b;
 }
 .autorisation2
 {
@@ -174,7 +184,11 @@ select
 }
 form
 {
-margin-top: 0px;
+	margin-top: 0px;
+}
+strong
+{
+	color:#6b8bac;
 }
 .logo
 {
@@ -263,7 +277,7 @@ input.text
 {
     /*background-color: #38516a;*/
     margin: 0px;
-    padding:20px 40px;
+    padding:20px 20px;
     background-image: url(/images/text_back.png);
     position: relative;
     min-height: 200px;
@@ -274,13 +288,51 @@ input.text
 	margin-top:15px;
 	width:80%;
 	background-image: url(/images/comment_back.png);
-	padding:10px;
+	padding:15px 20px 15px 20px;
 	border-radius: 10px; 
 	-moz-border-radius: 10px;
 	-o-border-radius: 10px;
 	-khtml-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	/*border: 1px #bbb solid;*/
+	min-height:80px;
+}
+.comment_head
+{
+	font-weight: bold;
+	color:#5c7995;
+	margin-bottom:10px;
+	height:18px;
+}
+.comment_tte
+{
+	padding-left:70px;
+	padding-top:0px;
+	color: #6B8095;
+}
+.comment_avatar
+{
+	float:left;
+	font-size:11px;
+	padding:0px;
+	width: 60px;
+}
+.blog_post
+{
+	margin-bottom: 40px;
+}
+.post_bottom
+{
+	color:#6b8095;
+	/*float:left;
+	clear: both;
+	border: 1px solid white;
+	border-radius: 10px; 
+	-moz-border-radius: 10px;
+	-o-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	padding: 5px 10px;*/
 }
 #box_content
 {
@@ -351,6 +403,7 @@ input.text
 .message {
     padding:0px 5px;
     min-width: 315px;
+	color: #8f8f8f;
 }
 
 .break
@@ -397,7 +450,16 @@ button
     border-width: 0px;
     vertical-align: bottom;
 }
+.aa a{
+	color: #8e8e8e;
+}
+.autorisation2 a{
+	color: #9b9b9b;
+}
+.autorisation1 h5{
+	color: #9b9b9b;
+}
 a:hover {
 color: white;
-text-decoration:underline;
+text-decoration:none;
 }

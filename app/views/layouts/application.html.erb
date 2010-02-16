@@ -193,11 +193,21 @@
     <script type="text/javascript" src="/pngfix/pngfix.js"></script>
     <![endif]-->
     <script type="text/javascript">
-      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-      try {
-        var pageTracker = _gat._getTracker("UA-5504344-3");
-        pageTracker._trackPageview();
-      } catch(err) {}</script>
+      <%if not session[:gmtoffset]%>
+          Event.observe(window, 'load', function(e) {
+            var now = new Date();
+            var gmtoffset = now.getTimezoneOffset();
+            // use ajax to set the time zone here.
+            var set_time = new Ajax.Request('/main/gmtoffset/'+gmtoffset, {
+              onSuccess: function(transport) {}
+            });
+          });
+      <%end%>
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        try {
+          var pageTracker = _gat._getTracker("UA-5504344-3");
+          pageTracker._trackPageview();
+        } catch(err) {}</script>
   </body>
 </html>

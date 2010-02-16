@@ -49,7 +49,7 @@ class AccountController < ApplicationController
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
         end
         if(params[:format]!='xml')
-          redirect_back_or_default(blog_posts_path(0, :favorite => "all"))
+          redirect_back_or_default(blog_posts_path("all"))
 		  
           flash[:notice] = "Вход выполнен"
         else
