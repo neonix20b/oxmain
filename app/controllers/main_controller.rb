@@ -1,7 +1,8 @@
 class MainController < ApplicationController
   include AuthenticatedSystem
   before_filter :login_from_cookie, :except =>[:go, :tasklist]
-  before_filter :set_gmtoffset, :except =>[:gmtoffset]
+  before_filter :login_required, :except => [:hello, :gmtoffset, :contacts, :go, :error, :video, :about]
+  before_filter :find_last, :only =>[:index, :hello]
 
   def hello
     if params[:format]=='xml'
@@ -22,7 +23,7 @@ class MainController < ApplicationController
   end
 
   def favorite
-    return render :text=>"нельзя" if not logged_in? or not request.post?
+    return render :text=>"нельзя" if not request.post?
     ret = 'Теперь вы за ним не следите'
     tmp = Array.new()
     tmp = current_user.favorite.split(',') if not current_user.favorite.nil?
@@ -39,7 +40,7 @@ class MainController < ApplicationController
   end
 
   def support_work
-    return render :text=>"нельзя" if not logged_in? or not request.post?
+    return render :text=>"нельзя" if not request.post?
     support=Support.find(params[:id])
     ret="Готово!"
     if params[:do]=='get'
@@ -89,13 +90,13 @@ class MainController < ApplicationController
       comment.user_id=user_id
       if comment.save
         flash[:notice] = "Комментарий успешно добавлен."
-        post=comment.post
-        post.last_comment = Time.now.utc
+        post=Post.find(comment.post_id)
+        post.last_comment = "Новые комментарии. Всего #{post.comments.size.to_s}шт."
         post.save!
         find_last_posts(current_user)
         remove_from_last(current_user, post.id.to_s)
       else
-        flash[:notice] = "Ошибка при добавлении комментария."
+        flash[:warning] = "Ошибка при добавлении комментария."
       end
     elsif params[:do]=='del'
       comment = Comment.find(params[:id])
@@ -122,8 +123,14 @@ class MainController < ApplicationController
     render(:layout => 'mainlayer')
   end
 
+  def unread_posts
+    return render :text=>"нельзя" if not request.post?
+    @unread_posts=find_last_posts(current_user,4)
+    render :partial => "unread_posts", :locals => { :posts => @unread_posts}
+  end
+
   def ox_rank
-    return render :text=>"нельзя" if not logged_in? or not request.post?
+    return render :text=>"нельзя" if not request.post?
     @obj = params[:obj].camelize.constantize.find(params[:id])
     max =  User.find(:first,:order=>'ox_rank DESC').ox_rank
     if params[:do]=='minus'
@@ -150,6 +157,7 @@ class MainController < ApplicationController
       user.ox_rank += add_rank
       if (params[:do]=='plus' and transfer_money(current_user, user, 0.01)) or
           (params[:do]=='minus' and transfer_money(current_user, User.find(3), 0.01))
+        @obj.last_comment='Мало комментариев!' if @obj.respond_to?('last_comment')
         @obj.save!
         user.save!
       else
@@ -196,6 +204,7 @@ class MainController < ApplicationController
     return unless request.post? or request.xhr?
     render :partial => "passwords"
   end
+
   def cancel
     user = User.find(current_user.id)
     user.update_attribute(:domain, '')
@@ -224,6 +233,7 @@ class MainController < ApplicationController
   end
 
   def invite
+    return unless request.post? or request.xhr?
     #пароль - отзыв
     #здесь вербуют адептов
     #военкомат
@@ -246,7 +256,7 @@ class MainController < ApplicationController
 
 
   def index
-    if logged_in? and current_user.status!='0' and current_user.status!='1'
+    if current_user.status!='0' and current_user.status!='1'
       get_my_site(current_user)
       findtasks(current_user)
       service_prerender()
@@ -277,7 +287,7 @@ class MainController < ApplicationController
     if request.post? and not params[:user].nil?
       #render :text => params[:user][:domain]
       app_attach(params[:user][:domain])
-      flash[:notice] = "Недопустимое имя домена!" if params[:user][:domain]!~/\A[A-Z0-9-]+\.[A-Z0-9-]{0,3}\.?[A-Z]{2,4}\Z/i
+      flash[:warning] = "Недопустимое имя домена!" if params[:user][:domain]!~/\A[A-Z0-9-]+\.[A-Z0-9-]{0,3}\.?[A-Z]{2,4}\Z/i
       redirect_to :controller => 'main', :action =>'index'
     elsif request.post? and params[:user].nil?
       app_deatt()
@@ -309,8 +319,9 @@ class MainController < ApplicationController
       redirect_to :action => 'index'
     else
       #current_user.update_attribute('status','0')
-      #flash[:notice] = "Что-то пошло не так... обратитесь в службу тех.поддержки"
+      #flash[:warning] = "Что-то пошло не так... обратитесь в службу тех.поддержки"
       redirect_to :action => 'index'
     end
   end
+
 end

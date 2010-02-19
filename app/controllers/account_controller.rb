@@ -44,14 +44,13 @@ class AccountController < ApplicationController
       self.current_user = User.authenticate(Base64.decode64(params[:ln]),Base64.decode64(params[:pd])) if params[:format]=='xml'
       self.current_user = User.authenticate(params[:login],params[:password]) if params[:format]!='xml'
       if logged_in?
-        if params[:remember_me] == "true"
+        if params[:remember_me] == "true" or params[:remember_me].to_s == "1"
           self.current_user.remember_me
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
-        end
+          end
         if(params[:format]!='xml')
           redirect_back_or_default(blog_posts_path("all"))
-		  
-          flash[:notice] = "Вход выполнен"
+          flash[:notice] = "Вход выполнен."
         else
           current_user.ftppass = Base64.encode64(current_user.ftppass)
           current_user.mysqlpass = Base64.encode64(current_user.mysqlpass)
@@ -172,10 +171,10 @@ class AccountController < ApplicationController
       flash[:notice] = ''
       if res.body.size > 15000
         params[:user][:avatar]='http://oxnull.net/images/noavatar.png'
-        flash[:notice] = "ВНЕЗАПНО аватар оказался больше чем хотелось бы, поэтому удален. "
+        flash[:warning] = "ВНЕЗАПНО аватар оказался больше чем хотелось бы, поэтому удален. "
       end
       if @user.update_attributes(params[:user])
-        flash[:notice] += "Профиль успешно обновлен."
+        flash[:notice] = "Профиль успешно обновлен."
         redirect_to :controller =>'account', :action=>'profile',:id=>current_user.login
       end
     else

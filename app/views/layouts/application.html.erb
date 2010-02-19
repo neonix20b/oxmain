@@ -20,7 +20,7 @@
         <div class="menu_big">
           <div class="menu_left"></div>
           <div class="menu_right">
-            <div class="aa"><%= link_to "Главная", {:controller=> 'main', :action => "hello"}%></div>
+            <div class="aa"><%=link_to "Главная", blog_posts_path('all') %><%#= link_to "Главная", {:controller=> 'main', :action => "hello"}%></div>
             <div><%= image_tag("menu_separator.png") %></div>
             <% if logged_in? %>
               <div class="aa"><%= rlink "Мой сайт", {:controller=> 'main', :action => "index"}%></div>
@@ -54,7 +54,7 @@
           <b class="r2"></b>
           <b class="r1"></b>
           <div id="tasks" class="message">
-            <%= render :partial => "main/tasks", :locals => { :tasks => @tasks} %>
+            <%= render :partial => "main/unread_posts", :locals => { :posts => @unread_posts} %>
           </div>
           <b class="r1"></b>
           <b class="r2"></b>
@@ -122,6 +122,12 @@
                 page.visual_effect :fade, 'notification', :duration => 15;
               end%>
             <% end %>
+            <% unless flash[:warning].blank? %>
+              <div id="warning"><%= flash[:warning] %></div>
+              <%= update_page_tag do |page|
+                page.visual_effect :fade, 'warning', :duration => 30;
+              end%>
+            <% end %>
             <div class="new_1" id="main_div">
               <%= yield %>
             </div>
@@ -186,28 +192,29 @@
       </div>
     </div>
     <%-if logged_in?-%>
-      <%= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'tasklist'), :frequency => '30', :update => 'tasks') %>
+  <%#= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'tasklist'), :frequency => '30', :update => 'tasks') %>
+      <%= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'unread_posts'), :frequency => '30', :update => 'tasks') %>
     <%-end-%>
     <div class="popup" id="ox_rank_helper_div"></div>
     <!--[if lt IE 7]>
     <script type="text/javascript" src="/pngfix/pngfix.js"></script>
     <![endif]-->
     <script type="text/javascript">
-      <%if not session[:gmtoffset]%>
-          Event.observe(window, 'load', function(e) {
-            var now = new Date();
-            var gmtoffset = now.getTimezoneOffset();
-            // use ajax to set the time zone here.
-            var set_time = new Ajax.Request('/main/gmtoffset/'+gmtoffset, {
-              onSuccess: function(transport) {}
-            });
-          });
-      <%end%>
-        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-        try {
-          var pageTracker = _gat._getTracker("UA-5504344-3");
-          pageTracker._trackPageview();
-        } catch(err) {}</script>
+<%if not session[:gmtoffset]%>
+    Event.observe(window, 'load', function(e) {
+      var now = new Date();
+      var gmtoffset = now.getTimezoneOffset();
+      // use ajax to set the time zone here.
+      var set_time = new Ajax.Request('/main/gmtoffset/'+gmtoffset, {
+        onSuccess: function(transport) {}
+      });
+    });
+<%end%>
+  var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+  document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+  try {
+    var pageTracker = _gat._getTracker("UA-5504344-3");
+    pageTracker._trackPageview();
+  } catch(err) {}</script>
   </body>
 </html>

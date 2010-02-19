@@ -1,5 +1,5 @@
 class Post < ActiveRecord::Base
-  attr_accessible :title, :text, :blog
+  attr_accessible :title, :text, :blog, :last_comment
   belongs_to :blog
   belongs_to :user
   has_many :comments

@@ -20,6 +20,10 @@ class ApplicationController < ActionController::Base
     session[:gmtoffset] = current_user.gmtoffset if logged_in?
   end
 
+  def find_last
+    @unread_posts=find_last_posts(current_user,4) if logged_in?
+  end
+
   def transfer_money(from_user, to_user, money=1)
     money = money.abs
     server = XMLRPC::Client.new2("http://89.208.146.80:1979")

@@ -1,6 +1,7 @@
 class SupportsController < ApplicationController
   include AuthenticatedSystem
-  before_filter :login_from_cookie, :except =>[:index]
+  before_filter :login_from_cookie
+  before_filter :login_required, :except =>[:index]
   before_filter :check_right, :except => [:show, :index]
 
   def index
@@ -18,7 +19,7 @@ class SupportsController < ApplicationController
     @support.task = 'Подробное описание в чем проблема и что делалось до того как она появилась'
     @support.info = 'Дополнительные сведения для работы(если необходимо): логин/пароль от админки'
     @support.name = 'Название заявки, отображающее суть проблемы'
-    flash[:notice] = "У Вас недостаточно ox'ов для создания заявок." if current_user.money < 5
+    flash[:warning] = "У Вас недостаточно ox'ов для создания заявок." if current_user.money < 5
   end
   
   def create
@@ -28,7 +29,7 @@ class SupportsController < ApplicationController
       flash[:notice] = "Заявка успешно создана."
       redirect_to @support
     else
-      flash[:notice] = "У Вас недостаточно ox'ов для создания заявки." if current_user.money < 5+@support.money.to_f
+      flash[:warning] = "У Вас недостаточно ox'ов для создания заявки." if current_user.money < 5+@support.money.to_f
       render :action => 'new'
     end
   end

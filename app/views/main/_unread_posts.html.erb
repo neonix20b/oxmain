@@ -1,0 +1,19 @@
+<%if not posts.nil? and posts.size > 0%>
+  <table>
+    <tr><th>Обновления</th><th></th></tr>
+    <%posts.each do |post|%>
+      <tr><td>
+          <%=link_to h(post.title),blog_post_path(post.blog_id, post) %>
+          <div style="font-size:xx-small;"><%= post.last_comment %></div>
+        </td></tr>
+    <%end%>
+  </table>
+<%else%>
+  <table>
+    <tr><th class="table_1">Мы предлагаем:</th><th>У нас есть:</th></tr>
+    <tr><td class="table_1">1 базу данных MySQL(50MB)</td><td>PHP 5</td></tr>
+    <tr><td class="table_1">Прикрепление своих доменов</td><td>MySQL</td></tr>
+    <tr><td class="table_1">Предустановленные движки сайтов</td><td>Perl</td></tr>
+    <tr><td class="table_1">Место под файлы(150MB)</td><td>Ruby</td></tr>
+  </table>
+<%end%>

@@ -1,3 +1,13 @@
+.commit, .optional
+{
+	display: inline;
+}
+
+.buttons, .inputs
+{
+	padding: 0px;
+	border:0px;
+}
 blockquote
 {
 	border-style:solid;
@@ -14,6 +24,14 @@ blockquote
     padding: 5px;
     margin: 10px 20px;
     color: black;
+}
+#warning
+{
+    border: 5px solid #a5a3cb;
+    background-color: #646197;
+    padding: 5px;
+    margin: 10px 20px;
+    color: #d9c37e;
 }
 .popup{
     position:absolute;
@@ -356,6 +374,7 @@ input.text
     font-size: 8pt;
     border-left: dashed 1px #888888;
     float: right;
+	color: #9B9B9B;
 }
 #rounded_box_message .message, #rounded_box_message  b {
     background-color: #202020;
@@ -453,10 +472,7 @@ button
 .aa a{
 	color: #8e8e8e;
 }
-.autorisation2 a{
-	color: #9b9b9b;
-}
-.autorisation1 h5{
+.autorisation2 a, .autorisation1 h5, .message a{
 	color: #9b9b9b;
 }
 a:hover {

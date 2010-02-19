@@ -2,10 +2,14 @@ class PostsController < ApplicationController
   # Be sure to include AuthenticationSystem in Application Controller instead
   include AuthenticatedSystem
   # If you want "remember me" functionality, add this before_filter to Application Controller
-  before_filter :login_from_cookie, :except => [:show, :index]
+  before_filter :login_from_cookie
+  before_filter :login_required, :except => [:show, :index]
+
   before_filter :load_blog
   before_filter :check_right, :except => [:show, :index]
-  
+  before_filter :set_gmtoffset, :only =>[:index, :show]
+  before_filter :find_last, :only =>[:index, :show]
+
   def index
     if params[:favorite]=='favorite'
       tmp = [18]
@@ -40,9 +44,15 @@ class PostsController < ApplicationController
     @post = @blog.posts.new(params[:post])
     @post.user_id=params[:post][:user_id]
     @post.tag_list = params[:post][:tag_list]
+    @post.last_comment = 'Недавно создана.'
     if @post.save
       flash[:notice] = "Статья успешно создана."
-      flash[:notice] = "Статья успешно создана, но в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
+      flash[:warning] = "Статья успешно создана, но в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
+      tmp = Array.new()
+      tmp = current_user.favorite.split(',') if not current_user.favorite.nil?
+      tmp.insert(-1, params[:blog_id].to_s)
+      current_user.favorite=tmp.uniq.join(',')
+      current_user.save!
       redirect_to blog_post_url(@blog,@post)
     else
       render :action => 'new'
@@ -50,7 +60,7 @@ class PostsController < ApplicationController
   end
   
   def edit
-    flash[:notice] = "Статья слишком большая, в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
+    flash[:warning] = "Статья слишком большая, в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
     #@post = Post.find(params[:id])
     #return render :text=> "нельзя" if not can_edit?(@post)
   end
@@ -58,16 +68,17 @@ class PostsController < ApplicationController
   def update
     #@post = Post.find(params[:id])
     #return render :text=> "нельзя" if not can_edit?(@post)
+    params[:post][:last_comment]='Недавно отредактирована.'
     if @post.update_attributes(params[:post])
       flash[:notice] = "Статья успешно обновлена."
       if @post.tag_list != params[:post][:tag_list]
         @post.tag_list = params[:post][:tag_list]
         @post.save!
       end
-      flash[:notice] = "Статья успешно обновлена, но в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
+      flash[:warning] = "Статья успешно обновлена, но в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
       redirect_to blog_post_url(@blog,@post)
     else
-      flash[:notice] = "Статья слишком большая, в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
+      flash[:warning] = "Статья слишком большая, в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
       render :action => 'edit'
     end
   end

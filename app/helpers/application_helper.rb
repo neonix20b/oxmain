@@ -3,10 +3,18 @@ module ApplicationHelper
   include TagsHelper
 
   def tte(text, mode=[:filter_html])
-    return RedCloth.new(text, mode).to_html
+    ret = RedCloth.new(text, mode).to_html
+    return ret.gsub(/http:\/\/www.youtube.com\/watch\?v=(\w+)/){ youtube_tag($1) }
   end
 
-  def find_last_posts(user=current_user)
+  def youtube_tag(tag)
+    "<object width='425' height='344'>
+      <param name='movie' value='http://www.youtube.com/v/#{tag}&hl=ru_RU&fs=1&'></param>
+      <param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param>
+      <embed src='http://www.youtube.com/v/#{tag}&hl=ru_RU&fs=1&' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='425' height='344'></embed></object>"
+  end
+
+  def find_last_posts(user=current_user,limit=50)
     tmp=[]
     tmp = user.last_posts.split(',') if not user.last_posts.nil?
     if not Post.exists?(:id=>tmp)
@@ -27,7 +35,7 @@ module ApplicationHelper
       user.last_view = Time.now.utc
       user.save!
     end
-    return Post.find(tmp)
+    return Post.find(tmp, :limit=>limit)
   end
 
   def menu_posts

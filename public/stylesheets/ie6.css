@@ -1,0 +1,14 @@
+.content
+{
+    background-color: #38516a;
+    background-image: url(/images/iebg.gif);
+}
+.comment_box
+{
+    background-color: #16222d;
+    background-image: url(/images/clear.gif);
+}
+#box_content  b, .new b  {
+    background-color: #38516a;
+    background-image: url(/images/iebg.gif);
+}

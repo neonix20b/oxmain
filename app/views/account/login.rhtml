@@ -9,10 +9,10 @@
       <td><label for="password">Пароль:</label></td>
       <td><%= password_field_tag 'password','', :size=>'20' %></td>
     </tr>
-
-    <!--<p><label for="remember_me">Запомни меня!</label>
-  <%= check_box_tag 'remember_me' %></p>-->
-
+    <tr>
+      <td><label for="remember_me">Запомни меня!</label></td>
+      <td><%= check_box_tag 'remember_me' %></td>
+    </tr>
     <tr><td></td>
     <td align="right"><%= submit_tag 'Войти' %></td></tr>
   </table>

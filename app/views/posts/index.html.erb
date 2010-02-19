@@ -30,9 +30,11 @@
     </h2>
     <%txt = post.text.split(" --- ")%><%=tte txt.first %>
     <%if not txt.second.nil?%>
-      <%=link_to 'Читать полностью',blog_post_path(post.blog_id, post) %>
+      <p>
+        <%=link_to 'Читать полностью',blog_post_path(post.blog_id, post) %>
+      </p>
     <%end%>
-    <br/><br/>
+
     <div class="post_bottom">
       Автор: <%= author(post) %> |
       Последнее обновление: <%= show_time(post.updated_at) %> |
