@@ -21,7 +21,10 @@ class ApplicationController < ActionController::Base
   end
 
   def find_last
-    @unread_posts=find_last_posts(current_user,4) if logged_in?
+    if logged_in?
+      remove_from_last(current_user, params[:id]) if not params[:id].blank? and params[:action]=='show'
+      @unread_posts=find_last_posts(current_user,4)
+    end
   end
 
   def transfer_money(from_user, to_user, money=1)

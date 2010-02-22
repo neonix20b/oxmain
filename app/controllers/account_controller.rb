@@ -71,7 +71,7 @@ class AccountController < ApplicationController
   end
 
   def signup
-    if request.xhr?
+    if params[:invite].blank? and params[:id].blank?
       return render :template => 'account/signup.rhtml'
     elsif not request.post?
       return redirect_to("http://oxnull.net/#hello=#{params[:id]}")

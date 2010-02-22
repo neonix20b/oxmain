@@ -22,22 +22,18 @@
           <div class="menu_right">
             <div class="aa"><%=link_to "Главная", blog_posts_path('all') %><%#= link_to "Главная", {:controller=> 'main', :action => "hello"}%></div>
             <div><%= image_tag("menu_separator.png") %></div>
-            <% if logged_in? %>
-              <div class="aa"><%= rlink "Мой сайт", {:controller=> 'main', :action => "index"}%></div>
-              <div><%= image_tag("menu_separator.png") %></div>
-              <!--<div class="aa"><%= rlink "FTP/MYSQL", {:controller=> 'main', :action => "about"}%></div>
-                                                  <div><%= image_tag("menu_separator.png") %></div>
-                                                  <div class="aa"><%= rlink "Услуги", {:controller=> 'wm', :action => "index"}%></div>
-                                                  <div><%= image_tag("menu_separator.png") %></div>-->
-            <%else%>
-              <!--<div class="aa"><%= rlink "Войти", {:controller=> 'account', :action => "login"}%></div>
-                                                  <div><%= image_tag("menu_separator.png") %></div>-->
-              <div class="aa"><%= rlink "Регистрация", {:controller=> 'account', :action => "signup"}%></div>
-              <div><%= image_tag("menu_separator.png") %></div>
-            <%end%>
             <div class="aa"><%= rlink "Видео", {:controller=> 'main', :action => "video"}%></div>
             <div><%= image_tag("menu_separator.png") %></div>
-            <div class="aa"><a href="http://offtop.oxnull.net/" target="_blank">Форум</a></div>
+            <% if logged_in? %>
+              <div class="aa"><%= link_to "Мой сайт", {:controller=> 'main', :action => "index"}%></div>
+              <div><%= image_tag("menu_separator.png") %></div>
+              <div class="aa"><%= link_to "Старая панель", 'http://oxnull.net/old/'%></div>
+              <div><%= image_tag("menu_separator.png") %></div>
+            <%else%>
+              <div class="aa"><%= link_to "Регистрация", {:controller=> 'account', :action => "signup"}%></div>
+              <div><%= image_tag("menu_separator.png") %></div>
+            <%end%>
+            <div class="aa"><%= link_to 'Заявки',supports_url%></div>
             <div><%= image_tag("menu_separator.png") %></div>
             <div class="aa"><a href="http://wiki.oxnull.net" target="_blank">Где я?</a></div>
           </div>

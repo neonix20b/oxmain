@@ -80,11 +80,11 @@ class MainController < ApplicationController
 
   def comment_work
     return render :text=>"нельзя" if not can_edit? or not request.post?
-    if params[:comment].has_key?("post_id")
+    if params.has_key?("comment") and params[:comment].has_key?("post_id")
       post_id = params[:comment][:post_id]
       blog_id = params[:blog][:id]
     end
-    user_id = params[:comment][:user_id]
+    user_id = params[:comment][:user_id] if params.has_key?("comment") and params[:comment].has_key?("user_id")
     if params[:do]=='add'
       comment = Comment.new(params[:comment])
       comment.user_id=user_id
@@ -100,9 +100,13 @@ class MainController < ApplicationController
       end
     elsif params[:do]=='del'
       comment = Comment.find(params[:id])
+      txt = comment.text
       if can_edit?(comment)
         comment.destroy
-        flash[:notice] = "Комментарий успешно удален."
+        #flash[:notice] = "Комментарий успешно удален."
+        return render :text=>"Комментарий успешно удален. Его текст:<br/>#{txt}"
+      else
+        return render :text=>"Нельзя."
       end
     end
     if params[:comment].has_key?("post_id")
@@ -114,8 +118,10 @@ class MainController < ApplicationController
 
   def comment_try
     return render :text=>"нельзя" if not request.post?
+    return render :text=>"" if params[:text].blank? or params[:text].size < 1
     @comment = Comment.new
     @comment.updated_at = Time.now
+    @comment.created_at = Time.now
     @comment.id = 46
     @comment.text = params[:text]
     @comment.ox_rank = 0
@@ -155,8 +161,8 @@ class MainController < ApplicationController
       @obj.count += add_count if @obj.respond_to?('count')
       @obj.ox_rank += add_rank
       user.ox_rank += add_rank
-      if (params[:do]=='plus' and transfer_money(current_user, user, 0.01)) or
-          (params[:do]=='minus' and transfer_money(current_user, User.find(3), 0.01))
+      if params[:do]=='plus' or #and transfer_money(current_user, user, 0.01)) or
+          params[:do]=='minus' #and transfer_money(current_user, User.find(3), 0.01))
         @obj.last_comment='Мало комментариев!' if @obj.respond_to?('last_comment')
         @obj.save!
         user.save!
@@ -244,6 +250,7 @@ class MainController < ApplicationController
       inv.save!
       #@invites = Invite.find(:all,:conditions =>{:user_id => current_user.id})
       #render :partial => "inv_list", :locals => { :invites => @invites}
+      return render :text => "<a href='http://oxnull.net/#hello=#{inv.invite_string}'>Скопируйте эту ссылку</a>"  if request.xhr?
       render :text => inv.invite_string
     elsif params[:task] == 'del'
       Invite.delete_all({:user_id => current_user.id, :id => params[:id]})

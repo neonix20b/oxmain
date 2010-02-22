@@ -1,11 +1,16 @@
 <%if not posts.nil? and posts.size > 0%>
+  <%if request.xhr? or request.post? %>
+    <div id="news_from_top">
+      <%= one_news(posts.first,'span')%>
+    </div>
+    <%= update_page_tag do |page|
+      page.visual_effect :fade, 'news_from_top', :duration => 5;
+    end%>
+  <%end%>
   <table>
     <tr><th>Обновления</th><th></th></tr>
     <%posts.each do |post|%>
-      <tr><td>
-          <%=link_to h(post.title),blog_post_path(post.blog_id, post) %>
-          <div style="font-size:xx-small;"><%= post.last_comment %></div>
-        </td></tr>
+      <tr><td><%= one_news(post)%></td></tr>
     <%end%>
   </table>
 <%else%>

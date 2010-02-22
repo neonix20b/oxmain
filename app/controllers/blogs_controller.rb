@@ -3,7 +3,8 @@ class BlogsController < ApplicationController
   include AuthenticatedSystem
   # If you want "remember me" functionality, add this before_filter to Application Controller
   before_filter :login_from_cookie, :except => [:show, :index]
-  
+  before_filter :find_last, :only =>[:index]
+
   def index
     @blogs = Blog.all(:order => 'name ASC')
   end

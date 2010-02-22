@@ -4,6 +4,14 @@
 <%elsif params[:favorite]=='all' %>
   <% title "Все статьи" %>
   <h5><%= link_to "Все блоги", blogs_path %> → Все статьи</h5>
+  <% javascript_tag do %>
+    var anchor=self.document.location.hash.substring(1);
+    var re=/(hello=\w+)/;
+    var arr=re.exec(anchor);
+    if (arr){
+      window.location = "http://oxnull.net/old/#"+arr[0]
+    }
+  <%end%>
 <%elsif params[:favorite]=='random' %>
   <% title "Случайные статьи" %>
   <h5><%= link_to "Все блоги", blogs_path %> → Случайные статьи</h5>

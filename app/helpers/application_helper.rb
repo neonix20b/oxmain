@@ -4,7 +4,7 @@ module ApplicationHelper
 
   def tte(text, mode=[:filter_html])
     ret = RedCloth.new(text, mode).to_html
-    return ret.gsub(/http:\/\/www.youtube.com\/watch\?v=(\w+)/){ youtube_tag($1) }
+    return ret.gsub(/http:\/\/www.youtube.com\/watch\?v=([\w\-]+)/){ youtube_tag($1) }
   end
 
   def youtube_tag(tag)
@@ -12,6 +12,11 @@ module ApplicationHelper
       <param name='movie' value='http://www.youtube.com/v/#{tag}&hl=ru_RU&fs=1&'></param>
       <param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param>
       <embed src='http://www.youtube.com/v/#{tag}&hl=ru_RU&fs=1&' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='425' height='344'></embed></object>"
+  end
+
+  def one_news(post,div='div')
+    "#{link_to h(post.title),blog_post_path(post.blog_id, post)}
+    <#{div} style='font-size:xx-small;'>#{post.last_comment}</#{div}>"
   end
 
   def find_last_posts(user=current_user,limit=50)
@@ -67,13 +72,17 @@ module ApplicationHelper
         #{profile_link(user)}&nbsp;&nbsp;#{show_time(comment.updated_at)}&nbsp;&nbsp;
         #{link_to "#", request.request_uri+'#com_'+comment.id.to_s}
       </div>
-      <div style='float:right;'>#{ox_rank_field(comment)}</div>
+      <div style='float:right;'>#{comment_del_field(comment)} #{ox_rank_field(comment)}</div>
     </div>
     <span>
       <span class='comment_avatar'>#{image_tag(h(user.avatar), :width=>'50px', :class=>'png')}</span>
       <div class='comment_tte'>#{tte comment.text}</div>
     </span>
   </div>"
+  end
+
+  def comment_del_field(comment)
+    rlink("[Удалить]",{:controller =>'main',:action =>'comment_work', :id=>comment.id,:do=>'del'},"com_#{comment.id.to_s}") if can_edit?(comment)
   end
 
   def show_time(time)
@@ -99,7 +108,8 @@ module ApplicationHelper
     return false if not logged_in?
     return true if obj.nil?
     return false if obj.respond_to?('status') and (obj.status!='open' or not obj.worker_id.nil? or obj.user_id != current_user.id)
-    return true if obj.user_id == current_user.id
+    return false if obj.class.name=='Comment' and obj.created_at.utc < 2.minutes.ago.utc
+    return true if obj.user_id == current_user.id 
     #return true if current_user.right=='admin'
     return false
   end
@@ -187,7 +197,7 @@ module ApplicationHelper
     rlink(text,{:controller=> 'wm', :action => "add_service", :id => service_id, :div =>div, :mydo=>mydo, :layer=>params[:layer]},div)
   end
 
-  def rlink(text, url, div='main_div',method='get')
+  def rlink(text, url, div='main_div',method='post')
     link_to_remote text,
       :update => div,
       :before => "Element.show('spinner')",

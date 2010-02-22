@@ -11,12 +11,14 @@ class PostsController < ApplicationController
   before_filter :find_last, :only =>[:index, :show]
 
   def index
+    return redirect_to "http://oxnull.net/old/#{$1}" if not request.request_uri.scan(/(#hello=\w+)/).empty?
     if params[:favorite]=='favorite'
       tmp = [18]
       tmp = current_user.favorite.split(',') if logged_in? and not current_user.favorite.nil?
       @posts = Post.find(:all, :conditions =>{:blog_id=>tmp}, :order => 'id DESC')
     elsif params[:favorite]=='all'
       @posts = Post.find(:all, :order => 'id DESC')
+      #render :text => request.symbolized_path_parameters
     elsif params[:favorite]=='random'
       @posts = Post.find(:all, :order=>"rand()")
     elsif params[:favorite]=='last' and logged_in?

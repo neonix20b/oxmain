@@ -3,7 +3,9 @@
 <div id="supports">
   <%= render :partial => "supports_list", :locals => { :supports => @supports} %>
 </div>
-
+<p>
+  Более подробно о Заявках можно прочитать в <a href="http://oxnull.net/blogs/5/posts/24.html">этой статье</a>.
+</p>
 <% if can_edit? %>
   <p><%= link_to "Создать заявку", new_support_path %></p>
 <%end%>
