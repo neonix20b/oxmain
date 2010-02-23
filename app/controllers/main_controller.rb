@@ -136,9 +136,9 @@ class MainController < ApplicationController
   end
 
   def ox_rank
-    return render :text=>"нельзя" if not request.post?
+    return render :text=>"нельзя" if not request.post? or current_user.ox_rank < 0
     @obj = params[:obj].camelize.constantize.find(params[:id])
-    max =  User.find(:first,:order=>'ox_rank DESC').ox_rank
+    max =  User.maximum('ox_rank')#User.find(:first,:order=>'ox_rank DESC').ox_rank
     if params[:do]=='minus'
       add_rank = -0.1
       add_rank -= current_user.ox_rank/max

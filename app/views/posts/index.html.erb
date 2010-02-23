@@ -9,7 +9,7 @@
     var re=/(hello=\w+)/;
     var arr=re.exec(anchor);
     if (arr){
-      window.location = "http://oxnull.net/old/#"+arr[0]
+    window.location = "http://oxnull.net/old/#"+arr[0]
     }
   <%end%>
 <%elsif params[:favorite]=='random' %>
@@ -56,7 +56,7 @@
       <br/>
       Теги: <%= tag_links(post) %>
     </div>
-    <div style="text-align:center; width:100%;"><hr width="70%"/></div>
+    <div style="text-align:center; width:100%;margin-top:25px;"><hr width="70%"/></div>
   </div>
 <% end %>
 
@@ -76,4 +76,9 @@
 
 <% if not params.has_key?('favorite') and can_edit? %>
   <p><%= link_to "Создать статью в блоге \"#{@blog.name}\"", new_blog_post_path(@blog) %></p>
+<%end%>
+
+<% if not @count.nil? and @count > 10 %>
+  туда\сюда
+  
 <%end%>
