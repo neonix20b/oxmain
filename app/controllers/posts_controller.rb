@@ -11,29 +11,37 @@ class PostsController < ApplicationController
   before_filter :find_last, :only =>[:index, :show]
 
   def index
+    @per_page=10
+    @count=0
+    @per_page=100 if params[:format]!='html'
+    offset=0
     return redirect_to "http://oxnull.net/old/#{$1}" if not request.request_uri.scan(/(#hello=\w+)/).empty?
-    
-    offset = @page*10
+    offset = @page*@per_page if not @page.nil?
     if params[:favorite]=='favorite'
       tmp = [18]
       tmp = current_user.favorite.split(',') if logged_in? and not current_user.favorite.nil?
-      @posts = Post.find(:all, :conditions =>{:blog_id=>tmp}, :order => 'id DESC', :limit => 10, :offset => offset)
       @count = Post.count(:all, :conditions =>{:blog_id=>tmp})
+      offset=@count-@per_page if @count > @per_page
+      @posts = Post.find(:all, :conditions =>{:blog_id=>tmp}, :order => 'id ASC', :limit => @per_page, :offset => offset)
+      
     elsif params[:favorite]=='all'
-      @posts = Post.find(:all, :order => 'id DESC', :limit => 10, :offset => offset)
       @count = Post.count
-      #render :text => request.symbolized_path_parameters
+      offset=@count-@per_page if @count > @per_page
+      @posts = Post.find(:all, :order => 'id ASC', :limit => @per_page, :offset => offset)
+      
     elsif params[:favorite]=='random'
-      @posts = Post.find(:all, :order=>"rand()", :limit => 10, :offset => offset)
-      @count = Post.count
+      @posts = Post.find(:all, :order=>"rand()", :limit => @per_page)
     elsif params[:favorite]=='last' and logged_in?
       @posts=find_last_posts(current_user)
     elsif params.has_key?('favorite')
       @posts = Post.find_tagged_with(params[:favorite])
     else
-      @posts = Post.find(:all, :conditions=>{:blog_id => @blog.id},:order => 'id DESC', :limit => 10, :offset => offset)
       @count = Post.count(:all, :conditions=>{:blog_id => @blog.id})
+      offset=@count-@per_page if @count > @per_page
+      @posts = Post.find(:all, :conditions=>{:blog_id => @blog.id},:order => 'id ASC', :limit => @per_page, :offset => offset)
     end
+    @posts.reverse!
+    @page=@count/@per_page if @page.nil?
   end
   
   def show
@@ -101,19 +109,19 @@ class PostsController < ApplicationController
 
   private
   def load_blog
-    blog_id = params[:blog_id]
-    @page = 0
-    if not blog_id.nil?
-      tmp = blog_id.split('-') 
+    @blog_id = params[:blog_id]
+    @page = nil
+    if not @blog_id.nil?
+      tmp = @blog_id.split('-')
       if tmp.size > 1 and tmp[-1].to_i.to_s == tmp[-1]
         @page = tmp[-1].to_i
         tmp.delete_at(-1)
       end
-      blog_id = tmp.join('-')  
-      if blog_id.to_i.to_s != blog_id
-        params[:favorite]=blog_id
-      elsif blog_id.to_i != 0
-        @blog = Blog.find(blog_id)
+      @blog_id = tmp.join('-')
+      if @blog_id.to_i.to_s != @blog_id
+        params[:favorite]=@blog_id
+      elsif @blog_id.to_i != 0
+        @blog = Blog.find(@blog_id)
       end
     end
   end

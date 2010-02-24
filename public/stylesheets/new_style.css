@@ -8,6 +8,10 @@
 	padding: 0px;
 	border:0px;
 }
+acronym
+{
+	text-decoration: underline;
+}
 blockquote
 {
 	border-style:solid;
@@ -47,6 +51,20 @@ blockquote
 	-webkit-border-radius: 10px;
 	border: 1px #000;
 	display: none;
+	min-width: 170px;
+}
+#news_from_top
+{
+	background-image: url(/images/text_back.png);
+	z-index: 1;
+	left: 0px;
+	top: 0px;
+	position: fixed;
+	display: block;
+	width: 100%;
+	border: 1px #000;
+	padding: 8px;
+	text-align: center;
 }
 table{
     cellpadding: 0px;
@@ -337,7 +355,7 @@ input.text
 }
 .blog_post
 {
-	margin-bottom: 40px;
+	margin-bottom: 30px;
 }
 .post_bottom
 {
