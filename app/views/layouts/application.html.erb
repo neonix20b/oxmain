@@ -3,6 +3,8 @@
   <head>
     <title><%= h(yield(:title) || "ox - Мир") %> - oxnull.net</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="keywords" content="<%= h(yield(:keywords) || "oxnull, лучший бесплатный хостинг") %>"/>
+    <meta name="description" content="<%= h(yield(:description) || "oxnull.net - это лучший бесплатный хостинг") %>"/>
     <%= stylesheet_link_tag 'new_style' %>
     <%= stylesheet_link_tag 'textile-editor' %>
     <%= javascript_include_tag :all %>
@@ -33,7 +35,7 @@
               <div class="aa"><%= link_to "Регистрация", {:controller=> 'account', :action => "signup"}%></div>
               <div><%= image_tag("menu_separator.png") %></div>
             <%end%>
-            <div class="aa"><%= link_to 'Заявки',supports_url%></div>
+            <div class="aa"><%= link_to "Заявки",supports_url%><%= "(#{Support.count})" if Support.count>0 %></div>
             <div><%= image_tag("menu_separator.png") %></div>
             <div class="aa"><a href="http://wiki.oxnull.net" target="_blank">Где я?</a></div>
           </div>
@@ -161,8 +163,8 @@
                 },
                 tweets: {
                   background: 'transparent',
-                  color: '#FFFFFF',
-                  links: '#B5E7FD'
+                  color: '#9B9B9B',
+                  links: '#CDCDCD'
                 }
               },
               features: {
@@ -187,9 +189,9 @@
         </div>
       </div>
     </div>
-    <%-if logged_in?-%>
+    <%-if logged_in? and controller.controller_name!='main'-%>
   <%#= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'tasklist'), :frequency => '30', :update => 'tasks') %>
-      <%= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'unread_posts'), :frequency => '30', :update => 'tasks') %>
+      <%= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'unread_posts', :id=>controller.action_name), :frequency => '30', :update => 'tasks') %>
     <%-end-%>
     <div class="popup" id="ox_rank_helper_div"></div>
     <!--[if lt IE 7]>
@@ -211,6 +213,7 @@
   try {
     var pageTracker = _gat._getTracker("UA-5504344-3");
     pageTracker._trackPageview();
-  } catch(err) {}</script>
+  } catch(err){}
+    </script>
   </body>
 </html>

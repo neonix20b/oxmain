@@ -20,10 +20,16 @@ class ApplicationController < ActionController::Base
     session[:gmtoffset] = current_user.gmtoffset if logged_in?
   end
 
+  def my_conf(var)
+    conf = Conf.find(:first, :conditions => {:var => var})
+    conf = Conf.new({:var => var}) if conf.nil?
+    return conf
+  end
+
   def find_last
     if logged_in?
       remove_from_last(current_user, params[:id]) if not params[:id].blank? and params[:action]=='show'
-      @unread_posts=find_last_posts(current_user,4)
+      @unread_posts=find_last_posts(current_user,3)
     end
   end
 

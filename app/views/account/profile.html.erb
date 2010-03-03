@@ -1,8 +1,12 @@
 <% title profile_link(@user,false) %>
 
 <h1><%= profile_link(@user,false) %></h1>
-
 <table>
+  <% if logged_in? and @user.id == current_user.id %>
+  <tr><td></td><td><%=rlink image_tag(h(@user.avatar), :width=>'50px', :class=>'png'), {:controller=>'account',:action=>'edit'}%></td></tr>
+  <%else%>
+  <tr><td></td><td><%=image_tag(h(@user.avatar), :width=>'50px', :class=>'png')%></td></tr>
+  <%end%>
   <tr><td align="right"><strong>Сайт:</strong></td><td><%= user_site_link(@user) %></td></tr>
   <tr><td align="right"><strong>Зарегистрирован:</strong></td><td><%= show_time(@user.created_at) %></td></tr>
   <tr><td align="right"><strong>Последнее обновление:</strong></td><td><%= show_time(@user.updated_at) %></td></tr>

@@ -41,7 +41,9 @@ class PostsController < ApplicationController
       @posts = Post.find(:all, :conditions=>{:blog_id => @blog.id},:order => 'id ASC', :limit => @per_page, :offset => offset)
     end
     @posts.reverse!
-    @page=@count/@per_page if @page.nil?
+    @page = @count/@per_page if @page.nil?
+    @keywords = @posts.map{|post| post.tag_list}.flatten.uniq.join(', ')
+    @description = @posts.map{|post| post.title}.join('. ')
   end
   
   def show

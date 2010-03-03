@@ -1,4 +1,7 @@
 <% title @post.title %>
+<% content_for :keywords, @post.tag_list.join(', ') %>
+<% content_for :description, "#{@post.title}. #{@post.tag_list.join(', ')}" %>
+
 <h5><%= link_to "Все блоги", blogs_path %> → <%= link_to @blog.name, blog_posts_path(@blog) %> → <%= @post.title %></h5>
 <%= menu_posts %>
 <%= add_favorite(@blog) %>

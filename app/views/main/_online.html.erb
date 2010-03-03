@@ -1,0 +1,6 @@
+<%online = User.find(:all, :conditions => ["last_view > ?",10.minutes.ago], :order => 'last_view DESC')%>
+online:
+<%online.each do |user|%>
+  [<%= show_time(user.last_view,"%H:%M:%S") %>] 
+  <%=profile_link(user)%><%= ', ' if user!=online.last%>
+<%end%>

@@ -4,7 +4,9 @@ class FlexController < ApplicationController
   include AuthenticatedSystem
   before_filter :login_from_cookie
   protect_from_forgery :except => [:adept_def, :service_change, :dotask, :password_change, :my_site, :service_list, :tag_control]
-  
+  #FIXME удалить строчку ниже когда станем популярными :)
+  before_filter :find_last, :only =>[:my_site]
+
   def sms_phone
     #country = "Россия"
     if params[:country] and params[:op_name]

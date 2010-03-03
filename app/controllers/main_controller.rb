@@ -131,7 +131,7 @@ class MainController < ApplicationController
 
   def unread_posts
     return render :text=>"нельзя" if not request.post?
-    @unread_posts=find_last_posts(current_user,4)
+    @unread_posts=find_last_posts(current_user,3)
     render :partial => "unread_posts", :locals => { :posts => @unread_posts}
   end
 

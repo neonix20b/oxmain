@@ -1,3 +1,6 @@
+<% content_for :keywords, @keywords %>
+<% content_for :description, @description %>
+
 <% if params[:favorite]=='favorite' %>
   <% title "Избранные блоги" %>
   <h5><%= link_to "Все блоги", blogs_path %> → Избранные блоги</h5>
@@ -64,11 +67,13 @@
   <br/>
   <h2>Тут статей еще нет</h2>
   <%if params[:favorite]=='last'%>
-    Внимание! Отслеживаются статьи только из избранных блогов. Для добавления
-    в избранное воспользуйтесь <%= link_to "этой страницей", blogs_path %>.
-    Или начните следить за блогом кликнув на "Следить за блогом" в верхней
-    части понравившейся статьи. Впрочем можно просто почитать
-    <%= link_to("случайные статьи", blog_posts_path("random"))%>.
+    <p>
+      Внимание! Отслеживаются статьи только из избранных блогов. Для добавления
+      в избранное воспользуйтесь <%= link_to "этой страницей", blogs_path %>.
+      Или начните следить за блогом кликнув на "Следить за блогом" в верхней
+      части понравившейся статьи. Впрочем можно просто почитать
+      <%= link_to("случайные статьи", blog_posts_path("random"))%>.
+    </p>
   <%else%>
     <br/><br/><br/>
   <%end%>
@@ -78,17 +83,31 @@
   <p><%= link_to "Создать статью в блоге \"#{@blog.name}\"", new_blog_post_path(@blog) %></p>
 <%end%>
 
+<div id="oxusers_online">
+  <%= render :partial => "main/online"%>
+</div>
+
 <% if not @count.nil? and @count > @per_page %>
-  <%if @page + 1 < @count/@per_page%>
-    ← <%= link_to "Новее", blog_posts_path("#{@blog_id}-#{(@page+1).to_s}") %>
-  <%elsif @page+1 == @count/@per_page%>
-    ← <%= link_to "Новее", blog_posts_path(@blog_id) %>
+  <h5>
+    <%if @page + 1 < @count/@per_page%>
+      ← <%= link_to "Новее", blog_posts_path("#{@blog_id}-#{(@page+1).to_s}") %>
+    <%elsif @page+1 == @count/@per_page%>
+      ← <%= link_to "Новее", blog_posts_path(@blog_id) %>
+    <%else%>
+      ← Новее
+    <%end%>
+    <%if @page!=0%>
+      <%= link_to "Старее", blog_posts_path("#{@blog_id}-#{(@page-1).to_s}") %> →
+    <%else%>
+      Старее →
+    <%end%>
+  </h5>
+
+  <%if @page != @count/@per_page%>
+    <%= link_to "[#{(@count/@per_page).to_s}]", blog_posts_path(@blog_id) %>
+  <%else%>
+    [<%=(@count/@per_page).to_s%>]
   <%end%>
-  <%if @page!=0%>
-    <%= link_to "Старее", blog_posts_path("#{@blog_id}-#{(@page-1).to_s}") %> →
-  <%end%>
-  <br/>
-  <%= link_to 'Свеженькое', blog_posts_path(@blog_id) %>
   <%(@count/@per_page - 1).downto(0) do |i| %>
     <%if i==@page%>
       [<%= i.to_s %>]

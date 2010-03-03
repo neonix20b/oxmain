@@ -34,7 +34,7 @@ module ApplicationHelper
     posts.each do |post|
       tmp+=[post.id.to_s]
     end
-    if not posts.nil?
+    if not posts.nil? or user.last_view > 1.hour.ago.utc
       tmp=tmp.compact.uniq
       user.last_posts = tmp.join(',')
       user.last_view = Time.now.utc
@@ -85,14 +85,15 @@ module ApplicationHelper
     rlink("[Удалить]",{:controller =>'main',:action =>'comment_work', :id=>comment.id,:do=>'del'},"com_#{comment.id.to_s}") if can_edit?(comment)
   end
 
-  def show_time(time)
-    return Russian::strftime(time.utc.in_time_zone(session[:gmtoffset].to_i.minutes), "%d %B %Y, %H:%M") if session.nil? or not session.has_key?("gmtoffset")
-    return Russian::strftime(time.utc, "%d %B %Y, %H:%M UTC")
+  def show_time(time, format="%d %B %Y, %H:%M")
+    return Russian::strftime(time.utc.in_time_zone(session[:gmtoffset].to_i.minutes), format) if session.nil? or not session.has_key?("gmtoffset")
+    return Russian::strftime(time.utc, "#{format} UTC")
   end
   
   def profile_link(user=current_user,link=true)
+    user = User.find(user) if user.class.name != 'User'
     ret = user.login
-    ret = user.show_name if not user.show_name.nil?
+    ret = user.show_name if not user.show_name.nil? and user.show_name!=""
     return h(ret) if link==false
     return link_to(h(ret),{:controller=>'account',:action=>'profile',:id=>user.login})
   end

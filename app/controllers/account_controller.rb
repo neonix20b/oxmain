@@ -5,6 +5,8 @@ class AccountController < ApplicationController
   protect_from_forgery :except => [:login, :signup, :logout, :whoiam, :index, :check_login]
   # If you want "remember me" functionality, add this before_filter to Application Controller
   before_filter :login_from_cookie, :except =>[:profile]
+  #FIXME удалить строчку ниже когда станем популярными :)
+  before_filter :find_last, :only =>[:whoiam]
 
   # say something nice, you goof!  something sweet.
   def index
@@ -47,7 +49,7 @@ class AccountController < ApplicationController
         if params[:remember_me] == "true" or params[:remember_me].to_s == "1"
           self.current_user.remember_me
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
-          end
+        end
         if(params[:format]!='xml')
           redirect_back_or_default(blog_posts_path("all"))
           flash[:notice] = "Вход выполнен."
@@ -68,6 +70,36 @@ class AccountController < ApplicationController
       render(:layout => 'mainlayer') if request.xhr?
       #redirect_to("http://oxnull.net/")
     end
+  end
+
+  def regme
+    if not request.post?
+      return render :template => 'account/signup.rhtml'
+    end
+    if params[:invite]
+      inv = Invite.find(:first,:conditions =>{:invite_string =>params[:invite]})
+    end
+    if inv.nil?
+      render :text => "Такого приглашения не существует"
+    elsif not inv.invited_user.nil?
+      render :text => "Этим приглашением уже воспользовались"
+    else
+      @user = User.new(params[:user])
+      @user.wtf = 'joomla' if params[:wtf]=='joomla'
+      @user.wtf = 'phpbb' if params[:wtf]=='smf'
+      @user.wtf = 'wordpress' if params[:wtf]=='wordpress'
+      @user.wtf = 'none' if params[:wtf]=='none'
+      return render :text => 'пнх' if @user.wtf.nil? or @user.wtf==''
+
+      @user.save!
+      self.current_user = @user
+      inv.update_attribute('invited_user', @user.id)
+      addtask(current_user.id,"create")
+
+      redirect_to(:controller => 'main', :action => 'loading')
+      flash[:notice] = "Добро пожаловать!"
+    end
+  rescue ActiveRecord::RecordInvalid
   end
 
   def signup
@@ -157,8 +189,10 @@ class AccountController < ApplicationController
   end
 
   def edit
-    if request.post?
+    @avatars = (Dir.new(RAILS_ROOT+'/public/images/avatars/').entries - [".", ".."]).map{|ava| '/images/avatars/'+ava}
+    if request.post? and not request.xhr?
       @user = current_user
+
       params[:user].delete('money')
       params[:user].delete('login')
       params[:user].delete('status')
@@ -169,7 +203,7 @@ class AccountController < ApplicationController
       req = Net::HTTP::Get.new(url.path)
       res = Net::HTTP.start(url.host, url.port) {|http| http.request(req) }
       flash[:notice] = ''
-      if res.body.size > 15000
+      if res.body.size > 40000
         params[:user][:avatar]='http://oxnull.net/images/noavatar.png'
         flash[:warning] = "ВНЕЗАПНО аватар оказался больше чем хотелось бы, поэтому удален. "
       end

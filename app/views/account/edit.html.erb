@@ -2,11 +2,28 @@
 
 <% semantic_form_for :user, @user do |f| %>
   <% f.inputs :style => "border:0px;" do %>
-    <%= f.input :show_name,:label => "Отображаемое имя" %>
-    <%= f.input :avatar,:label => "URL до аватара" %>
-    <%= f.input :email,:label => "e-mail" %>
+    <%= f.input :show_name,:label => "Отображаемое имя" %><br/>
+    <%= f.input :avatar,:label => "URL до аватара" %><br/>
+    <%= f.input :email,:label => "e-mail" %><br/>
   <%end%>
   <% f.buttons :style => "border:0px;" do %>
     <%= f.commit_button :label => "Сохранить"%>
   <% end %>
 <% end %>
+
+<div style="width:50%;margin-left:50px;cursor: pointer;">
+  <%@avatars.each do |avatar|%>
+    <%=image_tag(h(avatar), :width=>'50px', :class=>'png', :onclick=>'$("user_avatar").value=this.src.replace(/\?\d+/, "");')%>
+  <%end%>
+</div>
+    
+<script type="text/javascript">
+  Event.observe(window, 'load', function(e) {
+    var now = new Date();
+    var gmtoffset = now.getTimezoneOffset();
+    // use ajax to set the time zone here.
+    var set_time = new Ajax.Request('/main/gmtoffset/'+gmtoffset, {
+      onSuccess: function(transport) {}
+    });
+  });
+</script>

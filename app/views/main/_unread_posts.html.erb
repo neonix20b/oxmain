@@ -14,6 +14,16 @@
     <%end%>
   </table>
 <%else%>
+<%if logged_in? and (current_user.favorite.nil? or current_user.favorite=="")%>
+  <%if request.xhr? or request.post? %>
+    <div id="news_from_top">
+      Вы не подписаны ни на один блог. Подробнее на странице <%= link_to("последних не прочитанных", blog_posts_path('last'))%>.
+    </div>
+    <%= update_page_tag do |page|
+      page.visual_effect :fade, 'news_from_top', :duration => 15;
+    end%>
+  <%end%>
+<%end%>
   <table>
     <tr><th class="table_1">Мы предлагаем:</th><th>У нас есть:</th></tr>
     <tr><td class="table_1">1 базу данных MySQL(50MB)</td><td>PHP 5</td></tr>
@@ -21,4 +31,10 @@
     <tr><td class="table_1">Предустановленные движки сайтов</td><td>Perl</td></tr>
     <tr><td class="table_1">Место под файлы(150MB)</td><td>Ruby</td></tr>
   </table>
+<%end%>
+
+<%if (request.xhr? or request.post?) and (params[:id]=='index') %>
+  <%= update_page_tag do |page|
+    page.replace_html('oxusers_online', :partial => "main/online")
+  end%>
 <%end%>
