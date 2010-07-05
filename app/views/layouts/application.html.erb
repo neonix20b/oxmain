@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <title><%= h(yield(:title) || "ox - Мир") %> - oxnull.net</title>
@@ -18,52 +18,25 @@
   <body>
     <div id="main_box" class="main">
       <div class="header">
-        <div class="logo"><%= image_tag("logo.png") %></div>
+        <div class="logo"><%= link_to image_tag("logo.png"), blog_posts_path('all')%></div>
         <div class="menu_big">
-          <div class="menu_left"></div>
           <div class="menu_right">
-            <div class="aa"><%=link_to "Главная", blog_posts_path('all') %><%#= link_to "Главная", {:controller=> 'main', :action => "hello"}%></div>
-            <div><%= image_tag("menu_separator.png") %></div>
-            <div class="aa"><%= rlink "Видео", {:controller=> 'main', :action => "video"}%></div>
-            <div><%= image_tag("menu_separator.png") %></div>
+            <div class="aa first"><%=link_to "Главная", blog_posts_path('all') %><%#= link_to "Главная", {:controller=> 'main', :action => "hello"}%></div>
+            <div class="aa"><%= link_to "Видео", {:controller=> 'main', :action => "video"}%></div>
             <% if logged_in? %>
               <div class="aa"><%= link_to "Мой сайт", {:controller=> 'main', :action => "index"}%></div>
-              <div><%= image_tag("menu_separator.png") %></div>
               <div class="aa"><%= link_to "Старая панель", 'http://oxnull.net/old/'%></div>
-              <div><%= image_tag("menu_separator.png") %></div>
             <%else%>
               <div class="aa"><%= link_to "Регистрация", {:controller=> 'account', :action => "signup"}%></div>
-              <div><%= image_tag("menu_separator.png") %></div>
             <%end%>
-            <div class="aa"><%= link_to "Заявки",supports_url%><%= "(#{Support.count})" if Support.count>0 %></div>
-            <div><%= image_tag("menu_separator.png") %></div>
-            <div class="aa"><a href="http://wiki.oxnull.net" target="_blank">Где я?</a></div>
+            <div class="aa"><%= link_to "Заявки",supports_url%><span id="support_counter"><%= "(#{Support.count})" if Support.count>0 %></span></div>
+            <div class="aa"><a href="http://wiki.oxnull.net">Где я?</a></div>
           </div>
         </div>
         <div id="rounded_box_message">
-          <b class="r10"></b>
-          <b class="r9"></b>
-          <b class="r8"></b>
-          <b class="r7"></b>
-          <b class="r6"></b>
-          <b class="r5"></b>
-          <b class="r4"></b>
-          <b class="r3"></b>
-          <b class="r2"></b>
-          <b class="r1"></b>
           <div id="tasks" class="message">
             <%= render :partial => "main/unread_posts", :locals => { :posts => @unread_posts} %>
           </div>
-          <b class="r1"></b>
-          <b class="r2"></b>
-          <b class="r3"></b>
-          <b class="r4"></b>
-          <b class="r5"></b>
-          <b class="r6"></b>
-          <b class="r7"></b>
-          <b class="r8"></b>
-          <b class="r9"></b>
-          <b class="r10"></b>
         </div>
 
         <div class="autorisation1">
@@ -100,19 +73,7 @@
 
       </div>
       <div id="big_box_content" class="content_back">
-
-        <div id="content_back_2" class="content_back_2"></div>
         <div id="box_content">
-          <b class="r10"></b>
-          <b class="r9"></b>
-          <b class="r8"></b>
-          <b class="r7"></b>
-          <b class="r6"></b>
-          <b class="r5"></b>
-          <b class="r4"></b>
-          <b class="r3"></b>
-          <b class="r2"></b>
-          <b class="r1"></b>
           <div class="content">
             <% unless flash[:notice].blank? %>
               <div id="notification"><%= flash[:notice] %></div>
@@ -130,66 +91,24 @@
               <%= yield %>
             </div>
           </div>
-          <b class="r1"></b>
-          <b class="r2"></b>
-          <b class="r3"></b>
-          <b class="r4"></b>
-          <b class="r5"></b>
-          <b class="r6"></b>
-          <b class="r7"></b>
-          <b class="r8"></b>
-          <b class="r9"></b>
-          <b class="r10"></b>
         </div>
 
       </div>
       <div class="footer">
         <div class="news">
-          <script type="text/javascript" src="http://widgets.twimg.com/j/2/widget.js"></script>
-          <script type="text/javascript">
-            new TWTR.Widget({
-              version: 2,
-              type: 'search',
-              search: 'oxnull',
-              interval: 10000,
-              title: 'Наши в Twitter\'e',
-              subject: '',
-              width: 'auto',
-              height: 150,
-              theme: {
-                shell: {
-                  background: 'transparent',
-                  color: '#ffffff'
-                },
-                tweets: {
-                  background: 'transparent',
-                  color: '#9B9B9B',
-                  links: '#CDCDCD'
-                }
-              },
-              features: {
-                scrollbar: false,
-                loop: true,
-                live: true,
-                hashtags: true,
-                timestamp: true,
-                avatars: true,
-                behavior: 'default'
-              }
-            }).render().start();
-          </script>
+          oxnull.net © 2010. Все права защищены.
         </div>
         <div class="pics">
           <table>
             <tr><td align="center"><%= image_tag("logos/gmo.png", :class=>'png') %></td></tr>
-            <tr><td align="center"> oxnull.net © 2010.</td></tr>
-            <tr><td align="center"> Все права защищены.</td></tr>
+            <tr><td align="center"> </td></tr>
+            <tr><td align="center"> </td></tr>
             <tr><td align="center"><div><%= spiner %></div></td></tr>
           </table>
         </div>
       </div>
     </div>
-    <%-if logged_in? and controller.controller_name!='main'-%>
+    <%-if logged_in? and (controller.controller_name=='posts' or controller.controller_name=='supports')-%>
   <%#= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'tasklist'), :frequency => '30', :update => 'tasks') %>
       <%= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'unread_posts', :id=>controller.action_name), :frequency => '30', :update => 'tasks') %>
     <%-end-%>

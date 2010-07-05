@@ -1,28 +1,31 @@
 <% title @post.title %>
 <% content_for :keywords, @post.tag_list.join(', ') %>
 <% content_for :description, "#{@post.title}. #{@post.tag_list.join(', ')}" %>
-
-<h5><%= link_to "Все блоги", blogs_path %> → <%= link_to @blog.name, blog_posts_path(@blog) %> → <%= @post.title %></h5>
-<%= menu_posts %>
-<%= add_favorite(@blog) %>
-<div>
-  <%=tte @post.text.gsub(" --- ", ' ') %>
+<div class="blog_post">
+  <h5><%= link_to "Все блоги", blogs_path %> → <%= link_to @blog.name, blog_posts_path(@blog) %> → <%= @post.title %></h5>
+  <%= menu_posts %>
+  <%= add_favorite(@blog) %>
 </div>
-<hr style="width:95%;"/>
-<div id="author_tag" style="color:#6b8095;">
-  Автор: <%= author(@post) %> | 
-  Дата создания: <%= show_time(@post.created_at) %> |
-  <%= ox_rank_field(@post) %> 
-  <% if can_edit?(@post) %>
-    <%= link_to "Редактировать", edit_blog_post_path(@blog, @post) %> |
-    <%= link_to "Удалить", blog_post_path(@blog, @post), :confirm => 'Точно удалить?', :method => :delete %>
-  <%end%>
+<div class="blog_post">
+  <div>
+    <%=tte @post.text.gsub(" --- ", ' ') %>
+  </div>
+  <hr style="width:95%;"/>
+  <div id="author_tag" style="color:#6b8095;">
+    Автор: <%= author(@post) %> |
+    Дата создания: <%= show_time(@post.created_at) %> |
+    <%= ox_rank_field(@post) %>
+    <% if can_edit?(@post) %>
+      <%= link_to "Редактировать", edit_blog_post_path(@blog, @post) %> |
+      <%= link_to "Удалить", blog_post_path(@blog, @post), :confirm => 'Точно удалить?', :method => :delete %>
+    <%end%>
+    <br/>
+    Теги: <%= tag_links(@post) %>
+  </div>
   <br/>
-  Теги: <%= tag_links(@post) %>
-</div>
-<br/>
-<br/>
-<h5>Комментарии(<%= @post.comments.size %>)</h5>
-<div id="comments">
-  <%= render :partial => 'comments', :locals => {:comments => @post.comments} %>
+  <br/>
+  <h5>Комментарии(<%= @post.comments.size %>)</h5>
+  <div id="comments">
+    <%= render :partial => 'comments', :locals => {:comments => @post.comments} %>
+  </div>
 </div>

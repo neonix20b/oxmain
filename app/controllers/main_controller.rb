@@ -248,7 +248,8 @@ class MainController < ApplicationController
       inv.user_id = current_user.id
       inv.invite_string = (Digest::MD5.hexdigest(Time.now.to_s)).upcase
       inv.save!
-      #@invites = Invite.find(:all,:conditions =>{:user_id => current_user.id})
+	  #inv.invite_string="Регистрация отключена"
+      @invites = Invite.find(:all,:conditions =>{:user_id => current_user.id})
       #render :partial => "inv_list", :locals => { :invites => @invites}
       return render :text => "<a href='http://oxnull.net/#hello=#{inv.invite_string}'>Скопируйте эту ссылку</a>"  if request.xhr?
       render :text => inv.invite_string

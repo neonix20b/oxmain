@@ -1,51 +1,45 @@
 <% content_for :keywords, @keywords %>
 <% content_for :description, @description %>
+<div class="blog_post">
+  <% if params[:favorite]=='favorite' %>
+    <% title "Избранные блоги" %>
+    <h5><%= link_to "Все блоги", blogs_path %> → Избранные блоги</h5>
+  <%elsif params[:favorite]=='all' %>
+    <% title "Все статьи" %>
+    <h5><%= link_to "Все блоги", blogs_path %> → Все статьи</h5>
+    <% javascript_tag do %>
+      var anchor=self.document.location.hash.substring(1);
+      var re=/(hello=\w+)/;
+      var arr=re.exec(anchor);
+      if (arr){
+      window.location = "http://oxnull.net/old/#"+arr[0]
+      }
+    <%end%>
+  <%elsif params[:favorite]=='random' %>
+    <% title "Случайные статьи" %>
+    <h5><%= link_to "Все блоги", blogs_path %> → Случайные статьи</h5>
+  <%elsif params[:favorite]=='last'%>
+    <% title "Последние не прочитанные" %>
+    <h5><%= link_to "Все блоги", blogs_path %> → Последние не прочитанные</h5>
+  <%elsif params.has_key?('favorite') %>
+    <% title "Тег: "+params[:favorite] %>
+    <h5><%= link_to "Все блоги", blogs_path %> → Тег: <%=params[:favorite]%></h5>
+  <%else%>
+    <% title @blog.name %>
+    <h5><%= link_to "Все блоги", blogs_path %> → <%= @blog.name %> <%#= '→' if logged_in? %> <%#= add_favorite(@blog) %></h5>
 
-<% if params[:favorite]=='favorite' %>
-  <% title "Избранные блоги" %>
-  <h5><%= link_to "Все блоги", blogs_path %> → Избранные блоги</h5>
-<%elsif params[:favorite]=='all' %>
-  <% title "Все статьи" %>
-  <h5><%= link_to "Все блоги", blogs_path %> → Все статьи</h5>
-  <% javascript_tag do %>
-    var anchor=self.document.location.hash.substring(1);
-    var re=/(hello=\w+)/;
-    var arr=re.exec(anchor);
-    if (arr){
-    window.location = "http://oxnull.net/old/#"+arr[0]
-    }
   <%end%>
-<%elsif params[:favorite]=='random' %>
-  <% title "Случайные статьи" %>
-  <h5><%= link_to "Все блоги", blogs_path %> → Случайные статьи</h5>
-<%elsif params[:favorite]=='last'%>
-  <% title "Последние не прочитанные" %>
-  <h5><%= link_to "Все блоги", blogs_path %> → Последние не прочитанные</h5>
-<%elsif params.has_key?('favorite') %>
-  <% title "Тег: "+params[:favorite] %>
-  <h5><%= link_to "Все блоги", blogs_path %> → Тег: <%=params[:favorite]%></h5>
-<%else%>
-  <% title @blog.name %>
-  <h5><%= link_to "Все блоги", blogs_path %> → <%= @blog.name %> <%#= '→' if logged_in? %> <%#= add_favorite(@blog) %></h5>
-
-<%end%>
-<%= menu_posts %>
+  <%= menu_posts %>
+</div>
 
 <% for post in @posts %>
   <div class="blog_post">
-    <h2>
+    <h2 style="margin:0px;">
   <%# if params.has_key?('favorite') %>
       <%= link_to post.blog.name, blog_posts_path(post.blog_id) %> →
   <%#end%>
       <%=link_to h(post.title),blog_post_path(post.blog_id, post) %>
     </h2>
-    <%txt = post.text.split(" --- ")%><%=tte txt.first %>
-    <%if not txt.second.nil?%>
-      <p>
-        <%=link_to 'Читать полностью',blog_post_path(post.blog_id, post) %>
-      </p>
-    <%end%>
-
     <div class="post_bottom">
       Автор: <%= author(post) %> |
       Последнее обновление: <%= show_time(post.updated_at) %> |
@@ -59,60 +53,69 @@
       <br/>
       Теги: <%= tag_links(post) %>
     </div>
-    <div style="text-align:center; width:100%;margin-top:25px;"><hr width="70%"/></div>
+    <%txt = post.text.split(" --- ")%><%=tte txt.first %>
+    <%if not txt.second.nil?%>
+      <div style="float:right;">
+        <%=link_to 'Читать полностью',blog_post_path(post.blog_id, post) %>
+      </div>
+    <%end%>
   </div>
 <% end %>
 
 <%if @posts.nil? or @posts.size == 0%>
-  <br/>
-  <h2>Тут статей еще нет</h2>
-  <%if params[:favorite]=='last'%>
-    <p>
-      Внимание! Отслеживаются статьи только из избранных блогов. Для добавления
-      в избранное воспользуйтесь <%= link_to "этой страницей", blogs_path %>.
-      Или начните следить за блогом кликнув на "Следить за блогом" в верхней
-      части понравившейся статьи. Впрочем можно просто почитать
-      <%= link_to("случайные статьи", blog_posts_path("random"))%>.
-    </p>
-  <%else%>
-    <br/><br/><br/>
+  <div class="blog_post">
+    <br/>
+    <h2>Тут статей еще нет</h2>
+    <%if params[:favorite]=='last'%>
+      <p>
+        Внимание! Отслеживаются статьи только из избранных блогов. Для добавления
+        в избранное воспользуйтесь <%= link_to "этой страницей", blogs_path %>.
+        Или начните следить за блогом кликнув на "Следить за блогом" в верхней
+        части понравившейся статьи. Впрочем можно просто почитать
+        <%= link_to("случайные статьи", blog_posts_path("random"))%>.
+      </p>
+    <%else%>
+      <br/><br/><br/>
+    <%end%>
+  </div>
+<%end%>
+
+<div class="blog_post">
+  <% if not params.has_key?('favorite') and can_edit? %>
+    <p><%= link_to "Создать статью в блоге \"#{@blog.name}\"", new_blog_post_path(@blog) %></p>
   <%end%>
-<%end%>
+  <div id="oxusers_online">
+    <%= render :partial => "main/online"%>
+  </div>
 
-<% if not params.has_key?('favorite') and can_edit? %>
-  <p><%= link_to "Создать статью в блоге \"#{@blog.name}\"", new_blog_post_path(@blog) %></p>
-<%end%>
-
-<div id="oxusers_online">
-  <%= render :partial => "main/online"%>
+  <% if not @count.nil? and @count > @per_page %>
+    <h5>
+      <%if @page + 1 < @count/@per_page%>
+        ← <%= link_to "Новее", blog_posts_path("#{@blog_id}-#{(@page+1).to_s}") %>
+      <%elsif @page+1 == @count/@per_page%>
+        ← <%= link_to "Новее", blog_posts_path(@blog_id) %>
+      <%else%>
+        ← Новее
+      <%end%>
+      <%if @page!=0%>
+        <%= link_to "Старее", blog_posts_path("#{@blog_id}-#{(@page-1).to_s}") %> →
+      <%else%>
+        Старее →
+      <%end%>
+    </h5>
+    <div class="page_numbers">
+      <%if @page != @count/@per_page%>
+        <%= link_to "[#{(@count/@per_page).to_s}]", blog_posts_path(@blog_id) %>
+      <%else%>
+        [<%=(@count/@per_page).to_s%>]
+      <%end%>
+      <%(@count/@per_page - 1).downto(0) do |i| %>
+        <%if i==@page%>
+          [<%= i.to_s %>]
+        <%else%>
+          <%= link_to "[#{i.to_s}]", blog_posts_path("#{@blog_id}-#{i.to_s}") %>
+        <%end%>
+      <%end%>
+    <%end%>
+  </div>
 </div>
-
-<% if not @count.nil? and @count > @per_page %>
-  <h5>
-    <%if @page + 1 < @count/@per_page%>
-      ← <%= link_to "Новее", blog_posts_path("#{@blog_id}-#{(@page+1).to_s}") %>
-    <%elsif @page+1 == @count/@per_page%>
-      ← <%= link_to "Новее", blog_posts_path(@blog_id) %>
-    <%else%>
-      ← Новее
-    <%end%>
-    <%if @page!=0%>
-      <%= link_to "Старее", blog_posts_path("#{@blog_id}-#{(@page-1).to_s}") %> →
-    <%else%>
-      Старее →
-    <%end%>
-  </h5>
-
-  <%if @page != @count/@per_page%>
-    <%= link_to "[#{(@count/@per_page).to_s}]", blog_posts_path(@blog_id) %>
-  <%else%>
-    [<%=(@count/@per_page).to_s%>]
-  <%end%>
-  <%(@count/@per_page - 1).downto(0) do |i| %>
-    <%if i==@page%>
-      [<%= i.to_s %>]
-    <%else%>
-      <%= link_to "[#{i.to_s}]", blog_posts_path("#{@blog_id}-#{i.to_s}") %>
-    <%end%>
-  <%end%>
-<%end%>

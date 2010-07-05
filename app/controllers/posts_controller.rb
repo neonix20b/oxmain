@@ -21,12 +21,14 @@ class PostsController < ApplicationController
       tmp = [18]
       tmp = current_user.favorite.split(',') if logged_in? and not current_user.favorite.nil?
       @count = Post.count(:all, :conditions =>{:blog_id=>tmp})
-      offset=@count-@per_page if @count > @per_page
+      offset=@count-@per_page if @page.nil? or @page == (@count/@per_page).to_i
+      offset=0 if offset < 0
       @posts = Post.find(:all, :conditions =>{:blog_id=>tmp}, :order => 'id ASC', :limit => @per_page, :offset => offset)
       
     elsif params[:favorite]=='all'
       @count = Post.count
-      offset=@count-@per_page if @count > @per_page
+      offset=@count-@per_page if @page.nil? or @page == (@count/@per_page).to_i
+      offset=0 if offset < 0
       @posts = Post.find(:all, :order => 'id ASC', :limit => @per_page, :offset => offset)
       
     elsif params[:favorite]=='random'
@@ -37,13 +39,15 @@ class PostsController < ApplicationController
       @posts = Post.find_tagged_with(params[:favorite])
     else
       @count = Post.count(:all, :conditions=>{:blog_id => @blog.id})
-      offset=@count-@per_page if @count > @per_page
+      offset=@count-@per_page if @page.nil? or @page == (@count/@per_page).to_i
+      offset=0 if offset < 0
       @posts = Post.find(:all, :conditions=>{:blog_id => @blog.id},:order => 'id ASC', :limit => @per_page, :offset => offset)
     end
     @posts.reverse!
     @page = @count/@per_page if @page.nil?
     @keywords = @posts.map{|post| post.tag_list}.flatten.uniq.join(', ')
     @description = @posts.map{|post| post.title}.join('. ')
+    @offset = offset;
   end
   
   def show

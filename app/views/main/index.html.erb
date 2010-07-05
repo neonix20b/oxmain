@@ -1,45 +1,52 @@
-<div id="info">
-  <h5>Информация</h5>
-  <%= render :partial => "main/domain_control"%>
-  <br/>
-  <%= render :partial => "main/rebuild_control"%>
-  <br/>
-  Квоты:
-  <span id="quotas_t">
-    <%= render :partial => "main/quotas"%>
-  </span>
+<!--<center>
+  <iframe src="http://oxnull.net/lite/" width="525px" height="570px" frameborder="no">
+    Где ты нашел такой браузер?
+  </iframe>
+</center>-->
+<div class="blog_post" style="min-width:920px;">
+  <div id="info">
+    <h5>Информация</h5>
+    <%= render :partial => "main/domain_control"%>
+    <br/>
+    <%= render :partial => "main/rebuild_control"%>
+    <br/>
+    Квоты:
+    <span id="quotas_t">
+      <%= render :partial => "main/quotas"%>
+    </span>
 
 <!--Вас пригласил: <strong><a href="http://<%=@master%>" target="_blank"><%=@master%></a></strong><br/><br/>
 						Мои адепты: -->
-  <div id="adepts" class="adepts">
+    <div id="adepts" class="adepts">
 <%#= render :partial => "inv_list", :locals => { :invites => @invites} %>
+    </div>
+    <%= rlink "Создать приглашение", {:controller=> 'main', :action => "invite", :task => 'new'}, "adepts"%>
   </div>
-  <%= rlink "Создать приглашение", {:controller=> 'main', :action => "invite", :task => 'new'}, "adepts"%>
-</div>
-<div id="service">
-  <h5>Услуги</h5>
-  Баланс: <span id="balance"><strong><%= current_user.money.to_s %></strong>ox</span>
-  <h4>Управление слугами</h4>
-  <table>
-    <tr><th class="first">Название</th><th>Оксов(в месяц)</th><th>Количество</th><th>Состояние</th></tr>
-    <% @discription.each do |d| %>
-      <tr><td class="first"><%= d[0]%></td>
-        <td>
-          <span id="c_<%=d[1].to_s%>"><%= (session[:price][d[1].to_s]*d[4].to_s.to_i).to_s %></span>ox</td>
-        <td width="70px"  class="first">
-          <span id="q_<%=d[1].to_s%>">
-            <%=  render :partial => "wm/use_plus", :locals => { :id => d[1].to_s, :servicesize => d[4].to_s, :div => "q_"+d[1].to_s} %>
-          </span>
-        </td>
-        <td ><span id='<%=d[1]%>'><%= service_switch(d[5],d[1],d[1])%></span></td></tr>
-    <%end%>
-  </table>
-  <h4>Пополнение счета</h4>
-  <%= render :partial => "wm/wm_pay_form"%>
-  <div id="sms_link">
-    <b><%= rlink "Пополнить счет по SMS &gt;&gt;", {:controller=>'flex', :action=>'sms_phone',:format=>'html'},'adept_center'%></b>
+  <div id="service">
+    <h5>Услуги</h5>
+    Баланс: <span id="balance"><strong><%= current_user.money.to_s %></strong>ox</span>
+    <h4>Управление слугами</h4>
+    <table>
+      <tr><th class="first">Название</th><th>Оксов(в месяц)</th><th>Количество</th><th>Состояние</th></tr>
+      <% @discription.each do |d| %>
+        <tr><td class="first"><%= d[0]%></td>
+          <td>
+            <span id="c_<%=d[1].to_s%>"><%= (session[:price][d[1].to_s]*d[4].to_s.to_i).to_s %></span>ox</td>
+          <td width="70px"  class="first">
+            <span id="q_<%=d[1].to_s%>">
+              <%=  render :partial => "wm/use_plus", :locals => { :id => d[1].to_s, :servicesize => d[4].to_s, :div => "q_"+d[1].to_s} %>
+            </span>
+          </td>
+          <td ><span id='<%=d[1]%>'><%= service_switch(d[5],d[1],d[1])%></span></td></tr>
+      <%end%>
+    </table>
+    <h4>Пополнение счета</h4>
+    <%= render :partial => "wm/wm_pay_form"%>
+    <div id="sms_link">
+      <b><%= rlink "Пополнить счет по SMS &gt;&gt;", {:controller=>'flex', :action=>'sms_phone',:format=>'html'},'adept_center'%></b>
+    </div>
   </div>
-</div>
-<div id="adept_center">
-  <%= render :partial => "main/passwords"%>
+  <div id="adept_center">
+    <%= render :partial => "main/passwords"%>
+  </div>
 </div>

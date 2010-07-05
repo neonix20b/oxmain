@@ -36,5 +36,6 @@
 <%if (request.xhr? or request.post?) and (params[:id]=='index') %>
   <%= update_page_tag do |page|
     page.replace_html('oxusers_online', :partial => "main/online")
+    page.replace_html("support_counter", :text => "(#{Support.count})")if Support.count>0
   end%>
 <%end%>

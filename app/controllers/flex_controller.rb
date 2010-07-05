@@ -74,6 +74,7 @@ class FlexController < ApplicationController
       inv.invite_string = (Digest::MD5.hexdigest(Time.now.to_s)).upcase
       inv.save!
       render :text=>'oxnull.net/#hello='+inv.invite_string
+	  #render :text => "oxnull.net/#hello=Регистрация отключена"
       
     elsif (params[:id]=='delinvite')
       Invite.delete_all({:user_id => user.id, :invite_string => params[:invite]})

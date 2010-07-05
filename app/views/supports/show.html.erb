@@ -1,20 +1,23 @@
 <% title "Просмотр заявки" %>
-<h5><%= link_to "Все блоги", blogs_path %> → <%= link_to "Все Заявки", supports_path %> → Просмотр заявки</h5>
-
-<div id="show_support">
-  <%= render :partial => "show_support", :locals => { :support => @support} %>
+<div class="blog_post">
+  <h5><%= link_to "Все блоги", blogs_path %> → <%= link_to "Все Заявки", supports_path %> → Просмотр заявки</h5>
 </div>
-<br/><br/>
-
-<h5>Комментарии(<%= @support.comments.size %>)</h5>
-<%if can_view_support?(@support)%>
-  <strong>Комментарии видны только исполнителю и заказчику</strong>
-  <div>
-    <%= render :partial => 'posts/comments', :locals => {:comments => @support.comments, :support => @support} %>
+<div class="blog_post">
+  <div id="show_support">
+    <%= render :partial => "show_support", :locals => { :support => @support} %>
   </div>
+  <br/><br/>
+
+  <h5>Комментарии(<%= @support.comments.size %>)</h5>
+  <%if can_view_support?(@support)%>
+    <strong>Комментарии видны только исполнителю и заказчику</strong>
+    <div>
+      <%= render :partial => 'posts/comments', :locals => {:comments => @support.comments, :support => @support} %>
+    </div>
   <%#= periodically_call_remote(:url => support_url(@support), :method=>'get', :frequency => '30', :update => 'show_support') %>
 
-<%else%>
-  Комментарии будут доступны только после одобрения заказчиком или
-  через <%=(@support.updated_at - @support.time.minutes.ago).to_i/60 + 1%>мин.
-<%end%>
+  <%else%>
+    Комментарии будут доступны только после одобрения заказчиком или
+    через <%=(@support.updated_at - @support.time.minutes.ago).to_i/60 + 1%>мин.
+  <%end%>
+</div>

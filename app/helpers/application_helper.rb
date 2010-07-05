@@ -8,10 +8,10 @@ module ApplicationHelper
   end
 
   def youtube_tag(tag)
-    "<object width='425' height='344'>
-      <param name='movie' value='http://www.youtube.com/v/#{tag}&hl=ru_RU&fs=1&'></param>
-      <param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param>
-      <embed src='http://www.youtube.com/v/#{tag}&hl=ru_RU&fs=1&' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='425' height='344'></embed></object>"
+  "<object type='application/x-shockwave-flash' data='http://www.youtube.com/v/#{tag}' width='425' height='355'>
+	<param name='movie' value='http://www.youtube.com/v/#{tag}' />
+	<param name='FlashVars' value='playerMode=embedded' />
+  </object>"
   end
 
   def one_news(post,div='div')
@@ -74,10 +74,10 @@ module ApplicationHelper
       </div>
       <div style='float:right;'>#{comment_del_field(comment)} #{ox_rank_field(comment)}</div>
     </div>
-    <span>
+    <div>
       <span class='comment_avatar'>#{image_tag(h(user.avatar), :width=>'50px', :class=>'png')}</span>
       <div class='comment_tte'>#{tte comment.text}</div>
-    </span>
+    </div>
   </div>"
   end
 
@@ -156,13 +156,13 @@ module ApplicationHelper
   end
 
   def true_button(text)
-
+    submit_tag(text)
 		#"<!--<span style='float: left;clear:right;white-space: nowrap;'>#{image_tag('btn_left.png')}</span>-->
 		#<!--<span class='btn_middle'>#{text}</span>-->
     #<!--<span style='float: right;white-space: nowrap;'>#{image_tag('btn_right.png')}</span>-->"
-    "<button type='submit' style='padding: 0px;cursor: pointer;background-color:transparent;border-width: 0;'>
-      <span class='btn_middle'>#{text}</span>
-     </button>"
+    #"<button type='submit' style='padding: 0px;cursor: pointer;background-color:transparent;border-width: 0;'>
+    #  <span class='btn_middle'>#{text}</span>
+    # </button>"
   end
   
   def shorthead(name)
@@ -185,8 +185,6 @@ module ApplicationHelper
 
   def spiner
     image_tag("spinner.gif",
-      :align => "middle",
-      :border => 0,
       :id => "spinner",
       :size => "16x16",
       :style =>"display: none;" )

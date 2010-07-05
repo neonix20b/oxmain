@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100206115145) do
+ActiveRecord::Schema.define(:version => 20100302101323) do
 
   create_table "blogs", :force => true do |t|
     t.string   "name"
@@ -26,6 +26,14 @@ ActiveRecord::Schema.define(:version => 20100206115145) do
     t.integer  "post_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "support_id"
+  end
+
+  create_table "confs", :force => true do |t|
+    t.string   "var"
+    t.string   "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "invites", :force => true do |t|
@@ -39,12 +47,13 @@ ActiveRecord::Schema.define(:version => 20100206115145) do
   create_table "posts", :force => true do |t|
     t.string   "title"
     t.text     "text"
-    t.float    "ox_rank",    :default => 0.0
-    t.integer  "count",      :default => 0
+    t.float    "ox_rank",      :default => 0.0
+    t.integer  "count",        :default => 0
     t.integer  "blog_id"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "last_comment"
   end
 
   create_table "q", :primary_key => "number", :force => true do |t|
@@ -64,10 +73,14 @@ ActiveRecord::Schema.define(:version => 20100206115145) do
 
   create_table "supports", :force => true do |t|
     t.float    "money",      :default => 10.0
-    t.text     "task"
+    t.string   "name"
     t.text     "info"
-    t.string   "name",       :default => "Название заявки отображающее суть проблемы"
+    t.text     "task"
+    t.integer  "time",       :default => 30
+    t.float    "ox_rank",    :default => 10.0
     t.integer  "user_id"
+    t.integer  "worker_id"
+    t.string   "status",     :default => "open"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -113,6 +126,12 @@ ActiveRecord::Schema.define(:version => 20100206115145) do
     t.float    "ox_rank",                                 :default => 0.0
     t.string   "show_name"
     t.string   "favorite"
+    t.float    "old_rank",                                :default => 0.0
+    t.string   "last_vote",                               :default => "none"
+    t.string   "avatar",                                  :default => "http://oxnull.net/images/noavatar.png"
+    t.integer  "gmtoffset"
+    t.datetime "last_view",                               :default => '2010-02-18 13:56:58'
+    t.string   "last_posts"
   end
 
 end

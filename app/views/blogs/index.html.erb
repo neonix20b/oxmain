@@ -1,21 +1,24 @@
 <% title "Все блоги" %>
-<h5>Все блоги</h5>
+<div class="blog_post">
+  <h5>Все блоги</h5>
 
-<%= menu_posts %>
+  <%= menu_posts %>
+</div>
+<div class="blog_post">
+  <table>
+    <% for blog in @blogs %>
+      <tr>
+        <td><h2><%= link_to h(blog.name), blog %>(<%=blog.posts.count.to_s%>)</h2></td>
+        <td><%=h blog.description %><br/><%= add_favorite(blog) %></td>
+        <%  if can_edit_blog? %>
+          <td><%= link_to "[e]", edit_blog_path(blog) %></td>
+          <td><%= link_to "[x]", blog, :confirm => 'Точно удалить блог?', :method => :delete %></td>
+        <%end%>
+      </tr>
+    <% end %>
+  </table>
 
-<table>
-  <% for blog in @blogs %>
-    <tr>
-      <td><h2><%= link_to h(blog.name), blog %></h2></td>
-      <td><%=h blog.description %><br/><%= add_favorite(blog) %></td>
-      <%  if can_edit_blog? %>
-        <td><%= link_to "[e]", edit_blog_path(blog) %></td>
-        <td><%= link_to "[x]", blog, :confirm => 'Точно удалить блог?', :method => :delete %></td>
-      <%end%>
-    </tr>
+  <%  if can_edit_blog? %>
+    <p><%= link_to "Создать блог", new_blog_path %></p>
   <% end %>
-</table>
-
-<%  if can_edit_blog? %>
-  <p><%= link_to "Создать блог", new_blog_path %></p>
-<% end %>
+</div>

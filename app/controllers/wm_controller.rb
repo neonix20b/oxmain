@@ -80,7 +80,7 @@ class WmController < ApplicationController
         #server.call("register_payment",domain, money.to_s )
         resp += "#{params[:smsid]}[#{domain}]: Спасибо\n"
 
-        user.money = server.call("get_balance", current_user.id)
+        #user.money = server.call("get_balance", current_user.id)
         user.save!
       else
         Syslog.open('oxmaind')

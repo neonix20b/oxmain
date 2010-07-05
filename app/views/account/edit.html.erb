@@ -11,7 +11,7 @@
   <% end %>
 <% end %>
 
-<div style="width:50%;margin-left:50px;cursor: pointer;">
+<div style="width:60%;margin-left:50px;cursor: pointer;">
   <%@avatars.each do |avatar|%>
     <%=image_tag(h(avatar), :width=>'50px', :class=>'png', :onclick=>'$("user_avatar").value=this.src.replace(/\?\d+/, "");')%>
   <%end%>

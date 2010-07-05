@@ -1,15 +1,23 @@
 <% title "Все заявки" %>
-<h5><%= link_to "Все блоги", blogs_path %> → Все Заявки</h5>
-<div id="supports">
-  <%= render :partial => "supports_list", :locals => { :supports => @supports} %>
+<div class="blog_post">
+  <h5><%= link_to "Все блоги", blogs_path %> → Все Заявки</h5>
 </div>
-<p>
-  Более подробно о Заявках можно прочитать в <a href="http://oxnull.net/blogs/5/posts/24.html">этой статье</a>.
-</p>
-<% if can_edit? %>
-  <p><%= link_to "Создать заявку", new_support_path %></p>
-<%end%>
-
-<%if logged_in?%>
-  <%= periodically_call_remote(:url => supports_url, :method=>'get', :frequency => '30', :update => 'supports') %>
-<%end%>
+<div class="blog_post">
+  <div id="supports">
+    <%= render :partial => "supports_list", :locals => { :supports => @supports} %>
+  </div>
+  <p>
+    Более подробно о Заявках можно прочитать в <a href="http://oxnull.net/blogs/5/posts/24.html">этой статье</a>.
+  </p>
+  <% if can_edit? %>
+    <p><%= link_to "Создать заявку", new_support_path %></p>
+  <%end%>
+</div>
+<div class="blog_post">
+  <div id="oxusers_online">
+    <%= render :partial => "main/online"%>
+  </div>
+  <%if logged_in?%>
+    <%= periodically_call_remote(:url => supports_url, :method=>'get', :frequency => '30', :update => 'supports') %>
+  <%end%>
+</div>

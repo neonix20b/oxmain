@@ -29,11 +29,3 @@ production:
   password: oxnull
   host: localhost
   socket: /var/run/mysqld/mysqld.sock
-
-win:
-  adapter: mysql
-  encoding: utf8
-  database: oxnull
-  username: root
-  password: 123
-  host: localhost

@@ -1,4 +1,7 @@
 <% title "Редактирование заявки" %>
-<h5><%= link_to "Все блоги", blogs_path %> → <%= link_to "Все Заявки", supports_path %> → Редактирование заявки</h5>
-<%= render :partial => 'form' %>
-
+<div class="blog_post">
+  <h5><%= link_to "Все блоги", blogs_path %> → <%= link_to "Все Заявки", supports_path %> → Редактирование заявки</h5>
+</div>
+<div class="blog_post">
+  <%= render :partial => 'form' %>
+</div>
