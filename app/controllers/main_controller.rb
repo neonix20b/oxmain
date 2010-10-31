@@ -134,18 +134,57 @@ class MainController < ApplicationController
     @unread_posts=find_last_posts(current_user,3)
     render :partial => "unread_posts", :locals => { :posts => @unread_posts}
   end
+  
+  def vote_plus 
+	return render :text=>"нельзя" if not request.post? or current_user.ox_rank < 0
+	return render :text=>"нельзя" if Poll.exists?(:obj_id=>params[:obj]+"_"+params[:id],:user_id=>current_user.id)
+	obj = params[:obj].camelize.constantize.find(params[:id])
+	vote = Poll.new(:obj_id=>params[:obj]+"_"+params[:id],:vote=>1,:user_id=>current_user.id)
+	vote.save!
+	obj.count +=1
+	obj.ox_rank += ox_power()
+	obj.ox_rank=(obj.ox_rank*1000).round.to_f/1000
+	if obj.respond_to?('user_id')
+		user=obj.user
+		user.ox_rank += ox_power()
+		user.ox_rank=(user.ox_rank*1000).round.to_f/1000
+		user.old_rank = user.ox_rank if user.old_rank != user.ox_rank and user.updated_at < 120.minutes.ago
+		user.save!
+	end
+	obj.old_rank = obj.ox_rank if obj.respond_to?('old_rank') and obj.updated_at < 120.minutes.ago
+	obj.save!
+	render :text => obj.count
+  end
+  
+  def vote_minus
+	return render :text=>"нельзя" if not request.post? or current_user.ox_rank < 0
+	return render :text=>"нельзя" if Poll.exists?(:obj_id=>params[:obj]+"_"+params[:id],:user_id=>current_user.id)
+	obj = params[:obj].camelize.constantize.find(params[:id])
+	vote = Poll.new(:obj_id=>params[:obj]+"_"+params[:id],:vote=>-1,:user_id=>current_user.id)
+	vote.save!
+	obj.count -=1
+	obj.ox_rank -= ox_power()
+	obj.ox_rank=(obj.ox_rank*1000).round.to_f/1000
+	if obj.respond_to?('user_id')
+		user=obj.user
+		user.ox_rank -= ox_power()
+		user.ox_rank=(user.ox_rank*1000).round.to_f/1000
+		user.old_rank = user.ox_rank if user.old_rank != user.ox_rank and user.updated_at < 120.minutes.ago
+		user.save!
+	end
+	obj.old_rank = obj.ox_rank if obj.respond_to?('old_rank') and obj.updated_at < 120.minutes.ago
+	obj.save!
+	render :text => obj.count
+  end
 
   def ox_rank
     return render :text=>"нельзя" if not request.post? or current_user.ox_rank < 0
     @obj = params[:obj].camelize.constantize.find(params[:id])
-    max =  User.maximum('ox_rank')#User.find(:first,:order=>'ox_rank DESC').ox_rank
     if params[:do]=='minus'
-      add_rank = -0.1
-      add_rank -= current_user.ox_rank/max
+      add_rank = -1*ox_power()
       add_count = -1
     else
-      add_rank = 0.1
-      add_rank += current_user.ox_rank/max
+      add_rank = ox_power()
       add_count = 1
     end
     if @obj.respond_to?('user_id')
@@ -243,7 +282,7 @@ class MainController < ApplicationController
     #пароль - отзыв
     #здесь вербуют адептов
     #военкомат
-    if params[:task] == 'new'
+    if params[:task] == 'new' and current_user.right!='user'
       inv = Invite.new()
       inv.user_id = current_user.id
       inv.invite_string = (Digest::MD5.hexdigest(Time.now.to_s)).upcase
@@ -252,7 +291,9 @@ class MainController < ApplicationController
       @invites = Invite.find(:all,:conditions =>{:user_id => current_user.id})
       #render :partial => "inv_list", :locals => { :invites => @invites}
       return render :text => "<a href='http://oxnull.net/#hello=#{inv.invite_string}'>Скопируйте эту ссылку</a>"  if request.xhr?
-      render :text => inv.invite_string
+      #render :text => inv.invite_string
+	elsif params[:task] == 'new'
+		return render :text => 'Вы не можете создавать приглашения'
     elsif params[:task] == 'del'
       Invite.delete_all({:user_id => current_user.id, :id => params[:id]})
       render :text => ''

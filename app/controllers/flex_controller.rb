@@ -68,14 +68,15 @@ class FlexController < ApplicationController
       app_attach(params[:domain],user)
       render :text=>'ok'
 
-    elsif (params[:id]=='newinvite')
+    elsif (params[:id]=='newinvite' and current_user.right!='user')
       inv = Invite.new()
       inv.user_id = user.id
       inv.invite_string = (Digest::MD5.hexdigest(Time.now.to_s)).upcase
       inv.save!
       render :text=>'oxnull.net/#hello='+inv.invite_string
 	  #render :text => "oxnull.net/#hello=Регистрация отключена"
-      
+	elsif (params[:id]=='newinvite')
+      render :text=>'Вы не можете создавать приглашения'
     elsif (params[:id]=='delinvite')
       Invite.delete_all({:user_id => user.id, :invite_string => params[:invite]})
       render :text=>'ok'

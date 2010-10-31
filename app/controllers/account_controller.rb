@@ -40,7 +40,7 @@ class AccountController < ApplicationController
       render :text => 'error'
     end
   end
-
+  
   def login
     if request.post?
       self.current_user = User.authenticate(Base64.decode64(params[:ln]),Base64.decode64(params[:pd])) if params[:format]=='xml'
@@ -71,7 +71,7 @@ class AccountController < ApplicationController
       #redirect_to("http://oxnull.net/")
     end
   end
-
+  
   def regme
     if not request.post?
       return render :template => 'account/signup.rhtml'
@@ -121,6 +121,7 @@ class AccountController < ApplicationController
       params[:user][:password] = Base64.decode64(params[:user][:password])
       params[:user][:password_confirmation] = Base64.decode64(params[:user][:password_confirmation])
       @user = User.new(params[:user])
+	  @user.ox_rank = inv.ox_rank
       @user.wtf = 'joomla' if params[:wtf]=='joomla'
       @user.wtf = 'phpbb' if params[:wtf]=='smf'
       @user.wtf = 'wordpress' if params[:wtf]=='wordpress'
@@ -130,6 +131,7 @@ class AccountController < ApplicationController
       #      @user.password = Base64.encode64(@user.password)
       #      @user.password_confirmation = Base64.encode64(@user.password_confirmation)
       @user.save!
+	  
       self.current_user = @user
       inv.update_attribute('invited_user', @user.id)
       addtask(current_user.id,"create")

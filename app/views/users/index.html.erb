@@ -1,0 +1,20 @@
+<div class="blog_post" align="center">
+<table>
+<tr><td><strong>oxID</strong></td><td><strong>Профиль</strong></td><td><strong>Сайт</strong></td><td><strong>oxRank</strong></td></tr>
+<%@users.each do |user|%>
+<tr>
+	<td><%=user.id%></td><td><%=profile_link(user)%></td>
+	<td><%=user_site_link(user)%></td>
+	<td><%=user.old_rank%></td>
+	<%if current_user.ox_rank > 0%>
+		<td><div id=<%="remove_"+user.id.to_s%>
+		<%=link_to_remote "[x] Удалить",
+			:url =>{:action=>'vote_delete',:id=>user.id},
+			:confirm=>"Точно отправить "+user_site_link(user,false)+" на удаление?",
+			:method => 'POST',
+			:update => 'remove_'+user.id.to_s%></div></td>
+	<%end%>
+</tr>
+<%end%>
+</table>
+</div>

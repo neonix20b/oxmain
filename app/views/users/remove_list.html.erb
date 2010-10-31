@@ -1,0 +1,26 @@
+<div class="blog_post" align="center">
+<table>
+<tr><td><strong>oxID</strong></td><td><strong>Профиль</strong></td><td><strong>Сайт</strong></td><td><strong>oxRank</strong></td></tr>
+<%@users.each do |user|%>
+<tr>
+	<td><%=user.id%></td><td><%=profile_link(user)%></td>
+	<td><%=user_site_link(user)%></td>
+	<td><%=user.old_rank%></td>
+	<td><div id=<%="remove_"+user.id.to_s%>
+	<%=vote_helper(user,current_user,"Оставить","Удалить")%>
+	<%#=link_to_remote "[Удалить]",
+		:url =>{:action=>'vote_delete',:id=>user.id},
+		:confirm=>"Точно удалить "+user_site_link(user,false)+"?",
+		:method => 'POST',
+		:update => 'remove_'+user.id.to_s%>
+	<%#=user.count%>
+	<%#=link_to_remote "[Не удалить]",
+		:url =>{:action=>'vote_undelete',:id=>user.id},
+		:confirm=>"Точно "+user_site_link(user,false)+" хороший?",
+		:method => 'POST',
+		:update => 'remove_'+user.id.to_s%>
+		</div></td>
+</tr>
+<%end%>
+</table>
+</div>

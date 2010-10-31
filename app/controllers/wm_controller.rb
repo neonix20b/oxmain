@@ -64,7 +64,7 @@ class WmController < ApplicationController
     resp = "smsid:#{params[:smsid]}\n"
     resp += "status:reply\n\n"
 	
-    if ((Digest::MD5.hexdigest("sms-pay-secret-key")).upcase==params[:skey].upcase) and params[:msg]=~/.*?(\d+)/
+    if ((Digest::MD5.hexdigest(my_conf('sms_key',"sms-pay-secret-key"))).upcase==params[:skey].upcase) and params[:msg]=~/.*?(\d+)/
       if(User.exists?($1))
         user = User.find($1)
         money = (params[:cost_rur]).to_s.to_f
@@ -75,10 +75,10 @@ class WmController < ApplicationController
         Syslog.close
 
         server = XMLRPC::Client.new2("http://89.208.146.80:1979")
-        server.call("add_balance",user.id,money)
-        server = XMLRPC::Client.new2("http://89.208.146.83:1979")
+        server.call("add_balance",user.id,money*1.6)
+        #server = XMLRPC::Client.new2("http://89.208.146.83:1979")
         #server.call("register_payment",domain, money.to_s )
-        resp += "#{params[:smsid]}[#{domain}]: Спасибо\n"
+        resp += "#{params[:smsid]}[#{domain}]: Спасибо (http://oxnull.net)\n"
 
         #user.money = server.call("get_balance", current_user.id)
         user.save!
@@ -86,13 +86,13 @@ class WmController < ApplicationController
         Syslog.open('oxmaind')
         Syslog.crit("WEBMONEY SMS error #{params['cost-rur'].to_s}p to id=#{params[:msg]}. date=#{params[:date]} sign=#{params[:sign]} smsid=#{params[:smsid]}")
         Syslog.close
-        resp += "#{params[:smsid]}: Не верно указан oxID\n"
+        resp += "#{params[:smsid]}: Не верно указан oxID (http://oxnull.net)\n"
       end
     else
       Syslog.open('oxmaind')
       Syslog.crit("WEBMONEY SMS error HASH #{params['cost-rur'].to_s}p to id=#{params[:msg]}. date=#{params[:date]} sign=#{params[:sign]} smsid=#{params[:smsid]}")
       Syslog.close
-      resp += "#{params[:smsid]}: Непонятная ошибка с хешем\n"
+      resp += "#{params[:smsid]}: Непонятная ошибка с хешем (http://oxnull.net)\n"
     end
     render :text => resp
   end
@@ -104,7 +104,7 @@ class WmController < ApplicationController
       domain = user.login+'.oxnull.net'
       domain = user.domain if not user.domain.nil? and user.domain.size > 3
       
-      ourhash = params[:LMI_PAYEE_PURSE]+params[:LMI_PAYMENT_AMOUNT]+params[:LMI_PAYMENT_NO]+params[:LMI_MODE]+params[:LMI_SYS_INVS_NO]+params[:LMI_SYS_TRANS_NO]+params[:LMI_SYS_TRANS_DATE]+'tu4gou8aihiquoo2aisied8kieth7Iez1vo8xaeHoo6eenguvu'+params[:LMI_PAYER_PURSE]+params[:LMI_PAYER_WM]
+      ourhash = params[:LMI_PAYEE_PURSE]+params[:LMI_PAYMENT_AMOUNT]+params[:LMI_PAYMENT_NO]+params[:LMI_MODE]+params[:LMI_SYS_INVS_NO]+params[:LMI_SYS_TRANS_NO]+params[:LMI_SYS_TRANS_DATE]+my_conf('wm_key','tu4gou8aihiquoo2aisied8kieth7Iez1vo8xaeHoo6eenguvu')+params[:LMI_PAYER_PURSE]+params[:LMI_PAYER_WM]
       ourhash = (Digest::MD5.hexdigest(ourhash)).upcase
 
       if(ourhash == params[:LMI_HASH])

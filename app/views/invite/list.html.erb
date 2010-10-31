@@ -1,0 +1,19 @@
+<div class="blog_post">
+  <%= menu_posts %>
+</div>
+
+<% for invite in @invites %>
+<div class="blog_post">
+	<div class="post_bottom">
+	Добавлено: <%= show_time(invite.created_at) %> |
+	<%= ox_rank_field(invite) %>
+	</div>
+	<%=tte invite.text%>
+</div>
+<%end%>
+
+<% if @invites.size==0%>
+	<div class="blog_post">
+	Новых запросов еще нет
+	</div>
+<%end%>

@@ -20,10 +20,14 @@ class ApplicationController < ActionController::Base
     session[:gmtoffset] = current_user.gmtoffset if logged_in?
   end
 
-  def my_conf(var)
+  def my_conf(var,default)
     conf = Conf.find(:first, :conditions => {:var => var})
-    conf = Conf.new({:var => var}) if conf.nil?
-    return conf
+    if conf.nil?
+		conf = Conf.new({:var => var})
+		conf.value=default
+		conf.save!
+	end
+    return conf.value
   end
 
   def find_last
@@ -160,6 +164,14 @@ class ApplicationController < ActionController::Base
         t.status = legend[t.status]
       end
     end
+  end
+  
+  def ox_power(user=current_user)
+	max = 0.0
+	max =  User.maximum('ox_rank').to_f
+	ret = user.ox_rank/max
+	ret += 0.01
+	return ret.to_f
   end
   # See ActionController::Base for details 
   # Uncomment this to filter the contents of submitted sensitive data parameters

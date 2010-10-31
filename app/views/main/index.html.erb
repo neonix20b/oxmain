@@ -20,7 +20,10 @@
     <div id="adepts" class="adepts">
 <%#= render :partial => "inv_list", :locals => { :invites => @invites} %>
     </div>
-    <%= rlink "Создать приглашение", {:controller=> 'main', :action => "invite", :task => 'new'}, "adepts"%>
+	<%if current_user.right!='user'%>
+    <%= rlink "Создать приглашение", {:controller=> 'main', :action => "invite", :task => 'new'}, "adepts"%><br/>
+	<%end%>
+	<%=link_to "Каталог сайтов","http://catalog.oxnull.net/"%>
   </div>
   <div id="service">
     <h5>Услуги</h5>

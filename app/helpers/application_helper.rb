@@ -8,10 +8,13 @@ module ApplicationHelper
   end
 
   def youtube_tag(tag)
-  "<object type='application/x-shockwave-flash' data='http://www.youtube.com/v/#{tag}' width='425' height='355'>
+   "<object type='application/x-shockwave-flash' data='http://www.youtube.com/v/#{tag}' width='425' height='355'>
 	<param name='movie' value='http://www.youtube.com/v/#{tag}' />
 	<param name='FlashVars' value='playerMode=embedded' />
   </object>"
+#	"<iframe class='youtube-player' type='text/html' width='640' height='385' 
+#		src='http://www.youtube.com/embed/#{tag}' frameborder='0'>
+#	</iframe>"
   end
 
   def one_news(post,div='div')
@@ -102,7 +105,7 @@ module ApplicationHelper
     ret = user.login + '.oxnull.net'
     ret = user.domain if not user.domain.nil? and user.domain.size > 3
     return h(ret) if link==false
-    return link_to(h(ret),"http://"+h(ret))
+    return link_to(h(ret),"http://"+h(ret),:onclick=>"window.open(this.href);return false;")
   end
 
   def can_edit?(obj=nil)
@@ -119,6 +122,25 @@ module ApplicationHelper
     return false if not logged_in?
     return true if current_user.right=='admin'
     return false
+  end
+  
+  def vote_helper(obj,user=current_user,plus_txt="[+]",minus_txt="[-]")
+	ox_rank = obj.ox_rank
+	count = ox_rank
+    count = obj.count.to_i.to_s if obj.respond_to?('count')
+	color = '#646197' if ox_rank.to_i < 0
+    color = '#589680' if ox_rank.to_i > 0
+    color = '#6b8095' if ox_rank.to_i == 0
+	span_id=obj.class.name.to_s+"_"+obj.id.to_s
+	if logged_in? and 
+			(obj.respond_to?('user_id') and obj.user_id!=user.id or not obj.respond_to?('user_id') and obj.id!=user.id) and 
+			not Poll.exists?(:obj_id=>obj.class.name.to_s+"_"+obj.id.to_s,:user_id=>user.id)
+      minus = rlink(minus_txt,{:controller=>'main', :action=>'vote_minus', :obj=>obj.class.name, :id => obj.id, :span_id=>span_id},span_id)
+      plus = rlink(plus_txt,{:controller=>'main', :action=>'vote_plus', :obj=>obj.class.name, :id => obj.id, :span_id=>span_id},span_id)
+      return "<span id='#{span_id}'>#{minus} <strong style='color:#{color};'>#{count}</strong> #{plus}</span>"
+    else
+      return "<strong style='color:#{color};'>#{count}</strong>"
+    end
   end
 
   def ox_rank_field(obj,label=nil,wtf=nil, action='ox_rank_helper')

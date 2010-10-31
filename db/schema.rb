@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100302101323) do
+ActiveRecord::Schema.define(:version => 20101014151914) do
 
   create_table "blogs", :force => true do |t|
     t.string   "name"
@@ -40,6 +40,21 @@ ActiveRecord::Schema.define(:version => 20100302101323) do
     t.integer  "user_id"
     t.integer  "invited_user"
     t.string   "invite_string"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "text"
+    t.string   "status"
+    t.float    "ox_rank",       :default => 0.0
+    t.integer  "count",         :default => 0
+    t.integer  "blog_id"
+    t.string   "title"
+    t.integer  "spam",          :default => 0
+  end
+
+  create_table "polls", :force => true do |t|
+    t.string   "obj_id"
+    t.integer  "user_id"
+    t.boolean  "vote"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -132,6 +147,7 @@ ActiveRecord::Schema.define(:version => 20100302101323) do
     t.integer  "gmtoffset"
     t.datetime "last_view",                               :default => '2010-02-18 13:56:58'
     t.string   "last_posts"
+    t.integer  "count",                                   :default => 0
   end
 
 end
