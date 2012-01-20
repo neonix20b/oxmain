@@ -1,16 +1,20 @@
+#require 'tl_client'
 class PostsController < ApplicationController
   # Be sure to include AuthenticationSystem in Application Controller instead
-  include AuthenticatedSystem
   # If you want "remember me" functionality, add this before_filter to Application Controller
-  before_filter :login_from_cookie
-  before_filter :login_required, :except => [:show, :index]
+  #before_filter :login_from_cookie
+  skip_filter :authenticate_profile!, :only => [:show, :index]
 
   before_filter :load_blog
-  before_filter :check_right, :except => [:show, :index]
+  before_filter :update_online_url, :only =>[:index, :show, :new, :edit]
+  before_filter :check_right, :except => [:show, :index, :show_ajax]
   before_filter :set_gmtoffset, :only =>[:index, :show]
   before_filter :find_last, :only =>[:index, :show]
-
+  
+  protect_from_forgery 
+ 
   def index
+	load_linkfeed()
     @per_page=10
     @count=0
     @per_page=100 if params[:format]!='html'
@@ -19,29 +23,29 @@ class PostsController < ApplicationController
     offset = @page*@per_page if not @page.nil?
     if params[:favorite]=='favorite'
       tmp = [18]
-      tmp = current_user.favorite.split(',') if logged_in? and not current_user.favorite.nil?
+      tmp = current_profile.favorite.split(',') if logged_in? and not current_profile.favorite.nil?
       @count = Post.count(:all, :conditions =>{:blog_id=>tmp})
       offset=@count-@per_page if @page.nil? or @page == (@count/@per_page).to_i
       offset=0 if offset < 0
-      @posts = Post.find(:all, :conditions =>{:blog_id=>tmp}, :order => 'id ASC', :limit => @per_page, :offset => offset)
+      @posts = Post.where(:blog_id=>tmp).order('id ASC').limit(@per_page).offset(offset)
       
     elsif params[:favorite]=='all'
       @count = Post.count
       offset=@count-@per_page if @page.nil? or @page == (@count/@per_page).to_i
       offset=0 if offset < 0
-      @posts = Post.find(:all, :order => 'id ASC', :limit => @per_page, :offset => offset)
+      @posts = Post.order('id ASC').limit(@per_page).offset(offset)
       
     elsif params[:favorite]=='random'
-      @posts = Post.find(:all, :order=>"rand()", :limit => @per_page)
+      @posts = Post.order("rand()").limit(@per_page)
     elsif params[:favorite]=='last' and logged_in?
-      @posts=find_last_posts(current_user)
+      @posts=find_last_posts(current_profile)
     elsif params.has_key?('favorite')
       @posts = Post.find_tagged_with(params[:favorite])
     else
       @count = Post.count(:all, :conditions=>{:blog_id => @blog.id})
       offset=@count-@per_page if @page.nil? or @page == (@count/@per_page).to_i
       offset=0 if offset < 0
-      @posts = Post.find(:all, :conditions=>{:blog_id => @blog.id},:order => 'id ASC', :limit => @per_page, :offset => offset)
+      @posts = Post.where(:blog_id => @blog.id).order('id ASC').limit(@per_page).offset(offset)
     end
     @posts.reverse!
     @page = @count/@per_page if @page.nil?
@@ -51,30 +55,54 @@ class PostsController < ApplicationController
   end
   
   def show
-    @post = Post.find(params[:id])
-    @comment = Comment.new()
-    remove_from_last(current_user, params[:id]) if logged_in?
+	load_linkfeed()
+	#@tl=Trustlink::TlClient.new('9a46eaebf5cac91e3b0e3e079f5f59cfd3474da3',request, {:encoding=>'UTF-8'})
+    @post = Post.find(params[:id]) if Post.exists?(params[:id])
+	if profile_signed_in? and not @post.nil?
+		@comment = Comment.new()
+		@comment.text = current_profile.last_comment_input 
+		remove_from_last(current_profile, params[:id])
+		session[:last_comment]=@post.comments.last.id if @post.comments.size > 0
+	end
   end
-  
+   
   def new
     #return render :text=> "нельзя" if not can_edit?
     @post = @blog.posts.new
+	@post.text=current_profile.last_post_input
+  end
+  
+  def post_try
+	return render :text=>'А ты точно человек?' if not can_send_email?(current_profile,2)
+	return render :text=>"" if not request.post? or params[:text].size > 10000
+	current_profile.last_post_input = params[:text]
+	current_profile.updated_at=Time.now.utc if current_profile.last_post_input.size < 10 and params[:text].to_s.size > 10 or current_profile.last_post_input.size > 10 and params[:text].to_s.size < 10
+	current_profile.save!
+	return render :text=>"" if params[:text].blank? or params[:text].size < 1
+	return render :text=> "<div style='text-indent:1em;'>"+ya_speller(tte(params[:text]))+"</div>"
+	#@post = Post.new
+	#@post.text = params[:text]
+	#render(:layout => 'mainlayer')
   end
   
   def create
-    #return render :text=> "нельзя" if not can_edit?
+    block_profile(current_profile,"Спамер что ли?") if not can_send_email?(current_profile)
     @post = @blog.posts.new(params[:post])
-    @post.user_id=params[:post][:user_id]
+    @post.profile_id=params[:post][:profile_id]
     @post.tag_list = params[:post][:tag_list]
     @post.last_comment = 'Недавно создана.'
+	@post.created_at = Time.now.utc
+	@post.updated_at = Time.now.utc
+	block_profile(profile_id,"Спамер что ли?") if check_police("new_post",current_profile.id,30.minutes.ago) > 1
     if @post.save
       flash[:notice] = "Статья успешно создана."
       flash[:warning] = "Статья успешно создана, но в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
       tmp = Array.new()
-      tmp = current_user.favorite.split(',') if not current_user.favorite.nil?
+      tmp = current_profile.favorite.split(',') if not current_profile.favorite.nil?
       tmp.insert(-1, params[:blog_id].to_s)
-      current_user.favorite=tmp.uniq.join(',')
-      current_user.save!
+      current_profile.favorite=tmp.uniq.join(',')
+	  current_profile.last_post_input = ""
+      current_profile.save!
       redirect_to blog_post_url(@blog,@post)
     else
       render :action => 'new'
@@ -95,6 +123,8 @@ class PostsController < ApplicationController
       flash[:notice] = "Статья успешно обновлена."
       if @post.tag_list != params[:post][:tag_list]
         @post.tag_list = params[:post][:tag_list]
+		current_profile.last_post_input = ""
+		current_profile.save!
         @post.save!
       end
       flash[:warning] = "Статья успешно обновлена, но в ней не хватает разделителя" if @post.text.length > 4000 and @post.text.scan(' --- ').empty?
@@ -113,7 +143,7 @@ class PostsController < ApplicationController
     redirect_to blog_posts_url(@blog)
   end
 
-  private
+  private 
   def load_blog
     @blog_id = params[:blog_id]
     @page = nil

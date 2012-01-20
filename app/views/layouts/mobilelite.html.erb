@@ -10,7 +10,7 @@
   </head>
   <body>
     <%= yield %>
-    <% javascript_tag do -%>
+    <%= javascript_tag do -%>
       <% update_page_tag do |page|
         page.visual_effect :highlight, 'content';
       end%>

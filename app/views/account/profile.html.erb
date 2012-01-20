@@ -1,25 +1,32 @@
-<% title profile_link(@user,false) %>
+<div class="blog_post" id="profile_page">
+<%if not @user.nil?%>
+<% content_for :title, profile_link(@user,false) %>
 
 <h1><%= profile_link(@user,false) %></h1>
-<table>
-  <% if logged_in? and @user.id == current_user.id %>
+<table id="profile_table">
+  <% if logged_in? and @user.id == current_profile.id %>
   <tr><td></td><td><%=rlink image_tag(h(@user.avatar), :width=>'50px', :class=>'png'), {:controller=>'account',:action=>'edit'}%></td></tr>
+  <tr><td align="right">masterID</td><td>m<%=@user.id%></td></tr>
   <%else%>
   <tr><td></td><td><%=image_tag(h(@user.avatar), :width=>'50px', :class=>'png')%></td></tr>
   <%end%>
-  <tr><td align="right"><strong>Сайт:</strong></td><td><%= user_site_link(@user) %></td></tr>
+  <%if @user.users.size > 0%>
+	<tr><td align="right"><strong>Сайты:</strong></td><td><%=raw @user.users.map{|site| "#{user_site_link(site)}<!--[{invite_link(Invite.where(:invited_user=>site.id).first)}]-->"}.join(", ") %></td></tr>
+  <%end%>
   <tr><td align="right"><strong>Зарегистрирован:</strong></td><td><%= show_time(@user.created_at) %></td></tr>
   <tr><td align="right"><strong>Последнее обновление:</strong></td><td><%= show_time(@user.updated_at) %></td></tr>
-  <tr><td align="right"><strong>ox-ранг:</strong></td><td><%= @user.old_rank %></td></tr>
+  <tr><td align="right"><strong>ox-ранг:</strong></td><td><%=raw vote_helper(@user,true)%></td></tr>
   <tr><td align="right"><strong>Комментариев:</strong></td><td><%= @user.comments.size %></td></tr>
-  <tr><td align="right"><strong>Статьи:</strong></td>
-    <td>
-      <% @user.posts.each do |post| %>
-        <%=link_to h(post.title),blog_post_path(post.blog_id, post) %>
-      <%end%>
-    </td></tr>
-  <% if logged_in? and @user.id == current_user.id %>
-    <tr><td align="right"><strong>ox'ы:</strong></td><td><%= @user.money %>ox</td></tr>
+  <%if @user.posts.size>0%>
+	  <tr><td align="right"><strong>Статьи:</strong></td>
+		<td>
+		  <% @user.posts.each do |post| %>
+			<%=link_to h(post.title),blog_post_path(post.blog_id, post) %>
+		  <%end%>
+		</td></tr>
+  <%end%>
+  <% if logged_in? and @user.id == current_profile.id %>
+    <!--<tr><td align="right"><strong>ox'ы:</strong></td><td>!!!<%#= @user.money %>ox</td></tr>-->
   <%end%>
   <tr><td align="right"><strong>Избранные блоги:</strong></td><td>
       <%if not @blogs.empty?%>
@@ -30,7 +37,59 @@
         Этот пользователь не имеет избранных блогов
       <%end%>
     </td></tr>
-  <% if logged_in? and @user.id == current_user.id %>
-    <tr><td align="right"><%=rlink 'Изменить профиль', {:controller=>'account',:action=>'edit'}%></td><td></td></tr>
+	<!--<tr><td align="right"><strong>oxID:</strong></td><td>ox<%#=@user.id.to_s%></td></tr>-->
+  <% if logged_in? and current_profile.adept?%>
+    <%if @user.invites.size > 0%>
+		<tr><td align="right"><strong>Заявки:</strong></td><td><%=raw @user.invites.map{|i|invite_link(i)}.join(", ") %></td></tr>
+	<%end%>
+	<tr><td align="right"><strong>Управление пользователем:</strong></td><td id="profile_control"><%=kick_profile(@user)%> <%= right_switch(@user) %> <%=delete_profile(@user)%></td></tr>
+	<tr><td align="right"><strong>Флаги:</strong></td>
+		<td>
+			<table>
+				
+				<tr><td align="right">masterID:</td><td>m<%=@user.id%></td></tr>
+				<tr><td align="right">Число входов:</td><td><%=@user.sign_in_count%></td></tr>
+				<tr><td align="right">Ошибок входа:</td><td><%=@user.failed_attempts%></td></tr>
+				<tr><td align="right">e-mail:</td><td><%= @user.email %></td></tr>
+				<tr><td align="right">Последние ip:</td><td><%=[@user.current_sign_in_ip, @user.last_sign_in_ip].uniq.join(", ")%></td></tr>
+				<tr><td align="right">Текущая авторизация:</td><td><%=show_time(@user.current_sign_in_at,"%d %B %Y, %H:%M:%S")%></td></tr>
+				<tr><td align="right">Авторизация сохранена:</td><td><%=show_time(@user.remember_created_at,"%d %B %Y, %H:%M:%S")%></td></tr>
+				<tr><td align="right">Предыдущая авторизация:</td><td><%=show_time(@user.last_sign_in_at,"%d %B %Y, %H:%M:%S")%></td></tr>
+				<tr><td align="right">Последняя активность:</td><td><%=show_time(@user.last_view,"%d %B %Y, %H:%M:%S")%></td></tr>
+				<tr><td align="right">Обновление профиля:</td><td><%=show_time(@user.updated_at,"%d %B %Y, %H:%M:%S")%></td></tr>
+				<tr><td align="right">Создание профиля:</td><td><%=show_time(@user.created_at,"%d %B %Y, %H:%M:%S")%></td></tr>
+				<tr><td align="right">Активация профиля:</td><td><%=show_time(@user.confirmed_at,"%d %B %Y, %H:%M:%S")%></td></tr>
+				<tr><td align="right">Дата блокировки:</td><td><%=show_time(@user.locked_at,"%d %B %Y, %H:%M:%S")%></td></tr>
+			</table>
+		</td>
+	</tr>
+	<tr><td align="right"><strong>Спамер?</strong></td><td><%=link_to "Все комментарии и посты",{:controller=>'oxlib',:action=>'all_profile',:id=>@user.id}%></td></tr>
+  <%end%>
+  <% if logged_in? %>
+	<% if @user == current_profile %>
+		<tr><td align="right"><%=rlink 'Изменить профиль', {:controller=>'account',:action=>'edit'},'profile_page'%></td><td></td></tr>
+		<tr><td align="right"><%= link_to "Изменить пароль", edit_profile_registration_path %></td><td></td></tr>
+	<%else%>
+		<tr><td align="right" NOWRAP><%=link_to 'Отправить личное сообщение', {:controller=>'pm',:action=>'chat',:id=>@user.id, :anchor => "end_doc"}%></td><td></td></tr>
+	<%end%>
   <%end%>
 </table>
+
+<%if logged_in? and current_profile==@user and not @chat_list.nil? and @chat_list.size > 0%>
+	<br/><hr width="90%"/><br/>
+	<h1>Последние переписки</h1>
+	<div id="pm_last">
+		<%@chat_list.each do |chat|%>
+			<%=raw one_chat(chat)%>
+		<%end%>
+	</div>
+	<div id="profile_ajax_id"></div>
+	<%= periodically_call_remote(:url => url_for(:controller=>'account', :action => 'profile_ajax', :id=>current_profile.id), :frequency => '30', :update => 'profile_ajax_id') %>
+
+	<br/><hr width="90%"/><br/>
+	<div><span style="font-weight: bold;font-size:x-large;">Internet Relay Chat:</span> <span style="font-weight: normal;font-size:large;"><%= link_to "Войти",{:controller=>'account',:action=>'irc'}%></span></div>
+<%end%>
+<%else%>
+<h1>Профиль "<%=params[:id]%>" не найден</h1>
+<%end%>
+</div>

@@ -1,28 +1,27 @@
 require "base64"
 require 'xmlrpc/client'
 class FlexController < ApplicationController
-  include AuthenticatedSystem
   before_filter :login_from_cookie
   protect_from_forgery :except => [:adept_def, :service_change, :dotask, :password_change, :my_site, :service_list, :tag_control]
   #FIXME удалить строчку ниже когда станем популярными :)
   before_filter :find_last, :only =>[:my_site]
+  
+  def svg
+	#headers["Content-Type"] = "image/svg+xml" 
+  end
 
   def sms_phone
     #country = "Россия"
     if params[:country] and params[:op_name]
       #country = params[:country]
       #выдать список номеров с ценами
-      @phones = Smsbil.find(:all,
-        :conditions=>{:country=>params[:country], :op_name =>params[:op_name]},
-        :select => 'country,op_name,phone,price,income,id', :order=> "price")
+      @phones = Smsbil.where(:country=>params[:country], :op_name =>params[:op_name]).order("price").select('country,op_name,phone,price,income,id')
     elsif params[:country]
       #показать список операторов
-      @operators = Smsbil.find(:all,
-        :conditions=>['country LIKE ?',params[:country]+'%'],
-        :select => 'DISTINCT op_name, op_id', :order=> "op_name")
+      @operators = Smsbil.where('country LIKE ?',params[:country]+'%').order("op_name").select('DISTINCT op_name, op_id')
     else
       #поиск всех стран
-      @countries = Smsbil.find(:all, :select => 'DISTINCT country', :order=> "country")
+      @countries = Smsbil.order("country").select('DISTINCT country')
     end
     render(:layout => 'mainlayer') if request.xhr?
   end
@@ -73,7 +72,11 @@ class FlexController < ApplicationController
       inv.user_id = user.id
       inv.invite_string = (Digest::MD5.hexdigest(Time.now.to_s)).upcase
       inv.save!
-      render :text=>'oxnull.net/#hello='+inv.invite_string
+	  if current_user.right!='user'
+		render :text=>'oxnull.net/#hello='+inv.invite_string
+	  else
+		render :text=>'Вы не можете создавать приглашения'
+	  end
 	  #render :text => "oxnull.net/#hello=Регистрация отключена"
 	elsif (params[:id]=='newinvite')
       render :text=>'Вы не можете создавать приглашения'
@@ -134,7 +137,7 @@ class FlexController < ApplicationController
 
   def adept_def
     return unless request.post? and current_user.right != 'user'
-    @users = User.find(:all,:conditions =>['id LIKE ? or login LIKE ? or domain LIKE ? or email LIKE ?','%'+params[:search]+'%', '%'+params[:search]+'%', '%'+params[:search]+'%','%'+params[:search]+'%'], :order=> "login")
+    @users = User.where('id LIKE ? or login LIKE ? or domain LIKE ? or email LIKE ?','%'+params[:search]+'%', '%'+params[:search]+'%', '%'+params[:search]+'%','%'+params[:search]+'%').order("login")
   end
 
   private

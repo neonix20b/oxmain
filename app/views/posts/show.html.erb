@@ -1,26 +1,47 @@
-<% title @post.title %>
-<% content_for :keywords, @post.tag_list.join(', ') %>
-<% content_for :description, "#{@post.title}. #{@post.tag_list.join(', ')}" %>
+<%if not @post.nil?%>
+	<% content_for :title, @post.title %>
+	<% content_for :keywords, @post.tag_list.join(', ') %>
+	<% content_for :description, "#{@post.title}. #{@post.tag_list.join(', ')}" %>
+<%end%>
 <div class="blog_post">
-  <h5><%= link_to "Все блоги", blogs_path %> → <%= link_to @blog.name, blog_posts_path(@blog) %> → <%= @post.title %></h5>
-  <%= menu_posts %>
-  <%= add_favorite(@blog) %>
+  <h5><%= link_to "Все блоги", blogs_path %> → <%= link_to @blog.name, blog_posts_path(@blog) %> → <%= @post.title if not @post.nil? %></h5>
+  <%=raw menu_posts %>
+  <%=raw add_favorite(@blog,true) %>
 </div>
-<div class="blog_post">
-  <div>
-    <%=tte @post.text.gsub(" --- ", ' ') %>
+<div class="blog_post" id="post_div">
+<%if not @post.nil?%>
+  <div style="text-indent:1em;">
+    <%=raw tte @post.text.gsub(" --- ", ' ') %>
   </div>
   <hr style="width:95%;"/>
   <div id="author_tag" style="color:#6b8095;">
+	<div>
     Автор: <%= author(@post) %> |
-    Дата создания: <%= show_time(@post.created_at) %> |
-    <%= ox_rank_field(@post) %>
+    Дата создания: <%= show_time(@post.created_at) %> | 
+    <%=raw ox_rank_field(@post) %>
     <% if can_edit?(@post) %>
       <%= link_to "Редактировать", edit_blog_post_path(@blog, @post) %> |
-      <%= link_to "Удалить", blog_post_path(@blog, @post), :confirm => 'Точно удалить?', :method => :delete %>
+      <%= rlink "Удалить", {:controller=>'oxlib',:action=>'destroy_post',:id=>@post.id}, 'post_div', 'post', 'Точно удалить?'%>
     <%end%>
-    <br/>
-    Теги: <%= tag_links(@post) %>
+	<%if profile_signed_in? and @post.profile.nil? and current_profile.adept? %>
+		<%profile_id=@post.profile.id if not @post.profile.nil?%>
+		<%= form_tag url_for(:controller => 'oxlib', :action =>'set_post_master')  do -%>
+			<%= hidden_field_tag 'post_id', @post.id %>
+				masterid: <%= text_field_tag 'profile_id',profile_id.to_s, :size=>'20',:class => 'text' %>
+			<%=raw true_button('ok')%>
+		<% end -%>
+	<%end%>
+	<%if profile_signed_in?%>
+		<script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
+		<script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
+<div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="link" data-yashareQuickServices="vkontakte,facebook,twitter" style="float:right;padding:0px;margin:-5px;"></div> 
+	<%end%>
+    </div>
+	<div>
+    Теги: <%=raw tag_links(@post) %>
+	</div>
+	<div>
+	</div>
   </div>
   <br/>
   <br/>
@@ -28,4 +49,9 @@
   <div id="comments">
     <%= render :partial => 'comments', :locals => {:comments => @post.comments} %>
   </div>
+<%else%>
+	<h1>Такая статья не найдена</h1>
+<%end%>
 </div>
+<div id="show_ajax_id"></div>
+<%= periodically_call_remote(:url => url_for(:controller=>'oxlib', :action => 'show_post_ajax', :id=>params[:id]), :frequency => '40', :update => 'show_ajax_id') if profile_signed_in? %>

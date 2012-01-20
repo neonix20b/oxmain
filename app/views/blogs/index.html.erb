@@ -5,11 +5,15 @@
   <%= menu_posts %>
 </div>
 <div class="blog_post">
-  <table>
+  <table style="border-collapse:separate;border-spacing:0 10px;">
     <% for blog in @blogs %>
       <tr>
         <td><h2><%= link_to h(blog.name), blog %>(<%=blog.posts.count.to_s%>)</h2></td>
-        <td><%=h blog.description %><br/><%= add_favorite(blog) %></td>
+        <td>
+			<%=h blog.description %><br/>
+			| <%= link_to "Создать статью в блоге \"#{blog.name}\"", new_blog_post_path(blog) %><br/>
+			<%=raw add_favorite(blog) %>			
+		</td>
         <%  if can_edit_blog? %>
           <td><%= link_to "[e]", edit_blog_path(blog) %></td>
           <td><%= link_to "[x]", blog, :confirm => 'Точно удалить блог?', :method => :delete %></td>

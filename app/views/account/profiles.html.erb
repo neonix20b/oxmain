@@ -1,0 +1,18 @@
+<div class="blog_post">
+	<table>
+	<tr>
+		<td>mID</td>
+		<td>Профиль</td>
+		<td>E-mail</td>
+		<td>Сайты</td>
+	</tr>
+	<%@profiles.each do |profile|%>
+		<tr>
+		<td><%=profile.id%></td>
+		<td><%=profile_link(profile)%></td>
+		<td><%=profile.email%></td>
+		<td><%=raw profile.users.map{|u|user_site_link(u)}.join(", ")%></td>
+		</tr>
+	<%end%>
+	</table>
+</div>

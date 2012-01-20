@@ -3,53 +3,146 @@
     Где ты нашел такой браузер?
   </iframe>
 </center>-->
-<div class="blog_post" style="min-width:920px;">
-  <div id="info">
-    <h5>Информация</h5>
-    <%= render :partial => "main/domain_control"%>
-    <br/>
-    <%= render :partial => "main/rebuild_control"%>
-    <br/>
-    Квоты:
-    <span id="quotas_t">
-      <%= render :partial => "main/quotas"%>
-    </span>
+<%@users.each do |user|%>
+<%get_my_site(user)%>
+	<div class="blog_post" style="min-width:920px;">
+	  <div id="info">
+		<h5>Информация<br/>
+		<%=raw user_site_link(user)%></h5>
+		<%if user.status=='2'%>
+		<%=raw remove_user_sw(user)%>
+			<%= render :partial => "main/domain_control", :locals => { :user => user}%>
+			<br/>
+			<%= render :partial => "main/rebuild_control", :locals => { :user => user}%>
+			<br/>
+			Квоты:
+			<span id="quotas_t">
+			  <%= render :partial => "main/quotas", :locals => { :user => user}%>
+			</span>
+		<%elsif user.status=='vote'%>
+			Стоит на голосовании на удаление.
+		<%else%>
+			Идет создание. Ждите.
+		<%end%>
 
-<!--Вас пригласил: <strong><a href="http://<%=@master%>" target="_blank"><%=@master%></a></strong><br/><br/>
-						Мои адепты: -->
-    <div id="adepts" class="adepts">
-<%#= render :partial => "inv_list", :locals => { :invites => @invites} %>
-    </div>
-	<%if current_user.right!='user'%>
-    <%= rlink "Создать приглашение", {:controller=> 'main', :action => "invite", :task => 'new'}, "adepts"%><br/>
+	<!--Вас пригласил: <strong><a href="http://<%=@master%>" target="_blank"><%=@master%></a></strong><br/><br/>
+							Мои адепты: -->
+		<div id="adepts" class="adepts">
+	<%#= render :partial => "inv_list", :locals => { :invites => @invites} %>
+		</div>
+	  </div>
+	  
+	 <div id="service"> 
+		<%if current_profile.adept? and user.profile.nil? or current_profile.admin? %>
+			<%profile_id=user.profile.id if not user.profile.nil?%>
+			<%= form_tag url_for(:controller => 'main', :action =>'set_master')  do -%>
+				<%= hidden_field_tag 'user_id', user.id %>
+					masterid: <%= text_field_tag 'profile_id',profile_id.to_s, :size=>'20',:class => 'text' %>
+				<%=raw true_button('ok')%>
+			<% end -%>
+		<%end%>
+	 <!--
+		<h5>Услуги</h5>
+		Баланс: <span id="balance"><strong><%= user.money.to_s %></strong>ox</span>
+		<h4>Управление слугами</h4>
+		<table>
+		  <tr><th class="first">Название</th><th>Оксов(в месяц)</th><th>Количество</th><th>Состояние</th></tr>
+		  <% oxservices.each do |oxservice| %>
+			<tr><td class="first"><%= oxservice.title %></td>
+			  <td>
+				<span id="c_<%=oxservice.id_in_server.to_s%>"><%= (oxservice.cost*s_qq(user,oxservice.id_in_server)).to_s %></span>ox</td>
+			  <td width="70px"  class="first">
+				<span id="q_<%=oxservice.id_in_server.to_s%>">
+				  <%=  render :partial => "wm/use_plus", :locals => { :id => oxservice.id_in_server.to_s, :servicesize =>s_qq(user,oxservice.id_in_server).to_s, :div => "q_"+oxservice.id_in_server.to_s} %>
+				</span>
+			  </td>
+			  <td ><span id='<%=oxservice.id_in_server%>'><%= service_switch(s_sw(user,oxservice.id_in_server),oxservice.id_in_server,oxservice.id_in_server)%></span></td></tr>
+		  <%end%>
+		</table>
+		<h4>Пополнение счета</h4>
+		<%#= render :partial => "wm/wm_pay_form", :locals =>{:user=>user}%>
+		<div id="sms_link">
+		  <b><%#= rlink "Пополнить счет по SMS", {:controller=>'flex', :action=>'sms_phone',:format=>'html'},'adept_center'%></b>
+		</div>-->
+		<%if not user.domain.nil? and user.domain=~/\A[A-Z0-9-]+\.[A-Z]{2,4}\Z/i and user.attached_mail.nil?%>
+			<div id="att_mail">
+				<h5>е-Почта</h5>
+				<%=rlink("Присоединить Яндекс-почту к домену", {:controller=>'main',:action=>'attach_yamail',:id=>user.id}, 'att_mail','post','Точно присоединить Яндекс-почту? Это необратимая операция.')%>
+				<%=raw help_button('mail')%>
+				<br/>
+				<%=rlink("Присоединить Gmail к домену", {:controller=>'main',:action=>'attach_gmail',:id=>user.id}, 'att_mail','post','Точно присоединить Gmail? Это необратимая операция.')%>
+				<%=raw help_button('mail')%>
+				<% if not user.domain.nil? and user.domain.size > 3%>
+					<br/><br/>
+					Помоги oxnull и заработай сам на 
+					<a href="http://www.linkfeed.ru/135342">linkfeed</a>. 
+					Мы считаем, что это наиболее эффективный способ заработка на своем сайте. 
+					Как минимум на бутылку пива в месяц :) <a href="http://oxnull.net/blogs/19/posts/178.html">Подробнее</a>.
+				<%end%>
+			</div>
+		<%end%>
+	  </div>
+	  
+	  <div id="adept_center">
+		<%= render :partial => "main/passwords", :locals =>{:user=>user}%>
+	  </div>
+	</div>
+<%end%>
+
+<%if not @invites.nil? and @invites.size>0 %>
+	<div class="blog_post">
+	<h5>Статусы инвайтов. Шаг 2.</h5>
+	<table>
+	<%@invites.each do |invite|%>
+		<%if invite.status!='ok'%>
+			<tr id="inv_<%=invite.id%>"><td><%= link_to invite.title,{:controller=>'invite',:action=>'show',:id=>invite.id}%></td><td><%= invite.status %></td><td><%=raw ox_rank_field(invite) %></td>
+			<td><%= link_to "Комментариев", url_for(:action=>'show',:id=>invite.id, :anchor => "comment_try") %>: <%= invite.comments.size %>шт.</td>
+			<td><%=rlink "[Удалить]", {:controller=>'invite',:action=>'delete',:id=>invite.id},"inv_#{invite.id}",'post','Отозвать заявку несмотря на голосование?'%></td></tr>
+		<%else%>
+			<tr id="inv_<%=invite.id%>"><td><%=invite.text%></td><td><%=link_to "Одобрено. Перейти на Шаг 3", {:controller=>'invite',:id=>invite.id,:action=>'accept'}%></td><td></td>
+			<td><%=rlink "[Удалить]", {:controller=>'invite',:action=>'delete',:id=>invite.id},"inv_#{invite.id}",'post','Отозвать заявку несмотря на голосование?'%></td></tr>
+		<%end%>
+	<%end%>
+	</table>
+	</div>
+<%end%>
+
+<div class="blog_post">
+	<%=link_to "Создать сайт. Перейти на Шаг 1", {:controller=>'invite',:action=>'index'}%>
+	<%if current_profile.admin?%>
+		→ <%=link_to "Создать сайт (admin mode). Перейти на Шаг 3", {:controller=>'invite',:action=>'admin_invite'}%>
+	<%end%>
+	<br/>
+	<%= link_to "Приглашения", {:controller=> 'invite', :action => "list"}%> → 
+	<%if current_profile.adept?%>
+		<%#= rlink "Создать приглашение", {:controller=> 'main', :action => "invite", :task => 'new'}, "adepts"%> 
+		<%=link_to "Чистка наших рядов", {:controller=>'users',:action=>'index'}%> → 
+	<%else%>
+		<%=link_to "Чистка наших рядов", {:controller=>'users',:action=>'remove_list'}%> → 
 	<%end%>
 	<%=link_to "Каталог сайтов","http://catalog.oxnull.net/"%>
-  </div>
-  <div id="service">
-    <h5>Услуги</h5>
-    Баланс: <span id="balance"><strong><%= current_user.money.to_s %></strong>ox</span>
-    <h4>Управление слугами</h4>
-    <table>
-      <tr><th class="first">Название</th><th>Оксов(в месяц)</th><th>Количество</th><th>Состояние</th></tr>
-      <% @discription.each do |d| %>
-        <tr><td class="first"><%= d[0]%></td>
-          <td>
-            <span id="c_<%=d[1].to_s%>"><%= (session[:price][d[1].to_s]*d[4].to_s.to_i).to_s %></span>ox</td>
-          <td width="70px"  class="first">
-            <span id="q_<%=d[1].to_s%>">
-              <%=  render :partial => "wm/use_plus", :locals => { :id => d[1].to_s, :servicesize => d[4].to_s, :div => "q_"+d[1].to_s} %>
-            </span>
-          </td>
-          <td ><span id='<%=d[1]%>'><%= service_switch(d[5],d[1],d[1])%></span></td></tr>
-      <%end%>
-    </table>
-    <h4>Пополнение счета</h4>
-    <%= render :partial => "wm/wm_pay_form"%>
-    <div id="sms_link">
-      <b><%= rlink "Пополнить счет по SMS &gt;&gt;", {:controller=>'flex', :action=>'sms_phone',:format=>'html'},'adept_center'%></b>
-    </div>
-  </div>
-  <div id="adept_center">
-    <%= render :partial => "main/passwords"%>
-  </div>
 </div>
+
+<script type="text/javascript">
+reformal_wdg_domain    = "oxnull";
+reformal_wdg_mode    = 0;
+reformal_wdg_title   = "oxnull.net";
+reformal_wdg_ltitle  = "";
+reformal_wdg_lfont   = "Verdana, Geneva, sans-serif";
+reformal_wdg_lsize   = "12px";
+reformal_wdg_color   = "#ffa200";
+reformal_wdg_bcolor  = "#516683";
+reformal_wdg_tcolor  = "#FFFFFF";
+reformal_wdg_align   = "left";
+reformal_wdg_charset = "utf-8";
+reformal_wdg_waction = 0;
+reformal_wdg_vcolor  = "#9FCE54";
+reformal_wdg_cmline  = "#E0E0E0";
+reformal_wdg_glcolor  = "#105895";
+reformal_wdg_tbcolor  = "#FFFFFF";
+ 
+reformal_wdg_bimage = "http://reformal.ru/files/images/buttons/d9e259410faa9283cd24c5c312bf56bb.png";
+ 
+</script>
+
+<script type="text/javascript" language="JavaScript" src="http://reformal.ru/tab6.js"></script><noscript><a href="http://oxnull.reformal.ru">oxnull.net feedback </a> <a href="http://reformal.ru"><img src="http://reformal.ru/i/logo.gif" /></a></noscript>

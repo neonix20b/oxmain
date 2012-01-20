@@ -1,6 +1,6 @@
 <%if not tasks.nil? and tasks.size > 0%>
   <br/><br/>
-  <% firstid = Task.find(:first,:order => 'id ASC').id %>
+  <% firstid = Task.order('id ASC').first.id %>
   <b>Список дел в очереди</b><br/>
   <table>
     <tr><td>Очередь</td><td>Описание</td></tr>

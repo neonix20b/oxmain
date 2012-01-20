@@ -1,26 +1,37 @@
 <div class="blog_post" align="center">
 <table>
-<tr><td><strong>oxID</strong></td><td><strong>Профиль</strong></td><td><strong>Сайт</strong></td><td><strong>oxRank</strong></td></tr>
+<tr>
+	<td><strong>oxID</strong></td><td><strong>Регистрация</strong></td><td><strong>Профиль</strong></td>
+	<td><strong>Сайт</strong></td><td><strong>Домен</strong></td>
+	<td><strong>Добавил</strong></td>
+</tr>
 <%@users.each do |user|%>
 <tr>
-	<td><%=user.id%></td><td><%=profile_link(user)%></td>
-	<td><%=user_site_link(user)%></td>
-	<td><%=user.old_rank%></td>
-	<td><div id=<%="remove_"+user.id.to_s%>
-	<%=vote_helper(user,current_user,"Оставить","Удалить")%>
-	<%#=link_to_remote "[Удалить]",
+	<td><%=user.id%></td>
+	<td NOWRAP><%= show_time(user.created_at,"%d %B %Y") %></td>
+	<td NOWRAP><%=profile_link(user.profile)%></td>
+	<td NOWRAP><a href="http://<%= user.oxdomain%>.oxnull.net" onclick="window.open(this.href);return false; "><%= user.oxdomain%>.oxnull.net</a></td>
+	<td NOWRAP><%=raw "<a href='http://#{user.domain}'>#{user.domain}</a>" if not user.domain.nil? and user.domain.length > 1 %></td>
+	<td NOWRAP><%=profile_link(Poll.where(:obj_id=>"vote_user_delete_#{user.id}").first)%></td>
+	
+	<td NOWRAP><div id=<%="User_"+user.id.to_s%>
+	<%=raw vote_helper(user,false,current_profile,"Оставить","Удалить")%>
+	<%#=link_to _remote "[Удалить]",
 		:url =>{:action=>'vote_delete',:id=>user.id},
 		:confirm=>"Точно удалить "+user_site_link(user,false)+"?",
 		:method => 'POST',
 		:update => 'remove_'+user.id.to_s%>
 	<%#=user.count%>
-	<%#=link_to_remote "[Не удалить]",
+	<%#=link_to _remote "[Не удалить]",
 		:url =>{:action=>'vote_undelete',:id=>user.id},
 		:confirm=>"Точно "+user_site_link(user,false)+" хороший?",
 		:method => 'POST',
 		:update => 'remove_'+user.id.to_s%>
 		</div></td>
 </tr>
+<%end%>
+<%if current_profile.adept? %>
+	<tr><td></td><td></td><td colspan=3 ><strong><%=link_to "Перейти к списку пользователей", {:controller=>"users",:action=>"index"}%></strong></td></tr>
 <%end%>
 </table>
 </div>

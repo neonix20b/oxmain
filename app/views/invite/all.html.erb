@@ -1,0 +1,4 @@
+<div style="text-align:center;"><h2>Архив инвайтов</h2></div>
+<% for invite in @invites %>
+	<%= render :partial => 'one_invite',:locals=>{:invite=>invite} %>
+<%end%>

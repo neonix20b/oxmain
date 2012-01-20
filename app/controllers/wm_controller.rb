@@ -1,6 +1,5 @@
 class WmController < ApplicationController
-  include AuthenticatedSystem
-  before_filter :login_from_cookie, :except => [:ahuetdaitedve, :success, :fail, :smspay, :smsimport]
+  skip_filter :authenticate_profile!, :only => [:ahuetdaitedve, :success, :fail, :smspay, :smsimport]
   protect_from_forgery :except => [:ahuetdaitedve, :success, :fail, :smspay, :smsimport] 
   
   def smsimport
@@ -80,7 +79,7 @@ class WmController < ApplicationController
         #server.call("register_payment",domain, money.to_s )
         resp += "#{params[:smsid]}[#{domain}]: Спасибо (http://oxnull.net)\n"
 
-        #user.money = server.call("get_balance", current_user.id)
+        #user.money = server.call("get_balance", current_profile.id)
         user.save!
       else
         Syslog.open('oxmaind')
@@ -123,7 +122,7 @@ class WmController < ApplicationController
         Syslog.crit("BAD Hash!!! our = #{ourhash} but wm=#{params[:LMI_HASH]}")
         Syslog.close
       end
-      user.money = server.call("get_balance", current_user.id)
+      user.money = server.call("get_balance", current_profile.id)
       user.save!
     else
       #render :text => 'ok'
@@ -140,24 +139,24 @@ class WmController < ApplicationController
   def add_service
     server = XMLRPC::Client.new2("http://89.208.146.80:1979")
     if params[:mydo]=='add'
-      server.call("service_bridge",'service_add', current_user.id.to_s, params[:id],'1')
+      server.call("service_bridge",'service_add', current_profile.id.to_s, params[:id],'1')
       session[params[:id].to_s] = 1
       params[:mydo]='del'
     else
-      server.call("service_bridge",'service_del', current_user.id.to_s, params[:id],'1')
+      server.call("service_bridge",'service_del', current_profile.id.to_s, params[:id],'1')
       session[params[:id].to_s] = 0
       params[:mydo]='add'
     end
     @service_size = session[params[:id].to_s]
-    current_user.money = server.call("get_balance", current_user.id)
-    current_user.save!
-    get_my_site(current_user)
+    current_profile.money = server.call("get_balance", current_profile.id)
+    current_profile.save!
+    get_my_site(current_profile)
     render :layout => false
   end
 
   def math_service
     #
-    #@service_size=server.call("service_bridge",'service_stat', current_user.id.to_s, params[:id],1)
+    #@service_size=server.call("service_bridge",'service_stat', current_profile.id.to_s, params[:id],1)
     #@service_size = @service_size.to_s.to_i
     @service_size = 0
     ss = '0'
@@ -167,17 +166,17 @@ class WmController < ApplicationController
     @service_size -= 1 if(params[:math]=='minus')
     if(params[:math]=='accept')
       server = XMLRPC::Client.new2("http://89.208.146.80:1979")
-      old_size=server.call("service_bridge",'service_stat', current_user.id.to_s, params[:id],1)
+      old_size=server.call("service_bridge",'service_stat', current_profile.id.to_s, params[:id],1)
       old_size = old_size.to_s.to_i
       if(old_size > 0)
-        server.call("service_bridge",'service_del', current_user.id.to_s, params[:id],'1')
+        server.call("service_bridge",'service_del', current_profile.id.to_s, params[:id],'1')
       end
       if(@service_size >0)
-        server.call("service_bridge",'service_add', current_user.id.to_s, params[:id],@service_size)
+        server.call("service_bridge",'service_add', current_profile.id.to_s, params[:id],@service_size)
       end
-      current_user.money = server.call("get_balance", current_user.id)
-      current_user.save!
-      get_my_site(current_user)
+      current_profile.money = server.call("get_balance", current_profile.id)
+      current_profile.save!
+      get_my_site(current_profile)
     end
     session[ss] = @service_size.to_s
     render :layout => false

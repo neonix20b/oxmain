@@ -1,19 +1,22 @@
-<div class="blog_post">
-  <%= menu_posts %>
-</div>
-
-<% for invite in @invites %>
-<div class="blog_post">
-	<div class="post_bottom">
-	Добавлено: <%= show_time(invite.created_at) %> |
-	<%= ox_rank_field(invite) %>
-	</div>
-	<%=tte invite.text%>
-</div>
+<% for invite1 in @invites %>
+	<%= render :partial => 'one_invite',:locals=>{:invite=>invite1} %>
 <%end%>
 
 <% if @invites.size==0%>
 	<div class="blog_post">
-	Новых запросов еще нет
+	Новых запросов еще нет. 
+	<%if profile_signed_in?%>
+		<%=link_to "Создать сайт. Перейти на Шаг 1", {:controller=>'invite',:action=>'index'}%>
+	<%end%>
 	</div>
+<%end%>
+<%=link_to "Архив инвайтов", {:action=>'all'}%>
+<br/><hr style="width:90%;"/>
+<div style="text-align:center;"><h2>Недавно выданные</h2></div>
+<% Invite.where("status='ok' and id > 1000").order("id DESC").limit(10).each do |invite|%>
+	<%= render :partial => 'one_invite',:locals=>{:invite=>invite} %>
+<%end%>
+<div style="text-align:center;"><h2>Недавно отклоненные</h2></div>
+<% Invite.where("status='revoke' and id > 1000").order("id DESC").limit(10).each do |invite|%>
+	<%= render :partial => 'one_invite',:locals=>{:invite=>invite} %>
 <%end%>

@@ -1,0 +1,4 @@
+<%= render :partial => 'one_invite',:locals=>{:invite=>@invite} %>
+<div>
+	<%= render :partial => 'posts/comments', :locals => {:comments => @invite.comments, :invite => @invite} %>
+</div>

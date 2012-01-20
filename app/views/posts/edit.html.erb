@@ -1,6 +1,5 @@
-<% title "Редактирование статьи: "+@post.title %>
+<% content_for :title, "Редактирование статьи: "+@post.title %>
 <div class="blog_post">
   <h5><%= link_to "Все блоги", blogs_path %> → <%= link_to @blog.name, blog_posts_path(@blog) %> → Редактирование статьи</h5>
-
   <%= render :partial => 'form' %>
 </div>

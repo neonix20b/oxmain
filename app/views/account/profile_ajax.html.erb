@@ -1,0 +1,12 @@
+<%= update_page_tag do |page|
+	if not @chat_list.nil?
+		page.replace_html 'pm_last', "";
+		@chat_list.each do |cl|
+			page.insert_html :bottom, 'pm_last', one_chat(cl);
+		end
+		page.visual_effect :highlight, 'pm_'+@chat_list.first.id.to_s, :duration => 8;
+	end
+	@chat_list_read.each do |cl|
+		page.visual_effect :fade, 'pm_status_'+cl.id.to_s, :duration => 5;
+	end
+end%>

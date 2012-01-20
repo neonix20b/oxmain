@@ -1,36 +1,56 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <title><%= h(yield(:title) || "ox - Мир") %> - oxnull.net</title>
+	<%ttl = yield(:title)
+	ttl = "ox - Мир" if ttl.size==0%>
+    <title><%= ttl %> - oxnull.net</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta name="keywords" content="<%= h(yield(:keywords) || "oxnull, лучший бесплатный хостинг") %>"/>
-    <meta name="description" content="<%= h(yield(:description) || "oxnull.net - это лучший бесплатный хостинг") %>"/>
-    <%= stylesheet_link_tag 'new_style' %>
+    <meta name="description" content="<%= yield(:description) %>"/>
+	<script src="http://yandex.st/highlightjs/5.16/highlight.min.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="http://yandex.st/highlightjs/5.16/styles/default.min.css"/>
+    <%= choose_design() %>
     <%= stylesheet_link_tag 'textile-editor' %>
     <%= javascript_include_tag :all %>
-    <script src="http://video.oxnull.net/flowplayer.min.js" type="text/javascript"></script>
-    <!--[if lt IE 7]>
-    <%= stylesheet_link_tag 'ie6' %>
-    <![endif]-->
+    <%=raw '<script src="http://video.oxnull.net/flowplayer.min.js" type="text/javascript"></script>' if params[:action]=='video'%>
     <%= yield(:head) %>
   </head>
 
   <body>
+  <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
     <div id="main_box" class="main">
       <div class="header">
-        <div class="logo"><%= link_to image_tag("logo.png"), blog_posts_path('all')%></div>
+        <div class="logo">
+		<%if request.request_uri != '/'%>
+			<%= link_to image_tag("logo.png"), "/"%>
+		<%else%>
+			<%= image_tag("logo.png")%>
+		<%end%>
+		</div>
         <div class="menu_big">
           <div class="menu_right">
-            <div class="aa first"><%=link_to "Главная", blog_posts_path('all') %><%#= link_to "Главная", {:controller=> 'main', :action => "hello"}%></div>
-            <div class="aa"><%= link_to "Видео", {:controller=> 'main', :action => "video"}%></div>
+			<%if request.request_uri == '/'%>
+				<div class="aa first">Главная</div>
+			<%else%>
+				<div class="aa first"><%=link_to "Главная", "/" %><%#= link_to "Главная", {:controller=> 'main', :action => "hello"}%></div>
+			<%end%>
             <% if logged_in? %>
               <div class="aa"><%= link_to "Мой сайт", {:controller=> 'main', :action => "index"}%></div>
-              <div class="aa"><%= link_to "Старая панель", 'http://oxnull.net/old/'%></div>
-            <%else%>
-              <div class="aa"><%= link_to "Регистрация", {:controller=> 'account', :action => "signup"}%></div>
+            <%elsif%>
+              <div class="aa"><%= link_to "Регистрация", new_profile_registration_path%></div>
             <%end%>
-            <div class="aa"><%= link_to "Заявки",supports_url%><span id="support_counter"><%= "(#{Support.count})" if Support.count>0 %></span></div>
-            <div class="aa"><a href="http://wiki.oxnull.net">Где я?</a></div>
+			 <%if Invite.where("status <> 'ok' and status <> 'revoke'").count>0%>
+				<div class="aa"><%= link_to "Приглашения(#{Invite.where("status <> 'ok' and status <> 'revoke'").count})", {:controller=>'invite',:action=>'list'}%></div>
+			  <%else%>
+					<div class="aa"><%= link_to "Приглашения", {:controller=>'invite',:action=>'list'}%></div>
+			  <%end%>
+			<% if logged_in? %>
+				<div class="aa"><%= link_to "Support","http://cyber-brov.ru/"%></div>
+			<%else%>
+				<div class="aa"><%= link_to "Видео", {:controller=> 'main', :action => "video"}%></div>
+			<%end%>
+			<div class="aa"><%= link_to "Топ10", {:controller=> 'users', :action => "top", :id=>nil}%></div>
+            <div class="aa"><a href="http://offtop.oxnull.net">offtop</a>/<a href="http://wiki.oxnull.net">wiki</a></div>
           </div>
         </div>
         <div id="rounded_box_message">
@@ -43,16 +63,23 @@
           <% if not logged_in? and params[:action]!='login'%>
             <h5>Авторизация:</h5>
             <div class="autorisation2">
-              <%- form_tag(url_for(:controller=>'account',:action => "login" )) do -%>
+				<!--<%= form_for("profile", :url => profile_session_path) do |f| %>
+					<%= f.text_field :email %>
+					<%= f.password_field :password %>
+					<%= f.submit 'Войти' %>
+				<% end %>
+				<%= link_to('Login', new_profile_session_path)  %> 
+				<%#= render :action => "devise/sessions#new"%>
+				-->
+              <%= form_for("profile", :url => profile_session_path) do |f| -%>
                 <div style="float:right;">
-                  Логин:<%= text_field_tag 'login','', :size=>'20', :class=>'text' %>
-                  <%= hidden_field 'layer','layer', :value=>params[:layer] %>
+                  e-mail:<%= f.text_field :email, :size=>'20', :class=>'text' %>
                   Пароль:
-                  <%= password_field_tag 'password','', :size=>'20', :class=>'text' %>
+                  <%= f.password_field :password, :size=>'20', :class=>'text' %>
                 </div>
                 <div style="float:right;margin-right:6px;">
-                  <a href="#" onclick="javascript:alert('Б-г-г!');">Забыли пароль?</a>
-                  &nbsp;&nbsp;&nbsp;<%= check_box_tag 'remember_me' %>Запомнить
+                  <%= link_to "Забыли пароль?", new_password_path(:profile) %>
+                  &nbsp;&nbsp;&nbsp;<%= f.check_box :remember_me %>Запомнить
                   &nbsp;<%=true_button('Войти')%>
                 </div>
               <%- end -%>
@@ -65,8 +92,9 @@
           <%else%>
             <h5>Привет!</h5>
             <div class="autorisation2">
-              <%= profile_link(current_user) %>
-              [<%= link_to "Выйти", {:controller=> 'account', :action => "logout"}%>]
+              <%= profile_link(current_profile) %>
+			  <span id="pm_span_count"><%= pm_count() %></span>
+              [<%= link_to "Выйти", destroy_profile_session_path %>]
             </div>
           <%end%>
         </div>
@@ -89,6 +117,18 @@
             <% end %>
             <div class="new_1" id="main_div">
               <%= yield %>
+			  <%if (not @lf.nil? and @lf.size > 32) or (not @online.nil? and @online.size > 0) %>
+				<div class="blog_post">
+					<%if not @lf.nil? and @lf.size > 32%>
+						<div>linkfeed: <%=raw @lf.gsub('target="_blank"','') %></div>
+					<%end%>
+					<div id="oxusers_online">
+						<%= render :partial => "main/online"%>
+					</div>
+				</div>
+			<%else%>
+				<div id="oxusers_online"></div>
+			<%end%>
             </div>
           </div>
         </div>
@@ -107,26 +147,21 @@
           </table>
         </div>
       </div>
+	 <%if not session.has_key?('gmtoffset') or session[:gmtoffset].to_i==0%>
+		<div id="gmtoff"></div>
+		<script type="text/javascript">
+			var now = new Date();
+			var gmtoffset = now.getTimezoneOffset();
+			$('gmtoff').innerHTML=unescape("%3Cimg alt='gmtoffset' width='1px' height='1px' src='/main/gmtoffset/"+gmtoffset+"/'/%3E");
+		</script>
+	<%end%>
     </div>
-    <%-if logged_in? and (controller.controller_name=='posts' or controller.controller_name=='supports')-%>
+    <%-if logged_in? -%>
   <%#= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'tasklist'), :frequency => '30', :update => 'tasks') %>
-      <%= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'unread_posts', :id=>controller.action_name), :frequency => '30', :update => 'tasks') %>
+      <%= periodically_call_remote(:url => url_for(:controller=>'main', :action => 'unread_posts', :id=>controller.action_name, :last_url=>request.request_uri), :frequency => '50', :update => 'tasks') %>
     <%-end-%>
     <div class="popup" id="ox_rank_helper_div"></div>
-    <!--[if lt IE 7]>
-    <script type="text/javascript" src="/pngfix/pngfix.js"></script>
-    <![endif]-->
-    <script type="text/javascript">
-<%if not session[:gmtoffset]%>
-    Event.observe(window, 'load', function(e) {
-      var now = new Date();
-      var gmtoffset = now.getTimezoneOffset();
-      // use ajax to set the time zone here.
-      var set_time = new Ajax.Request('/main/gmtoffset/'+gmtoffset, {
-        onSuccess: function(transport) {}
-      });
-    });
-<%end%>
+    <script type="text/javascript"> 
   var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
   document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
   try {
@@ -134,5 +169,7 @@
     pageTracker._trackPageview();
   } catch(err){}
     </script>
+	
+	<!-- Yandex.Metrika counter --><div style="display:none;"><script type="text/javascript">(function(w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter10111789 = new Ya.Metrika({id:10111789, clickmap:true, trackLinks:true, webvisor:true}); } catch(e) { } }); })(window, "yandex_metrika_callbacks");</script></div><script src="//mc.yandex.ru/metrika/watch.js" type="text/javascript" defer="defer"></script><noscript><div><img src="//mc.yandex.ru/watch/10111789" style="position:absolute; left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->
   </body>
 </html>

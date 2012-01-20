@@ -1,10 +1,9 @@
-<h1>Изменение профиля: <%= profile_link(@user,false) %></h1>
+<h1>Изменение профиля: <%= profile_link(@profile,false) %></h1>
 
-<% semantic_form_for :user, @user do |f| %>
+<%= semantic_form_for :profile, @profile do |f| %>
   <% f.inputs :style => "border:0px;" do %>
     <%= f.input :show_name,:label => "Отображаемое имя" %><br/>
     <%= f.input :avatar,:label => "URL до аватара" %><br/>
-    <%= f.input :email,:label => "e-mail" %><br/>
   <%end%>
   <% f.buttons :style => "border:0px;" do %>
     <%= f.commit_button :label => "Сохранить"%>
@@ -13,17 +12,12 @@
 
 <div style="width:60%;margin-left:50px;cursor: pointer;">
   <%@avatars.each do |avatar|%>
-    <%=image_tag(h(avatar), :width=>'50px', :class=>'png', :onclick=>'$("user_avatar").value=this.src.replace(/\?\d+/, "");')%>
+    <%=image_tag(h(avatar), :width=>'50px', :class=>'png', :onclick=>'$("profile_avatar").value=this.src.replace(/\?\d+/, "").replace(/http.+images\//,"");')%>
   <%end%>
 </div>
-    
+<div id="gmtoff"></div>
 <script type="text/javascript">
-  Event.observe(window, 'load', function(e) {
-    var now = new Date();
-    var gmtoffset = now.getTimezoneOffset();
-    // use ajax to set the time zone here.
-    var set_time = new Ajax.Request('/main/gmtoffset/'+gmtoffset, {
-      onSuccess: function(transport) {}
-    });
-  });
+	var now = new Date();
+	var gmtoffset = now.getTimezoneOffset();
+	$('gmtoff').innerHTML="<img width='1px' height='1px' src='/main/gmtoffset/"+gmtoffset+"/'/>";
 </script>

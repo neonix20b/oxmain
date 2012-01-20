@@ -1,0 +1,9 @@
+<%if @voters.size > 0%>
+	<table>
+	<%@voters.each do |vote|%>
+		<tr><td><%=profile_link(vote['profile'])%></td><td><%=bool_to_i(vote['vote'])%></td></tr>
+	<%end%>
+	</table>
+<%else%>
+Голосов нет
+<%end%>

@@ -1,0 +1,117 @@
+<div class="blog_post">
+<div id="top10" style="clear: both;">
+<h3>Самые плюсанутые</h3>
+<table>
+<tr><td><strong>№</strong></td><td><strong>Регистрация</strong><td><strong>Профиль</strong></td><td><strong>ox-ранг</strong></td></tr>
+<%@top10.each_with_index do |profile,index|%>
+<tr>
+	<td><%=(index+1).to_s%></td>
+	<td NOWRAP><%= show_time(profile.created_at,"%d %B %Y") %></td>
+	<td NOWRAP><%=raw profile_link(profile)%></td>
+	<td><%=raw vote_helper(profile,true)%></td>
+</tr>
+<%end%>
+</table>
+</div>
+
+<div id="most_user10" style="clear: both;">
+<h3>Самый большой опыт</h3>
+<table>
+<tr><td><strong>№</strong></td><td><strong>Профиль</strong></td><td><strong>Мерило</strong></td></tr>
+<%@most_user10.each_with_index do |user,index|%>
+<tr>
+	<td><%=(index+1).to_s%></td>
+	<td NOWRAP><%=raw profile_link(user)%></td>
+	<td><%= (user.profile.users.count.to_f/User.where(:status=>'2').count.to_f*100.0).round(2) if not user.profile.nil?%></td>
+</tr>
+<%end%>
+</table>
+</div>
+
+<div id="most_comments10" style="clear: both;">
+<h3>Чаще всех комментируют</h3>
+<table>
+<tr><td><strong>№</strong></td><td><strong>Профиль</strong></td><td><strong>Счетчик</strong></td></tr>
+<%@most_comments10.each_with_index do |com,index|%>
+<tr>
+	<td><%=(index+1).to_s%></td>
+	<td NOWRAP><%=raw profile_link(com)%></td>
+	<td><%=com.profile.comments.where(["created_at > ?", 3.month.ago]).count if not com.profile.nil?%></td>
+</tr>
+<%end%>
+</table>
+</div>
+
+<div id="most_commentsRank" style="clear: both;">
+<h3>Наиболее меткие комментаторы</h3>
+<table>
+<tr><td><strong>№</strong></td><td><strong>Профиль</strong></td><td><strong>Меткость</strong></td></tr>
+<%@most_commentsRank.each_with_index do |com,index|%>
+<tr>
+	<td><%=(index+1).to_s%></td>
+	<td NOWRAP><%=raw profile_link(com)%></td>
+	<td><%=com.comment_rank.round(3)%></td>
+</tr>
+<%end%>
+</table>
+</div>
+
+<div id="most_post10" style="clear: both;">
+<h3>Чаще других пишут статьи</h3>
+<table>
+<tr><td><strong>№</strong></td><td><strong>Профиль</strong></td><td><strong>Статей</strong></td></tr>
+<%@most_posts10.each_with_index do |post,index|%>
+<%next if not post.profile.nil? and post.profile.posts.count < 5%>
+<tr>
+	<td><%=(index+1).to_s%></td>
+	<td NOWRAP><%=raw profile_link(post)%></td>
+	<td><%=post.profile.posts.where(["created_at > ?", 12.month.ago]).count if not post.profile.nil?%></td>
+</tr>
+<%end%>
+</table>
+</div>
+
+<div id="most_postRank" style="clear: both;">
+<h3>Наилучшие авторы статей</h3>
+<table>
+<tr><td><strong>№</strong></td><td><strong>Профиль</strong></td><td><strong>Качество</strong></td></tr>
+<%@most_postsRank.each_with_index do |post,index|%>
+<tr>
+	<td><%=(index+1).to_s%></td>
+	<td NOWRAP><%=raw profile_link(post)%></td>
+	<td><%=post.post_rank.round(3)%></td>
+</tr>
+<%end%>
+</table>
+</div>
+
+<div id="most_post10" style="clear: both;">
+<h3>Самые болтливые</h3>
+<table>
+<tr><td><strong>№</strong></td><td><strong>Профиль</strong></td><td><strong>Болтливость</strong></td></tr>
+<%@most_pm10.each_with_index do |profile,index|%>
+<%next if profile.nil? or profile.privatemessages.where(["created_at > ?", 3.month.ago]).count == 0%>
+<tr>
+	<td><%=(index+1).to_s%></td>
+	<td NOWRAP><%=raw profile_link(profile)%></td>
+	<td><%= (profile.privatemessages.where(["created_at > ?", 3.month.ago]).count.to_f/Privatemessage.where(["created_at > ?", 3.month.ago]).count.to_f*100.0).round(2)%></td>
+</tr>
+<%end%>
+</table>
+</div>
+
+<div id="most_post10" style="clear: both;">
+<h3>Бывают чаще всех</h3>
+<table>
+<tr><td><strong>№</strong></td><td><strong>Профиль</strong></td><td><strong>Показатель</strong></td></tr>
+<%@most_enter10.each_with_index do |profile,index|%>
+<tr>
+	<td><%=(index+1).to_s%></td>
+	<td NOWRAP><%=raw profile_link(profile)%></td>
+	<td><%= (profile.sign_in_count.to_f/Profile.count.to_f*100.0).round(2) %></td>
+</tr>
+<%end%>
+</table>
+</div>
+
+</div>

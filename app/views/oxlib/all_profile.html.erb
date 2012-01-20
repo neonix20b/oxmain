@@ -1,0 +1,44 @@
+<div class="blog_post">
+	<h1>Комментарии(<%=@comments.count if not @comments.nil?%>)</h1>
+	<div id="all_comments">
+		<%@comments.each do |comment|%>
+			<%=raw one_comment(comment, comment.profile,false,true)%>
+			<%if profile_signed_in? and comment.profile.nil? and current_profile.adept? %>
+				<%profile_id=comment.profile.id if not comment.profile.nil?%>
+				<%= form_tag url_for(:controller => 'main', :action =>'set_master_comment')  do -%>
+					<%= hidden_field_tag 'comment_id', comment.id %>
+						^^^ masterid: <%= text_field_tag 'profile_id',profile_id.to_s, :size=>'20',:class => 'text' %>
+					<%=raw true_button('ok')%> ^^^
+				<% end -%>
+			<%end%>
+		<%end%>
+	</div>
+</div>
+
+<h1>Посты(<%=@posts.count if not @posts.nil?%>)</h1>
+<% for post in @posts %>
+  <div class="blog_post" id="post_<%=post.id%>">
+	<h2 style="margin:0px;">
+	  <%=link_to h(post.title),blog_post_path(post.blog_id, post) %>
+	</h2>
+	<div class="post_bottom">
+	  Автор: <%= author(post) %> |
+	  <%= show_time(post.created_at) %> |
+	  <%= link_to "Комментариев", blog_post_path(post.blog_id, post, :anchor => "comment_try") %>: <%= post.comments.size %>шт. |
+	  <%=raw ox_rank_field(post) %>
+	  <% if can_edit?(post) %>
+		| Управление:
+		<%= link_to "[e]", edit_blog_post_path(post.blog_id, post) %>
+		<%= rlink "[x]", {:controller=>'oxlib',:action=>'destroy_post',:id=>post.id}, "post_#{post.id}", 'post', 'Точно удалить статью?'%>
+	  <%end%>
+	  <br/>
+	  Теги: <%#=raw tag_links(post) %>
+	</div>
+	<div style="text-indent:1em;"><%txt = post.text.split(" --- ")%><%=raw tte txt.first %></div>
+	<%if not txt.second.nil?%>
+	  <div class="begin_read">
+		<%=link_to 'Далее >',blog_post_path(post.blog_id, post) %><br/>
+	  </div>
+	<%end%>
+  </div>
+<% end %>

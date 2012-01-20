@@ -1,0 +1,24 @@
+<div class="blog_post">
+	<h5><%=profile_link(invite.profile)%> → <%=raw invite_link(invite)%>
+	<%=raw " → #{user_site_link(invite.invited_user)}" if not invite.invited_user.nil?%>
+	</h5>
+	<div class="post_bottom">
+	Добавлено: <%= show_time(invite.created_at) %> | 
+	<%= link_to "Комментариев", url_for(:controller=>'invite',:action=>'show',:id=>invite.id, :anchor => "comment_try") %>: <%= invite.comments.size %>шт.
+	<%= invite_days(invite)%>
+	<%if invite.status!='ok' and invite.status!='revoke'%>| 
+		<span id="inv_<%=invite.id%>">
+		<%if profile_signed_in? and current_profile.users.count > 0%>
+			<%=raw vote_helper(invite) %>
+		<%else%>
+			<strong><%=invite.count%></strong>
+		<%end%>
+		<%if profile_signed_in? and current_profile.adept?%>
+			<%=rlink "[Одобрить]", {:controller=>'invite',:action=>'confirm_true',:id=>invite.id},"inv_#{invite.id}",'post','Одобрить несмотря на голосование?'%>
+			<%=rlink "[Отклонить]", {:controller=>'invite',:action=>'confirm_false',:id=>invite.id},"inv_#{invite.id}",'post','Отклонить несмотря на голосование?'%>
+		<%end%>
+		</span>
+	<%end%>
+	</div>
+	<%=raw tte invite.text%>
+</div>

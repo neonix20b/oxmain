@@ -1,0 +1,58 @@
+<%if not request.post?%>
+<% title "Песочница-live" %>
+<div class="blog_post" id="online_live">
+<%end%>
+	<h1>Песочница-live</h1>
+	<%hr_first=false%>
+	
+	<%if not @online.nil? and @online.size>0%>
+	<%=raw "<br/><br/><hr width='90%'/><br/>" if hr_first==true %>
+	<%hr_first=true%>
+	<h2>Пользователи</h2>
+	<table>
+	<%@online.each do |user|%>
+	  <tr><td>[<%= show_time(user.updated_at,"%H:%M:%S") %>]</td><td><%=profile_link(user)%></td><td><%= show_last_url(user)%></td></tr>
+	<%end%>
+	</table>
+	<br/>
+	<%else%>
+		<h2>Зарегистрированных пользователей в online нет</h2>
+	<%end%>
+	
+	<%if not @comments.nil? and @comments.size>0%>
+	<%=raw "<br/><br/><hr width='90%'/><br/>" if hr_first==true %>
+	<%hr_first=true%>
+	<h2>Комментарии</h2>
+	<%@comments.each do |c|%>
+		<%=raw one_online_comment(c,c.profile.last_url)%>
+	<%end%>
+	<br/>
+	<%else%>
+		<h2>Комментарии пока никто не пишет</h2>
+	<%end%>
+	
+	<%if not @posts.nil? and @posts.size>0%>
+	<%=raw "<br/><br/><hr width='90%'/><br/>" if hr_first==true %>
+	<%hr_first=true%>
+	<h2>Посты</h2>
+	<%@posts.each do |p|%>
+	  <div class="comment_box">
+	  	<div id="author_tag" style="color:#6b8095;">
+			<div>
+			Автор: <%= author(p) %> |
+			Дата создания: <%=show_time p.updated_at||Time.now %>
+			</div>
+		</div>
+		<div>
+		<%=h p.text%>
+		</div>
+	  </div>
+	<%end%>
+	<%else%>
+		<h2>Статьи сейчас никто не создает</h2>
+	<%end%>
+	
+<%if not request.post?%>
+</div>
+<%= periodically_call_remote(:url => url_for(:controller=>'users', :action => 'live'), :frequency => '15', :update => 'online_live') if logged_in? %>
+<%end%>

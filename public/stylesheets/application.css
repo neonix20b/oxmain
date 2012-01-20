@@ -1,9 +1,12 @@
+@font-face {  
+  font-family: oxVerdana ;  
+  src: url( /verdana.ttf ) format("truetype");  
+}
 body {
   background-color: #4B7399;
-  font-family: Verdana, Helvetica, Arial;
+  font-family: oxVerdana, Arial;
   font-size: 14px;
 }
-
 a img {
   border: none;
 }

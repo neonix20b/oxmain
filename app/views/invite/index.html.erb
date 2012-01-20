@@ -1,14 +1,19 @@
-<% semantic_form_for @invite, :url =>{:controller=>'invite',:action=>'save'} do |f| %>
-  <% f.inputs do %>
-	<%= f.select :blog_id, Blog.all.map { |b| [b.name, b.id] } %>
-    <%= f.input :title,:label => "Название" %>
-    <%= textile_editor 'post', 'text', :style=>"width:100%; height:600px;" -%>
-    <%= f.input :tag_list,:label => "Теги" %>
-  <%end%>
-  <% f.buttons do %>
-    <%= link_to "Подробнее о разметке текста", "http://ru.wikipedia.org/wiki/Textile_(%D1%8F%D0%B7%D1%8B%D0%BA_%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%82%D0%BA%D0%B8)" %>
-    <%= f.commit_button :label => "Создать статью" %>
-  <% end %>
-<% end %>
-
-<%= textile_editor_initialize -%>
+<div class="blog_post">
+	<h5>Получение инвайта. Шаг 1. Защита от патологических лентяев.</h5>
+	Перед отправкой заявки обратите особое внимание на список <%=link_to "альтернативных хостингов","http://wiki.oxnull.net/index.php/Альтернатива"%>, наши <%=link_to "Правила","http://wiki.oxnull.net/index.php/Правила"%> и <%= link_to "небольшой совет начинающим", "http://oxnull.net/blogs/17/posts/126.html"%>. 
+	Особенно на пункт 1.16. Если Вам
+	очень нужен хостинг под коммерческие проекты, то используйте платные хостинги. 
+	Для остальных - можно попробовать заполнить форму ниже.
+	<%= semantic_form_for @invite, :url =>{:controller=>'invite',:action=>'save'} do |f| %>
+	  <% f.inputs do %>
+		<%= f.input :title,:label => "Заголовок: ",:input_html => { :size => '55' },:wrapper_html => { :style => "display:block;"}  %>
+		<%= f.input :delete_days,:label => "На сколько дней нужен хостинг(0 - на всегда): ",:input_html => { :size => 15,:value=>0 },:wrapper_html => { :style => "display:block;"}  %>
+		<%= textile_editor 'invite', 'text', :style=>"width:100%; height:600px;",:value=>'Опишите подробности идеи' -%>
+	  <%end%>
+	  <% f.buttons do %>
+		<%= link_to "Подробнее о разметке текста", "http://ru.wikipedia.org/wiki/Textile_(%D1%8F%D0%B7%D1%8B%D0%BA_%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%82%D0%BA%D0%B8)" %>
+		<%= f.commit_button :label => "Послать запрос" %>
+	  <% end %>
+	<% end %>
+</div>
+<%=raw textile_editor_initialize -%>

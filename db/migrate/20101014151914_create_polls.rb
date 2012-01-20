@@ -2,7 +2,7 @@ class CreatePolls < ActiveRecord::Migration
   def self.up
     create_table :polls do |t|
       t.string :obj_id
-      t.references :user
+      t.integer :profile_id
       t.boolean :vote
       t.timestamps
     end

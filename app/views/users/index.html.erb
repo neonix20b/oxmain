@@ -1,20 +1,23 @@
 <div class="blog_post" align="center">
 <table>
-<tr><td><strong>oxID</strong></td><td><strong>Профиль</strong></td><td><strong>Сайт</strong></td><td><strong>oxRank</strong></td></tr>
+<tr><td><strong>oxID</strong></td><td><strong>Регистрация</strong><td><strong>Профиль</strong></td><td><strong>Сайт</strong></td><td><strong>Домен</strong></td><td><strong><%=@users.size.to_s%>шт.</strong></td></tr>
 <%@users.each do |user|%>
 <tr>
-	<td><%=user.id%></td><td><%=profile_link(user)%></td>
-	<td><%=user_site_link(user)%></td>
-	<td><%=user.old_rank%></td>
-	<%if current_user.ox_rank > 0%>
-		<td><div id=<%="remove_"+user.id.to_s%>
-		<%=link_to_remote "[x] Удалить",
-			:url =>{:action=>'vote_delete',:id=>user.id},
-			:confirm=>"Точно отправить "+user_site_link(user,false)+" на удаление?",
-			:method => 'POST',
-			:update => 'remove_'+user.id.to_s%></div></td>
+	<td><%=user.id%></td>
+	<td NOWRAP><%= show_time(user.created_at,"%d %B %Y") %></td>
+	<td NOWRAP><%=raw profile_link(user.profile)%></td>
+	<td NOWRAP><a href="http://<%=user.oxdomain%>.oxnull.net" onclick="window.open(this.href);return false; "><%=user.oxdomain%>.oxnull.net</a></td>
+	<td NOWRAP><%=raw "<a href='http://#{user.domain}'>#{user.domain}</a>" if not user.domain.nil? and user.domain.length > 1 %></td>
+	<%if current_profile.adept? and params[:action]=="index"%>
+		<td NOWRAP><%=raw remove_user_sw(user)%></td>
 	<%end%>
 </tr>
+<%end%>
+<%if params[:action]=="index"%>
+	<tr><td></td><td></td><td colspan=3 ><strong><%=link_to "Перейти к голосованию", {:controller=>"users",:action=>"remove_list"}%></strong></td></tr>
+<%else%>
+	<tr><td></td><td></td><td colspan=3 ><strong><%=link_to "Перейти к списку пользователей", {:controller=>"users",:action=>"index"}%></strong></td></tr>
+	<tr><td></td><td></td><td colspan=3 ><strong><%=link_to "Перейти к голосованию", {:controller=>"users",:action=>"remove_list"}%></strong></td></tr>
 <%end%>
 </table>
 </div>

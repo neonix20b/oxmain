@@ -1,0 +1,13 @@
+<div class="blog_post">
+	<h5>Создание нового сайта. Шаг 3.</h5>
+	Выберите тип и введите желаемое имя домена(только латинские буквы и цифры)
+	<%= semantic_form_for @user, :url =>{:controller=>'invite',:action=>'accept',:id=>@invite.id} do |f| %>
+		<% f.inputs do %>
+			<%= f.select 'wtf',options_for_select(['Сайт','Блог','Форум','Пусто'],params[:wtf])%>
+			<%= f.input :oxdomain,:label => "&nbsp;", :input_html => { :size => 15 } %>.oxnull.net
+		<%end%>
+		<% f.buttons do %>
+			<%= f.commit_button :label => "Создать" %>
+		  <% end %>
+	<%end%>
+</div>

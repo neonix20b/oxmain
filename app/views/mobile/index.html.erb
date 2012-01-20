@@ -3,7 +3,7 @@
 Последнее обращение: <%= @last_upd.to_s %><br/>
 Ваш сайт - <b><a href="http://<%= current_user.login %>.oxnull.net" target="_blank">http://<%= current_user.login %>.oxnull.net</a></b> [<%= link_to "пересоздать", {:controller=> 'main', :action => "rebuild"}, :confirm => "Внимание, все данные будут потеряны! Продолжить?" %>]<br/>
 <% if current_user.domain.nil? or current_user.domain.size < 3 %>
-  <% form_for :user, :url =>{:action =>'staff'} do |f| -%>
+  <%= form_for :user, :url =>{:action =>'staff'} do |f| -%>
     <p><label for="login">Присоединить домен [<a href="http://wiki.oxnull.net/index.php/DNS" target="_blank">помощь</a>]</label><br/>
     <%= f.text_field :domain, :size=>'29' %><%= submit_tag 'Прикрепить домен!' %></p>
   <% end -%>

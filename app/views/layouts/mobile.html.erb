@@ -15,12 +15,12 @@
           <div id="header">
             <span class="menup"><%= link_to "Главная", {:controller=> 'mobile', :action => "hello", :rnd =>rand(100)}%></span> | 
             <% if logged_in? %>
-              <span class="menup"><%= rlink "Мой сайт", {:controller=> 'mobile', :action => "index", :layer => 'mobile', :rnd =>rand(100)}%></span> | 
-              <span class="menup"><%= rlink "FTP/MYSQL", {:controller=> 'mobile', :action => "about", :layer => 'mobile'}%></span> | 
-              <span class="menup"><%= rlink "Услуги", {:controller=> 'wm', :action => "index", :layer => 'mobile', :rnd =>rand(100)}%></span> | 
+              <span class="menup"><%= link_to "Мой сайт", {:controller=> 'mobile', :action => "index", :layer => 'mobile', :rnd =>rand(100)}%></span> | 
+              <span class="menup"><%= link_to "FTP/MYSQL", {:controller=> 'mobile', :action => "about", :layer => 'mobile'}%></span> | 
+              <span class="menup"><%= link_to "Услуги", {:controller=> 'wm', :action => "index", :layer => 'mobile', :rnd =>rand(100)}%></span> | 
             <%else%>
-              <span class="menup"><%= rlink "Войти", {:controller=> 'account', :action => "login", :layer => 'mobile', :rnd =>rand(100)}%></span> | 
-              <span class="menup"><%= rlink "Регистрация", {:controller=> 'account', :action => "signup",:layer => 'mobile'}%></span> | 
+              <span class="menup"><%= link_to "Войти", {:controller=> 'account', :action => "login", :layer => 'mobile', :rnd =>rand(100)}%></span> | 
+              <span class="menup"><%= link_to "Регистрация", {:controller=> 'account', :action => "signup",:layer => 'mobile'}%></span> | 
             <%end%>
             <span class="menup"><a href="http://offtop.oxnull.net/" target="_blank">Форум</a></span> | 
             <span class="menup"><a href="http://wiki.oxnull.net" target="_blank">Где я?</a></span> | 

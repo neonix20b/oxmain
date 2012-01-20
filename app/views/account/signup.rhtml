@@ -4,7 +4,7 @@
   <%if @invite == "нету"%>
     <div id="notification"><%= 'Поле "ox-Приглашение" обязательно'  %></div>
   <%end%>
-  <% form_for :user do |f| -%>
+  <%= form_for :user do |f| -%>
     <p><label for="invite">ox-Приглашение</label> [<a href="http://wiki.oxnull.net/index.php/%D0%90%D0%B4%D0%B5%D0%BF%D1%82-%D1%86%D0%B5%D0%BD%D1%82%D1%80" target="_blank">А это еще что?</a>]<br/>
     <%= text_field_tag :invite, @invite, :size => 29 %></p>
 

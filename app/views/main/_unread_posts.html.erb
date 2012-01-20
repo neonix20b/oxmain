@@ -1,20 +1,33 @@
-<%if not posts.nil? and posts.size > 0%>
-  <%if request.xhr? or request.post? %>
-    <div id="news_from_top">
-      <%= one_news(posts.first,'span')%>
-    </div>
-    <%= update_page_tag do |page|
-      page.visual_effect :fade, 'news_from_top', :duration => 5;
-    end%>
-  <%end%>
+<%if not @pm.nil?%>
+	<%if not current_profile.last_pm_input.nil? and current_profile.last_pm_input.size < 5 and not current_profile.last_comment_input.nil? and current_profile.last_comment_input.size < 5;%>
+		<div id="news_from_top">У вас новые <%=raw chat_link("личные сообщения",@pm)%>.</div>
+		<%= update_page_tag do |page|
+		  page.visual_effect :fade, 'news_from_top', :duration => 5;
+		end%>
+	<%end%>
+	<table>
+    <tr><th>Обновления</th><th></th></tr>
+      <tr><td>У вас новые <%=raw chat_link("личные сообщения",@pm)%>.</td></tr>
+  </table>
+  <%=set_page_title('*Новые личные сообщения')%>
+<%elsif not posts.nil? and posts.size > 0%>
+	<%if not current_profile.last_pm_input.nil? and not current_profile.last_comment_input.nil? and current_profile.last_pm_input.size < 5 and  current_profile.last_comment_input.size < 5%>
+		<div id="news_from_top">
+		  <%=raw one_news(posts.first,'span')%>
+		</div>
+		<%= update_page_tag do |page|
+		  page.visual_effect :fade, 'news_from_top', :duration => 5;
+		end%>
+	<%end%>
   <table>
     <tr><th>Обновления</th><th></th></tr>
     <%posts.each do |post|%>
-      <tr><td><%= one_news(post)%></td></tr>
+      <tr><td><%=raw one_news(post)%></td></tr>
     <%end%>
   </table>
 <%else%>
-<%if logged_in? and (current_user.favorite.nil? or current_user.favorite=="")%>
+
+<%if logged_in? and (current_profile.favorite.nil? or current_profile.favorite=="")%>
   <%if request.xhr? or request.post? %>
     <div id="news_from_top">
       Вы не подписаны ни на один блог. Подробнее на странице <%= link_to("последних не прочитанных", blog_posts_path('last'))%>.
@@ -31,11 +44,13 @@
     <tr><td class="table_1">Предустановленные движки сайтов</td><td>Perl</td></tr>
     <tr><td class="table_1">Место под файлы(150MB)</td><td>Ruby</td></tr>
   </table>
+  <div style="text-align:center;">Бесплатно и без рекламы!</div>
 <%end%>
 
-<%if (request.xhr? or request.post?) and (params[:id]=='index') %>
+<%if request.xhr? and profile_signed_in? %>
   <%= update_page_tag do |page|
     page.replace_html('oxusers_online', :partial => "main/online")
     page.replace_html("support_counter", :text => "(#{Support.count})")if Support.count>0
+	page.replace_html("pm_span_count", :text => pm_count())
   end%>
 <%end%>

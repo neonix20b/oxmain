@@ -1,7 +1,7 @@
 <%= shorthead("Обработка запроса") %>
 <br/>
 <% if current_user.status == '0' %>
-  Ваш сайт стоит <%= (1 + Task.find(:first,:order => 'id ASC').id - Task.find(:first, :conditions=>{:user_id=>current_user.id},:order => 'id ASC').id).to_s %>-м в очереди.
+  Ваш сайт стоит <%= (1 + Task.order('id ASC').first.id - Task.where(:user_id=>current_user.id).order('id ASC').first.id).to_s %>-м в очереди.
 <%end%>
 <% if current_user.status == '1' %>
   Идет создание сайта. Ждите...
@@ -18,7 +18,7 @@
 <%end%>
 <% if current_user.status == '2' %>
   Готово! 
-  <% javascript_tag do -%>
+  <%= javascript_tag do -%>
     setTimeout("document.location = 'http://oxnull.net/main/'", 1000);
   <%end%>
   <%= link_to "Перейти к панели", {:controller=> 'main', :action => "index"}%>

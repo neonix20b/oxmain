@@ -1,0 +1,67 @@
+body 
+{
+    background-color: black;
+    background-image: url("http://oxnull.net/images/earth2.jpg");
+    width:100%; 
+    margin: 10px 10px;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #6b94cd;
+    background-repeat: no-repeat;
+}
+input{
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+#alldiv{
+    
+    /*float: left;
+    margin-left: 200px;
+    margin-top: 150px;*/
+    position: absolute;
+    left: 200px;
+    top: 50px;
+}
+#content
+{
+    /*opacity: 0.5;
+    filter: alpha(opacity = 50);
+    background-color: #464b53;
+    background-repeat: repeat-y repeat-x;*/
+    background-image: url('http://oxnull.net/images/1.png');
+    border: 2px solid #3c5373;
+    padding: 20px 40px 30px 40px;
+    width:325px;
+}
+
+#header{
+    background-image: url('http://oxnull.net/images/1.png');
+    border: 2px solid #3c5373;
+    width: auto;
+    padding: 10px 10px 10px 10px;
+    margin: 10px 0px 10px 0px;
+    font-weight: bold;
+    color: #6b94cd;
+    text-align: center;
+    font-family: Tahoma;
+}
+a{
+    color: #6b94cd;
+    text-decoration: none;
+}
+
+a:hover{
+    color: #ff8400;
+}
+
+#notification 
+{
+    border: 5px solid #9c9;
+    background-color: #cfc;
+    padding: 5px;
+    margin: 10px 0;
+}
+
+img{
+    border: none;
+}

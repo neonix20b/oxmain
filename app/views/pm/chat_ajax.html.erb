@@ -1,0 +1,11 @@
+<%= update_page_tag do |page|
+	@chat_list_read.each do |cl|
+		page.visual_effect :fade, 'pm_status_'+cl.id.to_s, :duration => 5;
+	end
+	@chat_list_new.each do |cl|
+		page.insert_html :bottom, 'all_pm', one_pm(cl);
+		page.visual_effect :fade, 'pm_status_'+cl.id.to_s, :duration => 20;
+		page.visual_effect :highlight, 'pm_'+cl.id.to_s, :duration => 8;
+	end
+end%>
+<%#=session[:do_not_read].join(";")%>

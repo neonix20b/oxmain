@@ -1,36 +1,49 @@
-<%comments.each do |comment|%>
-  <%= one_comment(comment, comment.user)%>
+<div id="all_comments">
+	<div id="gobottom" style="float:right;"><a href="#comment_try"> вниз </a></div>
+	<%comments.each do |comment|%>
+		<%=raw one_comment(comment, comment.profile)%>
+		<%if profile_signed_in? and comment.profile.nil? and current_profile.adept? %>
+			<%profile_id=comment.profile.id if not comment.profile.nil?%>
+			<%= form_tag url_for(:controller => 'main', :action =>'set_master_comment')  do -%>
+				<%= hidden_field_tag 'comment_id', comment.id %>
+					^^^ masterid: <%= text_field_tag 'profile_id',profile_id.to_s, :size=>'20',:class => 'text' %>
+				<%=raw true_button('ok')%> ^^^
+			<% end -%>
+		<%end%>
+	<%end%>
+	<div id="gotop" style="float:right;"><a href="#" onClick="scroll(0,0); return false" title="вверх"> вверх </a></div>
+</div>
+	<div id="comment_try"></div>
+	<%if (profile_signed_in? and not defined?(invite)) or (profile_signed_in? and defined?(invite) and not invite.nil? and invite.status!='ok' and invite.status!='revoke') %>
+	  <div>
+	    <%= semantic_form_for :comment, @comment, :url => { :controller => 'main', :action => "comment_work", :do => 'add' } do |f| %>
+	      <% f.inputs :style => "border:0px;" do %>
+	        <%= f.hidden_field :profile_id, :value => current_profile.id %>
+	        <%if not @post.nil?%>
+	          <%= hidden_field 'blog','id', :value => @blog.id %>
+	          <%= f.hidden_field :post_id, :value => @post.id %>
+	        <%else%>
+	          <%= f.hidden_field :invite_id, :value => invite.id %>
+	        <%end%>
+	        <%= textile_editor 'comment', 'text', :style=>"width:60%; height:200px;", :onkeypress=>"return ctrl_enter(event, this.form);" -%>
+	      <%end%>
+	      <% f.buttons :style => "border:0px;" do %>
+	        <%= link_to "Подробнее о разметке текста", "http://wiki.oxnull.net/index.php/Textile" %>
+	        <%= f.commit_button :label => "Сохранить", :disable_with => "Отправка..."%>
+			<br/>Перед отправкой убедитесь, что Ваш комментарий несет смысловую нагрузку.
+	      <% end %>
+	    <% end %>
+	  </div>
+	<%= observe_field(:comment_text,
+	  :frequency => 3,
+	  :update => :comment_try,
+	  :before => "Element.show('spinner')",
+	  :success => "Element.hide('spinner')",
+	  :url => { :controller=>'main', :action => 'comment_try' },
+	  :with => "'text=' + encodeURIComponent(value)") %>
+	  
+	<%=raw textile_editor_initialize -%>
+<%else%>
+	<br/>
 <%end%>
 
-<div id="comment_try"></div>
-<%if can_edit? and (not defined?(support) or support.status!='close') %>
-  <div>
-    <% semantic_form_for :comment, @comment, :url => { :controller => 'main', :action => "comment_work", :do => 'add' } do |f| %>
-      <% f.inputs :style => "border:0px;" do %>
-        <%= f.hidden_field :user_id, :value => current_user.id %>
-        <%if not @post.nil?%>
-          <%= hidden_field 'blog','id', :value => @blog.id %>
-          <%= f.hidden_field :post_id, :value => @post.id %>
-        <%else%>
-          <%= f.hidden_field :support_id, :value => @support.id %>
-        <%end%>
-        <%= textile_editor 'comment', 'text', :style=>"width:60%; height:200px;" -%>
-      <%end%>
-      <% f.buttons :style => "border:0px;" do %>
-        <%= link_to "Подробнее о разметке текста", "http://ru.wikipedia.org/wiki/Textile_(%D1%8F%D0%B7%D1%8B%D0%BA_%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%82%D0%BA%D0%B8)" %>
-        <%= f.commit_button :wrapper_html => { :style => 'display:block;' }, :label => "Сохранить"%>
-      <% end %>
-    <% end %>
-  </div>
-
-<%= observe_field(:comment_text,
-  :frequency => 3,
-  :update => :comment_try,
-  :before => "Element.show('spinner')",
-  :success => "Element.hide('spinner')",
-  :url => { :controller=>'main', :action => 'comment_try' },
-  :with => "'text=' + encodeURIComponent(value)") %>
-
-<%end%>
-
-<%= textile_editor_initialize -%>

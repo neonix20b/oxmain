@@ -1,0 +1,51 @@
+<% title "Личные сообщения" %>
+<div class="blog_post">
+<h1>Личные сообщения: <%=profile_link(@user_from,false)%></h1>
+<%if params[:action]!='history' and not @chat_list.nil? and @chat_list.size > 25%>
+	<%=link_to "Все сообщения",{:action=>'history',:id=>params[:id]}%>
+<%end%>
+	<div id="all_pm">
+	<%@chat_list.each do |chat|%>
+		<%=raw one_pm(chat)%>
+	<%end%>
+	</div>
+<%if not @user_from.nil?%>
+	<div id="pm_try"></div>
+	<div id="end_doc">
+    <%= semantic_form_for :privatemessage, @privatemessage, :html => { :method => :post }, :url => { :controller => 'pm', :action => "post_msg", :id => @user_from.id } do |f| %>
+      <% f.inputs :style => "border:0px;" do %>
+        <%= f.hidden_field :profile_to, :value => @user_from.id %>
+        <%= textile_editor 'privatemessage', 'post', :style=>"width:60%; height:200px;", :onkeypress=>"return ctrl_enter(event, this.form);" -%>
+      <%end%>
+      <% f.buttons :style => "border:0px;" do %>
+        <%= link_to "Подробнее о разметке текста", "http://ru.wikipedia.org/wiki/Textile_(%D1%8F%D0%B7%D1%8B%D0%BA_%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%82%D0%BA%D0%B8)" %>
+        <%= f.commit_button :label => "Отправить", :disable_with => "Отправка..."%>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+<div id="chat_ajax_id"></div>
+<%= periodically_call_remote(:url => url_for(:controller=>'pm', :action => 'chat_ajax', :id=>@user_from.id), :frequency => '15', :update => 'chat_ajax_id') %>
+
+<%= update_page_tag do |page|
+	@chat_list.each do |cl|
+		page.visual_effect :fade, 'pm_status_'+cl.id.to_s, :duration => 10 if cl.readed==false and cl.profile_to == current_profile.id
+	end
+end%>
+
+<%= observe_field(:privatemessage_post,
+  :frequency => 3,
+  :update => :pm_try,
+  :before => "Element.show('spinner')",
+  :success => "Element.hide('spinner')",
+  :url => { :controller=>'pm', :action => 'pm_try', :id=>@user_from.id },
+  :with => "'post=' + encodeURIComponent(value)") %>
+
+<script type="text/javascript" language="JavaScript">
+	$('privatemessage_post').focus();
+</script>
+<%=raw textile_editor_initialize -%>
+<%else%>
+11
+</div>
+<%end%>

@@ -1,4 +1,4 @@
-<% semantic_form_for(@support) do |f| %>
+<%= semantic_form_for(@support) do |f| %>
   <% f.inputs :style => "border:0px;" do %>
     <%= f.hidden_field :user_id, :value => current_user.id %>
     <%#= f.input :task,:label => "Описание проблемы" %>
@@ -36,7 +36,7 @@
     <%end%>
   <%end%>
   <% f.buttons :style => "border:0px;" do %>
-    <%= f.commit_button :label => "Создать", :wrapper_html => { :style => 'display:block;'} %>
+    <%= f.commit_button :label => "Сохранить", :wrapper_html => { :style => 'display:block;'} %>
   <% end %>
 <% end %>
 

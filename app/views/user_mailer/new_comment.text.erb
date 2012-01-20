@@ -1,0 +1,10 @@
+<%-if @comment.post_id.nil?-%>
+К Вашей заявке(http://oxnull.net<%=url_for(:controller=>'invite',:action=>'show',:id=>@comment.invite_id)%>) появился новый комментарий. Его текст:
+<%-else-%>
+К Вашей статье(http://oxnull.net<%=blog_post_path(@comment.post.blog_id, @comment.post, :anchor => "comment_try")%>) появился новый комментарий от <%=@comment.profile.show_name%>. Его текст:
+<%-end-%>
+
+<%=@comment.text%>
+
+---
+С Уважением, Ваш http://oxnull.net

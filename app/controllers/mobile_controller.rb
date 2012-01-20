@@ -2,8 +2,7 @@ require 'xmlrpc/client'
 require 'syslog'
 require 'digest/md5'
 class MobileController < ApplicationController
-  include AuthenticatedSystem
-  before_filter :login_from_cookie
+  skip_filter :authenticate_profile!, :only => [:show, :index, :hello, :about]
 
   def hello
       render(:layout => 'mainlayer') if request.xhr?
@@ -34,13 +33,13 @@ class MobileController < ApplicationController
       inv.user_id = current_user.id
       inv.invite_string = (Digest::MD5.hexdigest(Time.now.to_s)).upcase
       inv.save!
-      @invites = Invite.find(:all,:conditions =>{:user_id => current_user.id})
+      @invites = Invite.where(:user_id => current_user.id)
       render :partial => "inv_list", :locals => { :invites => @invites}
     elsif params[:task] == 'del'
       Invite.delete_all({:user_id => current_user.id, :id => params[:id]})
       render :text => ''
     else
-      @invites = Invite.find(:all,:conditions =>{:user_id => current_user.id})
+      @invites = Invite.where(:user_id => current_user.id)
       render(:layout => 'mainlayer') if request.xhr?
     end
   end

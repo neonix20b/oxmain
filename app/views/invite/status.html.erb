@@ -1,9 +1,5 @@
-<%if @invite.nil?%>
-Такой заявки не существует. Возможно удалена т.к. не была по достоинтству оценена сообществом
-<%elsif @invite.status!='ok'%>
-	Статус заявки: <%=@invite.status%><br/>
-	Рейтинг: <%=@invite.count%><br/>
-	<%=link_to "http://oxnull.net/"+url_for(:action=>'status',:id=>@invite.id,:key=>(Digest::MD5.hexdigest(@invite.created_at.to_s)).upcase), {:action=>'status',:id=>@invite.id,:key=>(Digest::MD5.hexdigest(@invite.created_at.to_s)).upcase}%>
-<%elsif @invite.status=='ok'%>
-	Отлично, <a href='http://oxnull.net/#hello=<%=@invite.invite_string%>'>вот Ваше приглашение</a>.
-<%end%>
+<script type="text/javascript">
+<!--
+window.location = "<%=url_for(:controller=>'main',:action=>'index')%>"
+//-->
+</script>

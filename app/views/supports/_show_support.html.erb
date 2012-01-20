@@ -34,6 +34,10 @@
     <td><strong>Заказчик:</strong></td>
     <td><%= profile_link(support.user) %></td>
   </tr>
+    <tr>
+    <td><strong>Последнее обновление:</strong></td>
+    <td><%= show_time(support.updated_at) %></td>
+  </tr>
   <tr>
     <td>Исполнитель:</td>
     <td>
@@ -46,7 +50,7 @@
       </span>
       <% if @support.user_id==current_user.id and @support.status=='open' and not @support.worker_id.nil?%>
         <span id="support_share_<%=@support.id%>">
-          <strong><%= rlink("[Одобрить исполнителя и показать ему комментирование]", {:controller => 'main', :action => 'support_work', :id => @support.id, :do=>'share'},"support_share_#{@support.id}", 'post') %></strong>
+          <strong><%= rlink("[Одобрить исполнителя]", {:controller => 'main', :action => 'support_work', :id => @support.id, :do=>'share'},"support_share_#{@support.id}", 'post') %></strong>
         </span>
       <%end%>
     </td>

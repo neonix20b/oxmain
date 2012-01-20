@@ -1,53 +1,18 @@
-ActionController::Routing::Routes.draw do |map|
-  map.resources :supports
+Oxmain::Application.routes.draw do
+  devise_for :profiles
 
-  map.resources :blogs
-  map.resources :blogs, :has_many => :posts
-  #map.resources :posts
-
-  # The priority is based upon order of creation: first created -> highest priority.
-
-  # Sample of regular route:
-  #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
-  # Keep in mind you can assign values other than :controller and :action
-
-  # Sample of named route:
-  #   map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
-  # This route can be invoked with purchase_url(:id => product.id)
-
-  # Sample resource route (maps HTTP verbs to controller actions automatically):
-  #   map.resources :products
-
-  # Sample resource route with options:
-  #   map.resources :products, :member => { :short => :get, :toggle => :post }, :collection => { :sold => :get }
-
-  # Sample resource route with sub-resources:
-  #   map.resources :products, :has_many => [ :comments, :sales ], :has_one => :seller
-  
-  # Sample resource route with more complex sub-resources
-  #   map.resources :products do |products|
-  #     products.resources :comments
-  #     products.resources :sales, :collection => { :recent => :get }
-  #   end
-
-  # Sample resource route within a namespace:
-  #   map.namespace :admin do |admin|
-  #     # Directs /admin/products/* to Admin::ProductsController (app/controllers/admin/products_controller.rb)
-  #     admin.resources :products
-  #   end
-
-  # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
-  # map.root :controller => "welcome"
-
-  # See how all your routes lay out with "rake routes"
-
-  # Install the default routes as the lowest priority.
-  # Note: These default routes make all actions in every controller accessible via GET requests. You should
-  # consider removing the them or commenting them out if you're using named routes and resources.
-  map.connect 'profile/:id.:format', :controller => "account", :action => 'profile'
-  map.root :controller => "posts", :action => 'index', :blog_id => 'all', :format =>'html'
-  map.connect 'error/:id', :controller => "main", :action => 'error'
-  map.connect ':controller/:action/:id'
-  map.connect ':controller/:action/:id.:format'
-  map.connect ':controller/:action.:format'
+  resources :supports
+  resources :blogs
+  resources :blogs do
+      resources :posts
+  end
+  match 'profile/:id.:format' => 'account#profile'
+  match '/' => 'posts#index', :blog_id => 'all', :format => 'html'
+  root :to => 'posts#index', :blog_id => 'all', :format => 'html'
+  match 'error(/:id)' => 'main#error'
+  match ':controller' => '#index'
+  match ':controller/:action/:id.:format'
+  match ':controller/:action/:id', :constraints => {:id => /[\-\d]+/}
+  match ':controller/:action'
+  match ':controller/:action.:format'
 end

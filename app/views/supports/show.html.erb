@@ -12,12 +12,11 @@
   <%if can_view_support?(@support)%>
     <strong>Комментарии видны только исполнителю и заказчику</strong>
     <div>
-      <%= render :partial => 'posts/comments', :locals => {:comments => @support.comments, :support => @support} %>
+      <%#= render :partial => 'posts/comments', :locals => {:comments => @support.comments, :support => @support} %>
     </div>
   <%#= periodically_call_remote(:url => support_url(@support), :method=>'get', :frequency => '30', :update => 'show_support') %>
 
   <%else%>
-    Комментарии будут доступны только после одобрения заказчиком или
-    через <%=(@support.updated_at - @support.time.minutes.ago).to_i/60 + 1%>мин.
+    Комментарии будут доступны только если вы исполнитель.
   <%end%>
 </div>

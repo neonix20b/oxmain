@@ -13,11 +13,6 @@
     <p><%= link_to "Создать заявку", new_support_path %></p>
   <%end%>
 </div>
-<div class="blog_post">
-  <div id="oxusers_online">
-    <%= render :partial => "main/online"%>
-  </div>
   <%if logged_in?%>
     <%= periodically_call_remote(:url => supports_url, :method=>'get', :frequency => '30', :update => 'supports') %>
   <%end%>
-</div>
